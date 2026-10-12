@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Urban Company - Carpentry & Home Services</title>
+  <title>EPC Services - Home & Carpentry Services</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome Icons -->
@@ -14,9 +14,7 @@
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          },
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
           colors: {
             ucPurple: '#6e42e5',
             ucPurpleDark: '#5832be',
@@ -30,61 +28,32 @@
     }
   </script>
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f1f5f9;
-      color: #0f172a;
-    }
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: #f1f5f9;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 9999px;
-    }
-    .glass-nav {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(8px);
-    }
-    .badge-uc {
-      background: linear-gradient(135deg, #6e42e5 0%, #8b5cf6 100%);
-    }
-    .animate-fadeIn {
-      animation: fadeIn 0.25s ease-out forwards;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; color: #0f172a; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    .animate-fadeIn { animation: fadeIn 0.25s ease-out forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between relative selection:bg-purple-100 selection:text-ucPurple">
 
-  <!-- Top Navigation Header -->
-  <header class="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm glass-nav">
+  <!-- TOP HEADER -->
+  <header class="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
-        <div class="bg-black text-white font-black tracking-tighter text-lg px-2.5 py-1 rounded-lg flex items-center">
-          UC
-        </div>
-        <div class="leading-tight">
+        <div class="bg-black text-white font-black text-lg px-2.5 py-1 rounded-lg">EPC</div>
+        <div>
           <div class="font-bold text-base text-gray-900 flex items-center gap-1">
-            <span>Urban Company</span>
-            <i class="fa-solid me-1 fa-angle-right text-xs text-gray-400"></i>
+            <span>EPC Services</span>
+            <i class="fa-solid fa-angle-right text-xs text-gray-400"></i>
           </div>
-          <p class="text-xs text-gray-500 font-medium flex items-center gap-1">
-            <i class="fa-solid fa-location-dot text-ucPurple"></i> Chennai, Tamil Nadu
-          </p>
+          <p class="text-xs text-gray-500 font-medium"><i class="fa-solid fa-location-dot text-ucPurple"></i> Tamil Nadu Statewide</p>
         </div>
       </div>
 
       <div class="flex items-center gap-4">
-        <button onclick="navigateTo('home')" class="text-sm font-semibold text-gray-700 hover:text-ucPurple transition">Home</button>
-        <button onclick="openSubCategoryModal()" class="text-sm font-semibold text-gray-700 hover:text-ucPurple transition">Services</button>
+        <button onclick="navigateTo('home')" class="text-sm font-semibold text-gray-700 hover:text-ucPurple">Home</button>
+        <button onclick="openMainCategoryModal()" class="text-sm font-semibold text-gray-700 hover:text-ucPurple">Services</button>
         <div class="relative cursor-pointer" onclick="openCartModal()">
           <i class="fa-solid fa-bag-shopping text-xl text-gray-800"></i>
           <span id="header-cart-count" class="hidden absolute -top-2 -right-2 bg-ucPurple text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">0</span>
@@ -95,1012 +64,1134 @@
 
   <main class="flex-1 max-w-5xl w-full mx-auto pb-24">
 
-    <!-- VIEW 1: HOME PAGE -->
+    <!-- HOME PAGE CATEGORIES -->
     <section id="view-home" class="p-4 sm:p-6 space-y-6 animate-fadeIn">
-      
-      <!-- Search & Banner Banner -->
       <div class="relative rounded-2xl overflow-hidden bg-gradient-to-r from-slate-900 via-purple-950 to-slate-900 text-white p-6 sm:p-8 shadow-xl">
-        <div class="relative z-10 max-w-xl">
-          <span class="inline-block bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-md mb-3">
-            ⭐ 4.8 Rated Professionals
-          </span>
-          <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-2">Quality Home Services, On Demand</h1>
-          <p class="text-gray-300 text-sm sm:text-base mb-6">Expert Carpenters, Electricians, Plumbers & More at your doorstep.</p>
-          
-          <div class="relative">
-            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-            <input type="text" placeholder="Search for 'Carpenters', 'Door repair', 'Lock install'..." 
-                   onclick="openSubCategoryModal()" readonly
-                   class="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white text-gray-900 text-sm font-medium shadow-lg focus:outline-none cursor-pointer placeholder-gray-400" />
-          </div>
-        </div>
-        <i class="fa-solid fa-hammer absolute right-4 -bottom-6 text-9xl text-white/5 font-black hidden sm:block"></i>
-      </div>
-
-      <!-- Categories Grid Header -->
-      <div class="flex items-center justify-between pt-2">
-        <div>
-          <h2 class="text-xl font-bold text-gray-900">What are you looking for?</h2>
-          <p class="text-xs text-gray-500">Book top-rated, background checked home experts</p>
+        <h1 class="text-2xl sm:text-4xl font-extrabold mb-2">Home services at your doorstep</h1>
+        <p class="text-gray-300 text-sm mb-6">Expert Carpenters, Electricians, Plumbers & More</p>
+        <div class="relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          <input type="text" placeholder="Search for 'Carpenters', 'Door repair'..." onclick="openMainCategoryModal()" readonly class="w-full pl-11 pr-4 py-3.5 rounded-xl bg-white text-gray-900 text-sm font-medium cursor-pointer" />
         </div>
       </div>
 
-      <!-- IMAGE 1 CATEGORIES GRID -->
-      <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-4">
-        
-        <!-- Category Item 1 -->
-        <div onclick="showCategoryToast('InstaHelp')" class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col items-center text-center group">
-          <div class="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600 text-2xl mb-2 group-hover:scale-105 transition">
-            <i class="fa-solid fa-bolt"></i>
-          </div>
-          <span class="text-xs sm:text-sm font-semibold text-gray-800">InstaHelp</span>
-          <span class="text-[10px] text-amber-600 font-bold mt-0.5">15 Mins</span>
-        </div>
+      <h2 class="text-xl font-bold text-gray-900">What are you looking for?</h2>
 
-        <!-- Category Item 2 -->
-        <div onclick="showCategoryToast('Salon for Women')" class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col items-center text-center group">
-          <div class="w-14 h-14 rounded-2xl bg-pink-50 flex items-center justify-center text-pink-500 text-2xl mb-2 group-hover:scale-105 transition">
-            <i class="fa-solid fa-spa"></i>
-          </div>
+      <div class="grid grid-cols-3 gap-3 sm:gap-4">
+        <div onclick="showToast('Opening Women\'s Salon...')" class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-center cursor-pointer hover:shadow-md transition">
+          <div class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-500 text-2xl mx-auto flex items-center justify-center mb-2"><i class="fa-solid fa-spa"></i></div>
           <span class="text-xs sm:text-sm font-semibold text-gray-800">Women's Salon & Spa</span>
         </div>
 
-        <!-- Category Item 3 -->
-        <div onclick="showCategoryToast('Salon for Men')" class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col items-center text-center group">
-          <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 text-2xl mb-2 group-hover:scale-105 transition">
-            <i class="fa-solid fa-scissors"></i>
-          </div>
-          <span class="text-xs sm:text-sm font-semibold text-gray-800">Men's Salon & Spa</span>
+        <div onclick="showToast('Opening Men\'s Salon...')" class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-center cursor-pointer hover:shadow-md transition">
+          <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 text-2xl mx-auto flex items-center justify-center mb-2"><i class="fa-solid fa-scissors"></i></div>
+          <span class="text-xs sm:text-sm font-semibold text-gray-800">Men's Salon & Massage</span>
         </div>
 
-        <!-- Category Item 4 -->
-        <div onclick="showCategoryToast('Cleaning & Pest Control')" class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col items-center text-center group">
-          <div class="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 text-2xl mb-2 group-hover:scale-105 transition">
-            <i class="fa-solid fa-broom"></i>
-          </div>
+        <div onclick="showToast('Opening Cleaning...')" class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-center cursor-pointer hover:shadow-md transition">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 text-2xl mx-auto flex items-center justify-center mb-2"><i class="fa-solid fa-broom"></i></div>
           <span class="text-xs sm:text-sm font-semibold text-gray-800">Cleaning & Pest Control</span>
         </div>
 
-        <!-- Category Item 5 -->
-        <div onclick="showCategoryToast('Wall Panels')" class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col items-center text-center group">
-          <div class="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-600 text-2xl mb-2 group-hover:scale-105 transition">
-            <i class="fa-solid fa-border-all"></i>
-          </div>
-          <span class="text-xs sm:text-sm font-semibold text-gray-800">Wall Panels</span>
+        <div onclick="showToast('Opening Painting...')" class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-center cursor-pointer hover:shadow-md transition">
+          <div class="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 text-2xl mx-auto flex items-center justify-center mb-2"><i class="fa-solid fa-paint-roller"></i></div>
+          <span class="text-xs sm:text-sm font-semibold text-gray-800">Painting & Waterproofing</span>
         </div>
 
-        <!-- Category Item 6 -->
-        <div onclick="showCategoryToast('Home Painting')" class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col items-center text-center group">
-          <div class="w-14 h-14 rounded-2xl bg-purple-50 flex items-center justify-center text-purple-600 text-2xl mb-2 group-hover:scale-105 transition">
-            <i class="fa-solid fa-paint-roller"></i>
-          </div>
-          <span class="text-xs sm:text-sm font-semibold text-gray-800">Home Painting</span>
-        </div>
-
-        <!-- Category Item 7 -->
-        <div onclick="showCategoryToast('AC & Appliance Repair')" class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col items-center text-center group">
-          <div class="w-14 h-14 rounded-2xl bg-sky-50 flex items-center justify-center text-sky-600 text-2xl mb-2 group-hover:scale-105 transition">
-            <i class="fa-solid fa-snowflake"></i>
-          </div>
+        <div onclick="showToast('Opening AC Repair...')" class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-center cursor-pointer hover:shadow-md transition">
+          <div class="w-14 h-14 rounded-2xl bg-sky-50 text-sky-600 text-2xl mx-auto flex items-center justify-center mb-2"><i class="fa-solid fa-snowflake"></i></div>
           <span class="text-xs sm:text-sm font-semibold text-gray-800">AC & Appliance Repair</span>
         </div>
 
-        <!-- KEY TARGET CATEGORY ITEM 8 (IMAGE 1 & 2 TRIGGER) -->
-        <div onclick="openSubCategoryModal()" class="col-span-2 sm:col-span-2 bg-gradient-to-br from-purple-50 to-indigo-50 p-4 rounded-2xl border-2 border-ucPurple/30 shadow-md hover:shadow-lg transition cursor-pointer flex items-center gap-4 group">
-          <div class="w-14 h-14 rounded-2xl bg-ucPurple text-white flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition shadow-md">
-            <i class="fa-solid fa-screwdriver-wrench"></i>
-          </div>
-          <div class="text-left">
-            <span class="inline-block text-[10px] bg-ucPurple text-white font-bold px-2 py-0.5 rounded-full mb-1">Most Popular</span>
-            <h3 class="text-sm sm:text-base font-bold text-gray-900 leading-tight">Electrician, Plumber & Carpenter</h3>
-            <p class="text-xs text-gray-500 font-medium">Doors, locks, repairs, assembly & fittings</p>
-          </div>
-          <i class="fa-solid fa-circle-chevron-right text-ucPurple text-xl ml-auto pr-2"></i>
-        </div>
-
-      </div>
-
-      <!-- Native Smart Products Section -->
-      <div class="pt-6">
-        <div class="flex items-center justify-between mb-4">
-          <div>
-            <span class="text-xs font-bold uppercase tracking-wider text-ucPurple">Built by Urban Company</span>
-            <h2 class="text-xl font-bold text-gray-900">Native Smart Products</h2>
-          </div>
-          <span class="text-xs font-semibold text-ucPurple cursor-pointer">Explore all &rarr;</span>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <!-- Native Smart Product 1 -->
-          <div class="bg-white rounded-2xl border border-gray-100 p-4 flex gap-4 shadow-sm items-center hover:border-purple-200 transition">
-            <img src="https://placehold.co/120x120/312e81/ffffff?text=Native+Purifier" alt="Native Water Purifier" class="w-24 h-24 object-cover rounded-xl" />
-            <div class="space-y-1">
-              <span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">No Service for 2 Years</span>
-              <h3 class="font-bold text-sm text-gray-900">Native M2 Water Purifier</h3>
-              <p class="text-xs text-gray-500">In-built RO + UV + Copper + Alkaline</p>
-              <div class="text-sm font-extrabold text-gray-900 pt-1">₹13,499 <span class="text-xs font-normal text-gray-400 line-through">₹17,499</span></div>
-            </div>
-          </div>
-
-          <!-- Native Smart Product 2 -->
-          <div class="bg-white rounded-2xl border border-gray-100 p-4 flex gap-4 shadow-sm items-center hover:border-purple-200 transition">
-            <img src="https://placehold.co/120x120/1e1b4b/ffffff?text=Smart+Lock" alt="Native Smart Lock" class="w-24 h-24 object-cover rounded-xl" />
-            <div class="space-y-1">
-              <span class="text-[10px] font-bold bg-purple-100 text-ucPurple px-2 py-0.5 rounded">Keyless Access</span>
-              <h3 class="font-bold text-sm text-gray-900">Native Door Lock Pro</h3>
-              <p class="text-xs text-gray-500">Fingerprint, OTP & Smart Card unlock</p>
-              <div class="text-sm font-extrabold text-gray-900 pt-1">₹8,999 <span class="text-xs font-normal text-gray-400 line-through">₹12,999</span></div>
-            </div>
-          </div>
+        <!-- MAIN TRIGGER (MAIN CATEGORY CLICK -> SUB CATEGORY POPUP) -->
+        <div onclick="openMainCategoryModal()" class="col-span-1 bg-purple-50 p-4 rounded-2xl border-2 border-ucPurple/30 shadow-sm text-center cursor-pointer hover:shadow-md transition">
+          <div class="w-14 h-14 rounded-2xl bg-ucPurple text-white text-2xl mx-auto flex items-center justify-center mb-2"><i class="fa-solid fa-wrench"></i></div>
+          <span class="text-xs sm:text-sm font-bold text-gray-900">Electrician, Plumber & Carpenter</span>
         </div>
       </div>
-
     </section>
 
-    <!-- VIEW 3: CARPENTER SUB-SERVICES SELECTOR (IMAGE 3) -->
+    <!-- CARPENTER CATEGORIES SLIDE VIEW -->
     <section id="view-service-selector" class="hidden p-4 sm:p-6 space-y-6 animate-fadeIn">
-      
-      <!-- Back Header -->
       <div class="flex items-center gap-3 border-b border-gray-200 pb-4">
-        <button onclick="navigateTo('home')" class="p-2 rounded-full hover:bg-gray-200 text-gray-700 transition">
-          <i class="fa-solid fa-arrow-left text-lg"></i>
-        </button>
+        <button onclick="navigateTo('home')" class="p-2 rounded-full hover:bg-gray-200"><i class="fa-solid fa-arrow-left text-lg"></i></button>
         <div>
-          <h1 class="text-xl font-bold text-gray-900">Select a Carpenter Service</h1>
-          <p class="text-xs text-gray-500">Choose a category to see upfront prices & options</p>
+          <h1 class="text-xl font-bold text-gray-900">Carpenter</h1>
+          <p class="text-xs text-gray-500">⭐ 4.78 (3.1M bookings across TN)</p>
         </div>
       </div>
-
-      <!-- Sub-services Grid Menu (12 categories) -->
-      <div id="sub-services-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        <!-- Javascript dynamically injects the 12 Carpenter Sub-Services -->
-      </div>
+      <div id="sub-services-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
     </section>
 
-    <!-- VIEW 4 & 6: SERVICE DETAILS & ITEMS LIST VIEW (IMAGE 4) -->
+    <!-- SERVICE DETAILS LIST VIEW -->
     <section id="view-service-detail-list" class="hidden p-4 sm:p-6 space-y-6 animate-fadeIn">
-      
-      <!-- Header with back button & category title -->
       <div class="flex items-center justify-between border-b border-gray-200 pb-4">
         <div class="flex items-center gap-3">
-          <button onclick="navigateTo('services-menu')" class="p-2 rounded-full hover:bg-gray-200 text-gray-700 transition">
-            <i class="fa-solid fa-arrow-left text-lg"></i>
-          </button>
+          <button onclick="navigateTo('services-menu')" class="p-2 rounded-full hover:bg-gray-200"><i class="fa-solid fa-arrow-left text-lg"></i></button>
           <div>
-            <h1 id="selected-subcategory-title" class="text-xl font-bold text-gray-900">Wooden Door</h1>
-            <p id="selected-subcategory-subtitle" class="text-xs text-gray-500">Fast repair & expert fitting in 45 mins</p>
+            <h1 id="selected-subcategory-title" class="text-xl font-bold text-gray-900">Wooden door</h1>
+            <p id="selected-subcategory-subtitle" class="text-xs text-gray-500">Select services to book</p>
           </div>
         </div>
-        <div class="flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">
-          <i class="fa-solid fa-shield-halved"></i> UC Verified
-        </div>
       </div>
-
-      <!-- Sticky Category Filter Pill Bar -->
-      <div id="category-pills" class="flex gap-2 overflow-x-auto custom-scrollbar pb-2 pt-1 sticky top-16 bg-fuchsia-50/80 backdrop-blur z-20 p-2 rounded-xl border border-purple-100">
-        <!-- Dynamically rendered pill filters -->
-      </div>
-
-      <!-- Service Items Grid Container -->
-      <div id="service-items-container" class="space-y-4">
-        <!-- Rendered items for selected sub-service -->
-      </div>
-
+      <div id="service-items-container" class="space-y-4"></div>
     </section>
 
-    <!-- VIEW 7: CHECKOUT PAGE (IMAGE 7) -->
+    <!-- CHECKOUT PAGE -->
     <section id="view-checkout" class="hidden p-4 sm:p-6 animate-fadeIn">
-      
-      <!-- Checkout Nav Header -->
       <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-200">
-        <button onclick="navigateTo('service-details')" class="p-2 rounded-full hover:bg-gray-200 text-gray-700 transition">
-          <i class="fa-solid fa-arrow-left text-lg"></i>
+        <button onclick="navigateTo('service-details')" class="p-2 rounded-full hover:bg-gray-200"><i class="fa-solid fa-arrow-left text-lg"></i></button>
+        <h1 class="text-xl font-extrabold text-gray-900">EPC Checkout Summary</h1>
+      </div>
+
+      <div class="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm space-y-4 max-w-xl mx-auto">
+        <h2 class="font-bold text-base border-b pb-2 text-gray-900">Selected Services</h2>
+        <div id="checkout-cart-items-list" class="space-y-3"></div>
+
+        <div class="pt-3 border-t text-sm font-extrabold flex justify-between">
+          <span>Total Amount Payable</span>
+          <span id="bill-grand-total">₹0</span>
+        </div>
+
+        <button onclick="processOrder()" class="w-full bg-ucPurple text-white py-3.5 rounded-xl font-bold text-sm shadow-md hover:bg-ucPurpleDark transition">
+          Confirm & Schedule Booking
         </button>
-        <div class="flex items-center gap-2">
-          <div class="bg-black text-white font-black text-xs px-2 py-0.5 rounded">UC</div>
-          <h1 class="text-xl font-extrabold text-gray-900">UC Checkout</h1>
-        </div>
       </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        <!-- LEFT COLUMN: USER DETAILS & TIME -->
-        <div class="lg:col-span-7 space-y-5">
-          
-          <!-- Mobile Number Card -->
-          <div class="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm space-y-3">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Send booking details to</span>
-              <button onclick="editMobileNumber()" class="text-xs font-bold text-ucPurple">Change</button>
-            </div>
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-purple-50 text-ucPurple flex items-center justify-center font-bold">
-                <i class="fa-solid fa-mobile-screen"></i>
-              </div>
-              <div>
-                <p id="checkout-mobile" class="font-bold text-gray-900 text-base">+91 98765 43210</p>
-                <p class="text-xs text-gray-500">Order updates & professional OTP will be sent here</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Address Picker -->
-          <div class="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm space-y-3">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Service Address</span>
-              <span class="text-xs font-bold text-ucPurple cursor-pointer">+ Add New</span>
-            </div>
-            <div class="p-3.5 border-2 border-ucPurple bg-purple-50/40 rounded-xl flex items-start gap-3">
-              <i class="fa-solid fa-house-user text-ucPurple text-lg mt-0.5"></i>
-              <div class="flex-1">
-                <p class="font-bold text-sm text-gray-900">Home</p>
-                <p class="text-xs text-gray-600 mt-0.5">Flat 302, Green Valley Apartments, Anna Nagar, Chennai - 600040</p>
-              </div>
-              <i class="fa-solid fa-circle-check text-ucPurple"></i>
-            </div>
-          </div>
-
-          <!-- Slot Picker -->
-          <div class="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm space-y-4">
-            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Select Date & Time Slot</span>
-            
-            <div class="flex gap-3 overflow-x-auto custom-scrollbar pb-2">
-              <div onclick="selectDate(this, 'Today, Oct 11')" class="slot-date-btn border-2 border-ucPurple bg-purple-50 p-3 rounded-xl min-w-[100px] text-center cursor-pointer">
-                <p class="text-xs font-medium text-gray-500">Today</p>
-                <p class="font-bold text-sm text-gray-900">11 Oct</p>
-              </div>
-              <div onclick="selectDate(this, 'Mon, Oct 12')" class="slot-date-btn border border-gray-200 p-3 rounded-xl min-w-[100px] text-center cursor-pointer hover:border-gray-300">
-                <p class="text-xs font-medium text-gray-500">Mon</p>
-                <p class="font-bold text-sm text-gray-900">12 Oct</p>
-              </div>
-              <div onclick="selectDate(this, 'Tue, Oct 13')" class="slot-date-btn border border-gray-200 p-3 rounded-xl min-w-[100px] text-center cursor-pointer hover:border-gray-300">
-                <p class="text-xs font-medium text-gray-500">Tue</p>
-                <p class="font-bold text-sm text-gray-900">13 Oct</p>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-3 gap-2">
-              <button onclick="selectTime(this, '09:00 AM')" class="time-slot-btn border-2 border-ucPurple bg-purple-50 py-2.5 rounded-lg text-xs font-bold text-gray-900">09:00 AM</button>
-              <button onclick="selectTime(this, '11:30 AM')" class="time-slot-btn border border-gray-200 py-2.5 rounded-lg text-xs font-bold text-gray-700 hover:border-gray-300">11:30 AM</button>
-              <button onclick="selectTime(this, '02:00 PM')" class="time-slot-btn border border-gray-200 py-2.5 rounded-lg text-xs font-bold text-gray-700 hover:border-gray-300">02:00 PM</button>
-              <button onclick="selectTime(this, '04:30 PM')" class="time-slot-btn border border-gray-200 py-2.5 rounded-lg text-xs font-bold text-gray-700 hover:border-gray-300">04:30 PM</button>
-              <button onclick="selectTime(this, '06:00 PM')" class="time-slot-btn border border-gray-200 py-2.5 rounded-lg text-xs font-bold text-gray-700 hover:border-gray-300">06:00 PM</button>
-            </div>
-          </div>
-
-          <!-- Cancellation Policy Card -->
-          <div class="bg-gray-50 rounded-2xl p-4 border border-gray-200 text-xs text-gray-600 flex gap-3">
-            <i class="fa-solid fa-circle-info text-gray-400 text-base mt-0.5"></i>
-            <div>
-              <p class="font-bold text-gray-800 mb-0.5">Free Cancellation till 2 hours before service</p>
-              <p>Re-schedule or cancel anytime directly through the app without extra charges.</p>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- RIGHT COLUMN: SUMMARY & BILL BREAKDOWN -->
-        <div class="lg:col-span-5 space-y-5">
-          
-          <div class="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm space-y-5">
-            
-            <div class="flex items-center justify-between border-b border-gray-100 pb-3">
-              <h2 class="font-bold text-gray-900 text-base">Service Summary</h2>
-              <span id="checkout-item-count-badge" class="bg-purple-100 text-ucPurple text-xs font-extrabold px-2.5 py-0.5 rounded-full">0 Items</span>
-            </div>
-
-            <!-- Items List -->
-            <div id="checkout-cart-items-list" class="space-y-3">
-              <!-- Dynamically populated cart items -->
-            </div>
-
-            <!-- Avoid calling option -->
-            <label class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition">
-              <input type="checkbox" checked class="w-4 h-4 text-ucPurple rounded accent-ucPurple" />
-              <span class="text-xs font-medium text-gray-800">Avoid calling before reaching the location</span>
-            </label>
-
-            <!-- Coupons Section -->
-            <div onclick="applyCouponPrompt()" class="flex items-center justify-between p-3.5 bg-purple-50 rounded-xl border border-purple-100 cursor-pointer hover:bg-purple-100/60 transition">
-              <div class="flex items-center gap-2 text-ucPurple font-bold text-xs">
-                <i class="fa-solid fa-tag text-sm"></i>
-                <span id="coupon-status-text">Coupons and offers (8 offers)</span>
-              </div>
-              <i class="fa-solid fa-chevron-right text-xs text-ucPurple"></i>
-            </div>
-
-            <!-- Tip Professional Section -->
-            <div class="space-y-2">
-              <div class="flex justify-between text-xs">
-                <span class="font-bold text-gray-800">Tip your professional</span>
-                <span class="text-gray-500">100% goes to the professional</span>
-              </div>
-              <div class="grid grid-cols-4 gap-2">
-                <button onclick="setTip(this, 50)" class="tip-btn border border-gray-200 py-2 rounded-lg text-xs font-bold hover:border-ucPurple">₹50</button>
-                <button onclick="setTip(this, 75)" class="tip-btn border-2 border-ucPurple bg-purple-50 py-2 rounded-lg text-xs font-bold relative text-ucPurple">
-                  ₹75
-                  <span class="absolute -top-2 left-1/2 -translate-x-1/2 bg-ucPurple text-white text-[8px] font-black px-1 rounded">POPULAR</span>
-                </button>
-                <button onclick="setTip(this, 100)" class="tip-btn border border-gray-200 py-2 rounded-lg text-xs font-bold hover:border-ucPurple">₹100</button>
-                <button onclick="setTip(this, 'custom')" class="tip-btn border border-gray-200 py-2 rounded-lg text-xs font-bold hover:border-ucPurple">Custom</button>
-              </div>
-            </div>
-
-            <!-- Bill Details Breakdown -->
-            <div class="space-y-2.5 pt-2 border-t border-gray-100 text-xs">
-              <div class="flex justify-between text-gray-600">
-                <span>Item Total</span>
-                <span id="bill-item-total" class="font-semibold text-gray-900">₹0</span>
-              </div>
-              <div id="bill-discount-row" class="flex justify-between text-emerald-600 hidden">
-                <span>Offer Savings (10% Off)</span>
-                <span id="bill-discount-amount" class="font-semibold">-₹0</span>
-              </div>
-              <div class="flex justify-between text-gray-600">
-                <span>Taxes & Service Fee</span>
-                <span class="font-semibold text-gray-900">₹49</span>
-              </div>
-              <div id="bill-tip-row" class="flex justify-between text-gray-600">
-                <span>Professional Tip</span>
-                <span id="bill-tip-amount" class="font-semibold text-gray-900">₹75</span>
-              </div>
-              <div class="flex justify-between font-extrabold text-sm text-gray-900 pt-2 border-t border-gray-200">
-                <span>Total Amount</span>
-                <span id="bill-grand-total">₹0</span>
-              </div>
-            </div>
-
-            <div class="bg-emerald-50 text-emerald-800 text-xs p-2.5 rounded-xl font-medium flex items-center justify-between">
-              <span>🎉 You are saving on this booking</span>
-              <span id="bill-savings-badge" class="font-extrabold">₹100 Saved</span>
-            </div>
-
-            <!-- Proceed Payment CTA Button -->
-            <button onclick="processOrder()" class="w-full bg-ucPurple hover:bg-ucPurpleDark text-white py-4 rounded-xl font-bold text-sm shadow-lg shadow-purple-200 transition flex items-center justify-between px-6">
-              <div class="text-left">
-                <span id="checkout-cta-price" class="block text-base leading-tight">₹0</span>
-                <span class="text-[10px] font-normal text-purple-200">Proceed to Payment</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <span>Proceed</span>
-                <i class="fa-solid fa-arrow-right text-xs"></i>
-              </div>
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
     </section>
 
   </main>
 
-  <!-- FLOATING CART BAR AT BOTTOM -->
-  <div id="floating-cart-bar" class="hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200 shadow-2xl p-3 sm:p-4 animate-fadeIn">
-    <div class="max-w-3xl mx-auto flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-purple-100 text-ucPurple flex items-center justify-center font-black">
-          <i class="fa-solid fa-basket-shopping"></i>
-        </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <span id="float-item-count" class="font-extrabold text-gray-900 text-sm">1 ITEM</span>
-            <span class="text-gray-300">|</span>
-            <span id="float-total-price" class="font-black text-gray-900 text-base">₹299</span>
-          </div>
-          <p class="text-[11px] text-emerald-600 font-semibold">Extra discounts applicable at checkout</p>
-        </div>
+  <!-- FLOATING CART "DONE" BAR -->
+  <div id="floating-cart-bar" class="hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200 shadow-2xl p-4 animate-fadeIn">
+    <div class="max-w-3xl mx-auto flex items-center justify-between">
+      <div>
+        <span id="float-item-count" class="font-extrabold text-gray-900 text-sm">0 ITEMS</span>
+        <span class="text-gray-300 mx-2">|</span>
+        <span id="float-total-price" class="font-black text-gray-900 text-base">₹0</span>
       </div>
-
-      <button onclick="navigateTo('checkout')" class="bg-ucPurple hover:bg-ucPurpleDark text-white font-bold px-8 py-3 rounded-xl shadow-md transition flex items-center gap-2 text-sm">
-        <span>Done</span>
-        <i class="fa-solid fa-chevron-right text-xs"></i>
+      <button onclick="navigateTo('checkout')" class="bg-ucPurple hover:bg-ucPurpleDark text-white font-bold px-8 py-2.5 rounded-xl transition text-sm">
+        Done
       </button>
     </div>
   </div>
 
+  <!-- POPUP 1: MAIN CATEGORY -> SUB CATEGORY MODAL -->
+  <div id="main-category-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl animate-fadeIn">
+      <div class="p-4 border-b flex justify-between items-center bg-gray-50">
+        <h2 class="font-bold text-base text-gray-900">Electrician, Plumber & Carpenter</h2>
+        <button onclick="closeMainCategoryModal()" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+      </div>
 
-  <!-- IMAGE 2: SUBCATEGORY OVERLAY MODAL -->
-  <div id="subcategory-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-2xl max-h-[90vh] flex flex-col overflow-hidden animate-fadeIn">
-      
-      <!-- Modal Header -->
-      <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+      <div class="p-5 space-y-5 max-h-[75vh] overflow-y-auto custom-scrollbar">
         <div>
-          <h2 class="font-bold text-gray-900 text-base">Electrician, Plumber & Carpenter</h2>
-          <p class="text-xs text-gray-500">Select a sub-category service</p>
+          <h3 class="font-extrabold text-xs text-gray-400 uppercase tracking-wider mb-3">Home repairs</h3>
+          <div class="grid grid-cols-3 gap-3">
+            <div onclick="openCarpenterSubCategoryModal()" class="p-3 border rounded-xl cursor-pointer text-center hover:border-ucPurple bg-purple-50">
+              <i class="fa-solid fa-hammer text-2xl text-ucPurple mb-1 block"></i>
+              <span class="text-xs font-bold text-gray-900">Carpenter</span>
+            </div>
+            <div onclick="showToast('Electrician options')" class="p-3 border rounded-xl cursor-pointer text-center hover:border-ucPurple">
+              <i class="fa-solid fa-plug text-2xl text-amber-500 mb-1 block"></i>
+              <span class="text-xs font-semibold">Electrician</span>
+            </div>
+            <div onclick="showToast('Plumber options')" class="p-3 border rounded-xl cursor-pointer text-center hover:border-ucPurple">
+              <i class="fa-solid fa-faucet-drip text-2xl text-blue-500 mb-1 block"></i>
+              <span class="text-xs font-semibold">Plumber</span>
+            </div>
+          </div>
         </div>
-        <button onclick="closeSubCategoryModal()" class="w-8 h-8 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center hover:bg-gray-300">
-          <i class="fa-solid fa-xmark"></i>
+
+        <div>
+          <h3 class="font-extrabold text-xs text-gray-400 uppercase tracking-wider mb-3">Home installation</h3>
+          <div class="grid grid-cols-2 gap-3 text-xs font-semibold">
+            <div onclick="openCarpenterSubCategoryModal()" class="p-3 border rounded-xl cursor-pointer hover:border-ucPurple"><i class="fa-solid fa-fan mr-2"></i> Fan Installation</div>
+            <div onclick="openCarpenterSubCategoryModal()" class="p-3 border rounded-xl cursor-pointer hover:border-ucPurple"><i class="fa-solid fa-couch mr-2"></i> Furniture Assembly</div>
+            <div onclick="openCarpenterSubCategoryModal()" class="p-3 border rounded-xl cursor-pointer hover:border-ucPurple"><i class="fa-solid fa-fire-burner mr-2"></i> Geyser Service</div>
+            <div onclick="openCarpenterSubCategoryModal()" class="p-3 border rounded-xl cursor-pointer hover:border-ucPurple"><i class="fa-solid fa-box mr-2"></i> IKEA Assembly</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP 2: CARPENTER SUB CATEGORIES MODAL -->
+  <div id="carpenter-subcategory-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl animate-fadeIn">
+      <div class="p-4 border-b flex justify-between items-center bg-gray-50">
+        <div>
+          <h2 class="font-bold text-base text-gray-900">Carpenter Sub Categories</h2>
+          <p class="text-xs text-gray-500">Select a category to view sub services</p>
+        </div>
+        <button onclick="closeCarpenterSubCategoryModal()" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div id="carpenter-subcat-list" class="p-5 space-y-3 max-h-[70vh] overflow-y-auto custom-scrollbar">
+        <!-- Dynamically rendered sub categories -->
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP 3: SUB SERVICES POPUP MODAL -->
+  <div id="subservices-popup-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl animate-fadeIn relative">
+      <div class="p-5 border-b flex justify-between items-start">
+        <div>
+          <h2 id="popup-service-title" class="font-extrabold text-2xl text-gray-900">Door repair</h2>
+          <p id="popup-service-rating" class="text-xs text-gray-500 mt-1"><i class="fa-solid fa-star text-amber-400"></i> 4.78 (166K reviews)</p>
+        </div>
+        <button onclick="closeSubServicesPopupModal()" class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 hover:bg-gray-200 transition">
+          <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
 
-      <!-- Modal Body Content with Scroll -->
-      <div class="p-5 overflow-y-auto space-y-6 custom-scrollbar">
-        
-        <!-- SECTION 1: HOME REPAIRS -->
-        <div>
-          <div class="flex items-center gap-2 mb-3">
-            <span class="w-2 h-2 rounded-full bg-ucPurple"></span>
-            <h3 class="font-extrabold text-xs text-gray-400 uppercase tracking-wider">Home repairs</h3>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            
-            <div onclick="selectCategoryAndNavigate('Electrician')" class="p-3.5 border border-gray-200 rounded-xl hover:border-ucPurple hover:bg-purple-50/50 cursor-pointer transition flex items-center gap-3">
-              <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-lg">
-                <i class="fa-solid fa-plug"></i>
-              </div>
-              <span class="font-bold text-sm text-gray-800">Electrician</span>
-            </div>
-
-            <div onclick="selectCategoryAndNavigate('Plumber')" class="p-3.5 border border-gray-200 rounded-xl hover:border-ucPurple hover:bg-purple-50/50 cursor-pointer transition flex items-center gap-3">
-              <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-lg">
-                <i class="fa-solid fa-faucet-drip"></i>
-              </div>
-              <span class="font-bold text-sm text-gray-800">Plumber</span>
-            </div>
-
-            <!-- TARGET CLICK: CARPENTER -->
-            <div onclick="selectCategoryAndNavigate('Carpenter')" class="p-3.5 border-2 border-ucPurple bg-purple-50 rounded-xl cursor-pointer transition flex items-center gap-3 shadow-sm">
-              <div class="w-10 h-10 rounded-lg bg-ucPurple text-white flex items-center justify-center text-lg">
-                <i class="fa-solid fa-hammer"></i>
-              </div>
-              <div>
-                <span class="font-bold text-sm text-gray-900 block">Carpenter</span>
-                <span class="text-[10px] text-ucPurple font-semibold">12 Services &rarr;</span>
-              </div>
-            </div>
-
-            <div onclick="selectCategoryAndNavigate('Wood & Furniture Polish')" class="p-3.5 border border-gray-200 rounded-xl hover:border-ucPurple hover:bg-purple-50/50 cursor-pointer transition flex items-center gap-3">
-              <div class="w-10 h-10 rounded-lg bg-orange-100 text-orange-700 flex items-center justify-center text-lg">
-                <i class="fa-solid fa-brush"></i>
-              </div>
-              <span class="font-bold text-sm text-gray-800">Wood Polish</span>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- SECTION 2: INSTALLATIONS & OTHER SERVICES -->
-        <div>
-          <div class="flex items-center gap-2 mb-3">
-            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <h3 class="font-extrabold text-xs text-gray-400 uppercase tracking-wider">Installations & other services</h3>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            
-            <div onclick="selectCategoryAndNavigate('Fan Installation')" class="p-3 border border-gray-200 rounded-xl hover:border-ucPurple cursor-pointer text-xs font-semibold text-gray-800 flex items-center gap-2">
-              <i class="fa-solid fa-fan text-gray-500"></i> Fan Installation
-            </div>
-
-            <div onclick="selectCategoryAndNavigate('Furniture Assembly')" class="p-3 border border-gray-200 rounded-xl hover:border-ucPurple cursor-pointer text-xs font-semibold text-gray-800 flex items-center gap-2">
-              <i class="fa-solid fa-couch text-gray-500"></i> Furniture Assembly
-            </div>
-
-            <div onclick="selectCategoryAndNavigate('Geyser Service')" class="p-3 border border-gray-200 rounded-xl hover:border-ucPurple cursor-pointer text-xs font-semibold text-gray-800 flex items-center gap-2">
-              <i class="fa-solid fa-temperature-arrow-up text-gray-500"></i> Geyser Service
-            </div>
-
-            <div onclick="selectCategoryAndNavigate('IKEA Furniture Assembly')" class="p-3 border border-gray-200 rounded-xl hover:border-ucPurple cursor-pointer text-xs font-semibold text-gray-800 flex items-center gap-2">
-              <i class="fa-solid fa-box text-gray-500"></i> IKEA Assembly
-            </div>
-
-            <div onclick="selectCategoryAndNavigate('Tile Grouting')" class="p-3 border border-gray-200 rounded-xl hover:border-ucPurple cursor-pointer text-xs font-semibold text-gray-800 flex items-center gap-2">
-              <i class="fa-solid fa-border-all text-gray-500"></i> Tile Grouting
-            </div>
-
-            <div onclick="selectCategoryAndNavigate('Festival Lights')" class="p-3 border border-gray-200 rounded-xl hover:border-ucPurple cursor-pointer text-xs font-semibold text-gray-800 flex items-center gap-2">
-              <i class="fa-solid fa-lightbulb text-gray-500"></i> Festival Lights
-            </div>
-
-          </div>
-        </div>
-
+      <div id="popup-subservices-container" class="p-5 flex gap-4 overflow-x-auto custom-scrollbar">
+        <!-- Dynamically injected sub-services cards -->
       </div>
-
-    </div>
-  </div>
-
-  <!-- IMAGE 5: SERVICE DETAIL MODAL POPUP -->
-  <div id="service-detail-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-2xl max-h-[90vh] flex flex-col overflow-hidden animate-fadeIn">
       
-      <!-- Promo banner top bar -->
-      <div class="bg-purple-900 text-white px-4 py-2.5 text-xs font-semibold flex items-center gap-2">
-        <i class="fa-solid fa-percent text-amber-400"></i>
-        <span>Get 10% off instantly on pre-selecting services above ₹300!</span>
+      <div class="p-4 bg-gray-50 border-t flex justify-between items-center">
+        <span class="text-xs text-gray-500">Select required sub-services & add to booking</span>
+        <button onclick="closeSubServicesPopupModal()" class="px-5 py-2 bg-ucPurple text-white rounded-xl font-bold text-xs hover:bg-ucPurpleDark transition">Done</button>
       </div>
-
-      <!-- Modal Body Container -->
-      <div id="service-detail-modal-content" class="p-5 overflow-y-auto custom-scrollbar space-y-4">
-        <!-- Javascript dynamic render -->
-      </div>
-
-      <div class="p-4 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
-        <button onclick="closeServiceDetailModal()" class="px-5 py-2.5 bg-gray-200 hover:bg-gray-300 font-bold text-gray-700 text-xs rounded-xl">Close</button>
-        <button onclick="closeServiceDetailModal()" class="px-6 py-2.5 bg-ucPurple hover:bg-ucPurpleDark text-white font-bold text-xs rounded-xl">Continue Shopping</button>
-      </div>
-
     </div>
   </div>
 
-  <!-- Toast Notification Message Box (No native alert) -->
-  <div id="toast-message" class="hidden fixed top-20 right-4 z-50 bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 border border-slate-700">
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast-message" class="hidden fixed top-20 right-4 z-50 bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-xl flex items-center gap-2">
     <i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
-    <span id="toast-text">Message</span>
+    <span id="toast-text">Notification</span>
   </div>
 
   <script>
-    /* ==========================================================================
-       DATA STRUCTURE: Carpenter Services Document & Sub-items
-       ========================================================================== */
-    const carpenterSubServices = [
+    /* Complete Structured Data from Carpender_6.docx */
+    const carpenterCategories = [
       {
         id: "wooden-door",
         title: "Wooden door",
-        subtitle: "Lock, hinge, misalignment & new installation",
-        icon: "fa-door-open",
-        items: [
-          { id: "wd-1", name: "New Wooden Door Installation", price: 599, rating: 4.84, reviews: 1240, duration: "60 mins", description: "Precision cutting, frame fitting & alignment for standard wooden doors.", category: "Installation" },
-          { id: "wd-2", name: "Sliding Wooden Door Installation", price: 749, rating: 4.79, reviews: 890, duration: "75 mins", description: "Track mounting, wheel alignment, smooth gliding setup.", category: "Installation" },
-          { id: "wd-3", name: "Tower Bolt / Latch Repair", price: 149, rating: 4.88, reviews: 3100, duration: "20 mins", description: "Tightening loose bolts or replacing latch mechanism.", category: "Repair" },
-          { id: "wd-4", name: "Bottom Stopper Repair & Install", price: 129, rating: 4.82, reviews: 1450, duration: "15 mins", description: "Door stopper fitting to prevent wall damage.", category: "Repair" },
-          { id: "wd-5", name: "Handle Lock Repair / Replacement", price: 299, rating: 4.85, reviews: 2150, duration: "30 mins", description: "Mortise, cylindrical, or smart lock repair & handle fitting.", category: "Lock & Hinge" },
-          { id: "wd-6", name: "Hinge Repair & Alignment", price: 199, rating: 4.81, reviews: 1980, duration: "25 mins", description: "Fixing squeaky or hanging loose door hinges.", category: "Lock & Hinge" },
-          { id: "wd-7", name: "Door Misalignment & Swelling Repair", price: 349, rating: 4.76, reviews: 4200, duration: "45 mins", description: "Planing/sanding door edges swelled due to moisture/rain.", category: "Repair" },
-          { id: "wd-8", name: "Sliding Wooden Door Repair", price: 399, rating: 4.78, reviews: 830, duration: "40 mins", description: "Track cleaning, roller wheel replacement & alignment.", category: "Repair" }
+        subtitle: "Door Repair, Installation & Locks",
+        image: "./images/wooden door.jpeg",
+        mainServices: [
+          {
+            title: "Door repair",
+            rating: "4.78 (166K reviews)",
+            img: "./images/door repair main.jpeg",
+            subServices: [
+              { id: "dr-1", name: "Tower bolt/Latch repair", rating: "4.75 (2K reviews)", price: 99, img: "./images/tower bolt-latch repair.jpeg" },
+              { id: "dr-2", name: "Bottom stopper repair", rating: "4.80 (730 reviews)", price: 99, img: "./images/bottom stopper repair.jpeg" },
+              { id: "dr-3", name: "Handle lock repair", rating: "4.79 (75K reviews)", price: 229, img: "./images/handle lock repair.jpeg" },
+              { id: "dr-4", name: "Hinge Repair (per hinge)", rating: "4.82 (12K reviews)", price: 149, img: "./images/hinge repair(per hinge).jpeg" },
+              { id: "dr-5", name: "Door not closing (swelling),", rating: "4.76 (5K reviews)", price: 299, img: "./images/door not closing (swelling).jpeg" },
+              { id: "dr-6", name: "Sliding Wooden repair,", rating: "4.76 (5K reviews)", price: 299, img: "./images/sliding wooden repair.jpeg" },
+              { id: "dr-7", name: "Misalignment issues", rating: "4.76 (5K reviews)", price: 299, img: "./images/misalignment issues.jpeg" }
+            ]
+          },
+          {
+            title: "New Door Installation",
+            rating: "4.85 (12K reviews)",
+            img: "./images/New Door Installation.jpeg",
+            subServices: [
+              { id: "ndi-1", name: "Wooden Door Installation", rating: "4.88 (8K reviews)", price: 999, img: "./images/wooden door installation.jpeg" },
+              { id: "ndi-2", name: "Sliding Wooden Door", rating: "4.80 (4K reviews)", price: 1299, img: "./images/sliding wooden door.jpeg" }
+            ]
+          },
+          {
+            title: "Door Locks & Latches Repair",
+            rating: "4.80 (45K reviews)",
+            img: "./images/3.jpeg",
+            subServices: [
+              { id: "dll-1", name: "Chain Latch Repair", rating: "4.81 (3K reviews)", price: 129, img: "./images/chain latch repair.jpeg" },
+              { id: "dll-2", name: "Lockable Latch", rating: "4.84 (10K reviews)", price: 199, img: "./images/lockable latch.jpeg" },
+              { id: "dll-3", name: "Tower Bolt", rating: "4.84 (10K reviews)", price: 199, img: "./images/Tower Bolt.jpeg" },
+              { id: "dll-4", name: "Handle lock", rating: "4.84 (10K reviews)", price: 199, img: "./images/Handle lock.jpeg" },
+              { id: "dll-5", name: "Round Knob Lock", rating: "4.79 (15K reviews)", price: 249, img: "./images/round knob lock.jpeg" }
+            ]
+          },
+         {
+          title: "Door Lock replace and install",
+          rating: "4.80 (45K reviews)",
+          img: "./images/4.jpeg",
+          subServices: [
+            { id: "dlr-1", name: "Chain Latch Repair", rating: "4.81 (3K reviews)", price: 129, img: "./images/chain latch repair.jpeg" },
+            { id: "dlr-2", name: "Lockable Latch", rating: "4.84 (10K reviews)", price: 199, img: "./images/lockable latch.jpeg" },
+            { id: "dlr-3", name: "Tower Bolt", rating: "4.84 (10K reviews)", price: 199, img: "./images/Tower Bolt.jpeg" },
+            { id: "dlr-4", name: "Handle lock", rating: "4.84 (10K reviews)", price: 199, img: "./images/Handle lock.jpeg" },
+            { id: "dlr-5", name: "Handle lock replacement", rating: "4.84 (10K reviews)", price: 199, img: "./images/Handle lock replacement.jpeg" },
+            { id: "dlr-6", name: "Handle Lock installation", rating: "4.84 (10K reviews)", price: 199, img: "./images/Handle Lock installation.jpeg" },
+            { id: "dlr-7", name: "Round Knob Lock", rating: "4.79 (15K reviews)", price: 249, img: "./images/round knob lock.jpeg" }
+         ]
+          },
+           {
+          title: "Door Hinges repair and replacement",
+          rating: "4.80 (45K reviews)",
+          img: "./images/5.jpeg",
+          subServices: [
+            { id: "dlr-1", name: "Hinge Repair(per Hinge)", rating: "4.81 (3K reviews)", price: 129, img: "./images/hinge repair(per hinge).jpeg" },
+            { id: "dlr-2", name: "Replacement (per Hinge)", rating: "4.84 (10K reviews)", price: 199, img: "./images/Replacement (per Hinge).jpeg" }
+         ]
+          },
+          {
+            title: "Door accessories & mesh installation",
+            rating: "4.80 (45K reviews)",
+            img: "./images/6.jpeg",
+            subServices: [
+              { id: "dlr-1", name: "Chain Latch", rating: "4.81 (3K reviews)", price: 129, img: "./images/Chain Latch.jpeg" },
+              { id: "dlr-2", name: "Lockable latch", rating: "4.84 (10K reviews)", price: 199, img: "./images/Lockable latch.jpeg" },
+              { id: "dlr-3", name: "Tower Bolt", rating: "4.84 (10K reviews)", price: 199, img: "./images/Tower Bolt.jpeg" },
+              { id: "dlr-4", name: "Bottom Stopper Repair", rating: "4.84 (10K reviews)", price: 199, img: "./images/Bottom Stopper Repair.jpeg" },
+              { id: "dlr-5", name: "Peephole", rating: "4.79 (15K reviews)", price: 249, img: "./images/Peephole.jpeg" },
+              { id: "dlr-6", name: "Overhead /Wall mounted Closer", rating: "4.79 (15K reviews)", price: 249, img: "./images/Overhead -Wall mounted Closer.jpeg" },
+              { id: "dlr-7", name: "Consealed Closer", rating: "4.79 (15K reviews)", price: 249, img: "./images/Consealed Closer.jpeg" },
+              { id: "dlr-8", name: "Mesh Replacement", rating: "4.79 (15K reviews)", price: 249, img: "./images/Mesh Replacement.jpeg" }
+            ]
+          }
         ]
       },
       {
         id: "cupboard-drawer",
         title: "Cupboard & drawer",
-        subtitle: "Hinges, locks, sliding channels & handles",
-        icon: "fa-box-archive",
-        items: [
-          { id: "cd-1", name: "Cupboard Repair & Adjustment", price: 299, rating: 4.82, reviews: 1540, duration: "35 mins", description: "Door alignment, magnet latch repair and frame alignment.", category: "Repair" },
-          { id: "cd-2", name: "Cupboard & Drawer Lock Installation", price: 199, rating: 4.87, reviews: 2310, duration: "25 mins", description: "Key lock fitting for wardrobes and office desks.", category: "Locks" },
-          { id: "cd-3", name: "Drawer Channel Repair & Fitting", price: 249, rating: 4.80, reviews: 1890, duration: "30 mins", description: "Telescopic slider channel replacement and smooth gliding.", category: "Channels" }
-        ]
-      },
+        subtitle: "Cupboard repair, locks & drawer channels",
+        image: "./images/Cupboard & drawer.jpeg",
+        mainServices: [
+          {
+            title: "Cupboard repair & Installation",
+            rating: "4.82 (15K reviews)",
+            img: "./images/7.jpeg",
+            subServices: [
+              { id: "cd-1", name: "Handle Repair Replacement", rating: "4.85 (5K)", price: 149, img: "./images/Handle Repair Replacement.jpeg" },
+              { id: "cd-2", name: "Cupboard rod Installation", rating: "4.80 (3K)", price: 199, img: "./images/Cupboard rod Installation.jpeg" },
+              { id: "cd-3", name: "Hinge repair/replace (upto 2)", rating: "4.83 (7K)", price: 249, img: "./images/Hinge repair-replace (upto 2).jpeg" },
+              { id: "cd-4", name: "Regular Channel repair", rating: "4.81 (5K)", price: 299, img: "./images/Regular Channel repair.jpeg" },
+              { id: "cd-5", name: "Soft Close Channel repair", rating: "4.79 (3K)", price: 399, img: "./images/Soft Close Channel repair.jpeg" },
+              { id: "cd-6", name: "Cupboard sliding door repair", rating: "4.79 (3K)", price: 499, img: "./images/Cupboard sliding door repair.jpeg" }
+            ]
+          },
+          {
+            title: "Cupboard & Drawer locks",
+            rating: "4.82 (15K reviews)",
+            img: "./images/8.jpeg",
+            subServices: [
+              { id: "cd-1", name: "Magnet Repair / Install", rating: "4.85 (5K)", price: 149, img: "./images/Magnet Repair - Install.jpeg" },
+              { id: "cd-2", name: "Latch repair /install", rating: "4.80 (3K)", price: 199, img: "./images/Latch repair - install.jpeg" },
+              { id: "cd-3", name: "Drawer lock installation", rating: "4.83 (7K)", price: 249, img: "./images/Drawer lock installation.jpeg" },
+              { id: "cd-4", name: "Cupboard lock Installation", rating: "4.81 (5K)", price: 299, img: "./images/Cupboard lock Installation.jpeg" }
+            ]
+          },
       {
-        id: "decor-mirror",
-        title: "Décor & mirror",
-        subtitle: "Wall paintings, large mirrors, hooks & photos",
-        icon: "fa-image",
-        items: [
-          { id: "dm-1", name: "Small Décor / Photo Frame Hanging", price: 99, rating: 4.90, reviews: 5120, duration: "15 mins", description: "Drilling & anchor installation for frames up to 2kg.", category: "Hanging" },
-          { id: "dm-2", name: "Large Wall Mirror / Artwork Mounting", price: 249, rating: 4.86, reviews: 3410, duration: "30 mins", description: "Heavy duty anchor drilling with bubble-level accuracy.", category: "Hanging" },
-          { id: "dm-3", name: "Ceiling Hook / Heavy Fastener Fitting", price: 149, rating: 4.83, reviews: 1200, duration: "20 mins", description: "For hanging pots, swings, or heavy chandeliers.", category: "Fasteners" }
+            title: "Drawer repair & Installation services",
+            rating: "4.82 (15K reviews)",
+            img: "./images/9.jpeg",
+            subServices: [
+              { id: "cd-1", name: "Drawer handle repair/installation", rating: "4.85 (5K)", price: 149, img: "./images/Drawer handle repair - installation.jpeg" },
+              { id: "cd-2", name: "Regular Channel repair", rating: "4.80 (3K)", price: 199, img: "./images/Regular Channel repair.jpeg" },
+              { id: "cd-3", name: "Drawer lock installation", rating: "4.83 (7K)", price: 249, img: "./images/Drawer lock installation.jpeg" },
+              { id: "cd-4", name: "Soft close channel repair", rating: "4.81 (5K)", price: 299, img: "./images/Soft close channel repair.jpeg" }
+            ]
+          },
+          {
+            title: "Décor Installation (small)",
+            rating: "4.90 (15K reviews)",
+            img: "./images/10.jpeg",
+            subServices: [
+              { id: "dec-s-1", name: "1 time (frame, Clock & Painting)", rating: "4.91 (2K)", price: 149, img: "./images/decor-small-1.jpeg" },
+              { id: "dec-s-2", name: "2 times", rating: "4.90 (1K)", price: 249, img: "./images/decor-small-2.jpeg" },
+              { id: "dec-s-3", name: "3 times", rating: "4.89 (800)", price: 349, img: "./images/decor-small-3.jpeg" },
+              { id: "dec-s-4", name: "4 times", rating: "4.88 (600)", price: 449, img: "./images/decor-small-4.jpeg" },
+              { id: "dec-s-5", name: "5 times", rating: "4.87 (500)", price: 549, img: "./images/decor-small-5.jpeg" },
+              { id: "dec-s-6", name: "6 times", rating: "4.86 (400)", price: 649, img: "./images/decor-small-6.jpeg" },
+              { id: "dec-s-7", name: "7 times", rating: "4.85 (300)", price: 749, img: "./images/decor-small-7.jpeg" },
+              { id: "dec-s-8", name: "8 times", rating: "4.84 (200)", price: 849, img: "./images/decor-small-8.jpeg" }
+            ]
+          },
+          {
+            title: "Décor Installation (Large)",
+            rating: "4.88 (10K reviews)",
+            img: "./images/11.jpeg",
+            subServices: [
+              { id: "dec-l-1", name: "1 time (frame, Clock & Painting)", rating: "4.89 (1.5K)", price: 199, img: "./images/decor-large-1.jpeg" },
+              { id: "dec-l-2", name: "2 times", rating: "4.88 (900)", price: 349, img: "./images/decor-large-2.jpeg" },
+              { id: "dec-l-3", name: "3 times", rating: "4.87 (700)", price: 499, img: "./images/decor-large-3.jpeg" },
+              { id: "dec-l-4", name: "4 times", rating: "4.86 (500)", price: 649, img: "./images/decor-large-4.jpeg" },
+              { id: "dec-l-5", name: "5 times", rating: "4.85 (400)", price: 799, img: "./images/decor-large-5.jpeg" },
+              { id: "dec-l-6", name: "6 times", rating: "4.84 (300)", price: 949, img: "./images/decor-large-6.jpeg" },
+              { id: "dec-l-7", name: "7 times", rating: "4.83 (200)", price: 1099, img: "./images/decor-large-7.jpeg" },
+              { id: "dec-l-8", name: "8 times", rating: "4.82 (150)", price: 1249, img: "./images/decor-large-8.jpeg" }
+            ]
+          },
+          {
+            title: "Mirror Installation",
+            rating: "4.87 (12K reviews)",
+            img: "./images/12.jpeg",
+            subServices: [
+              { id: "mir-1", name: "Small (Upto 2ft & 3ft)", rating: "4.88 (8K)", price: 199, img: "./images/mirror-small.jpeg" },
+              { id: "mir-2", name: "Large (Upto 2ft & 6ft)", rating: "4.86 (4K)", price: 299, img: "./images/mirror-large.jpeg" }
+            ]
+          },
+          {
+            title: "Ceiling Hook/Fastener Installation",
+            rating: "4.81 (5K reviews)",
+            img: "./images/13.jpeg",
+            subServices: [
+              { id: "chk-1", name: "Ceiling Hook / Fastener Installation", rating: "4.81 (5K)", price: 149, img: "./images/ceiling-hook.jpeg" }
+            ]
+          }
         ]
       },
       {
         id: "shelf-cabinet",
         title: "Shelf & cabinet",
-        subtitle: "Floating shelves, wall cabinets & TV units",
-        icon: "fa-cubes",
-        items: [
-          { id: "sc-1", name: "Floating Shelf Installation", price: 199, rating: 4.85, reviews: 2800, duration: "25 mins", description: "Concealed bracket mounting for book/display shelves.", category: "Shelves" },
-          { id: "sc-2", name: "Wall Cabinet Assembly & Mounting", price: 449, rating: 4.79, reviews: 1120, duration: "50 mins", description: "Kitchen or living room overhead cabinet fitting.", category: "Cabinets" },
-          { id: "sc-3", name: "Bathroom Mirror Cabinet Fitting", price: 299, rating: 4.88, reviews: 1950, duration: "35 mins", description: "Waterproof wall plug mounting with level alignment.", category: "Cabinets" }
+        subtitle: "Floating shelves, Wall Cabinet & Bath Cabinets",
+        image: "./images/Shelf & cabinet.jpeg",
+        mainServices: [
+          {
+            title: "Shelf & Cabinet Installation",
+            rating: "4.85 (18K reviews)",
+            img: "./images/14.jpeg",
+            subServices: [
+              { id: "sc-1", name: "Wooden Shelf", rating: "4.86 (10K)", price: 199, img: "./images/Wooden Shelf.jpeg" },
+              { id: "sc-2", name: "Corner Shelf", rating: "4.85 (5K)", price: 299, img: "./images/Corner Shelf.jpeg" },
+              { id: "sc-3", name: "Glass Floating Shelf", rating: "4.81 (8K)", price: 449, img: "./images/Glass Floating Shelf.jpeg" }
+            ]
+          },
+          {
+            title: "Wall Cabinet assembly & Installation",
+            rating: "4.85 (18K reviews)",
+            img: "./images/15.jpeg",
+            subServices: [
+              { id: "sc-1", name: "Small (Upto 2*2ft)", rating: "4.86 (10K)", price: 199, img: "./images/Small.jpeg" },
+              { id: "sc-2", name: "Large (Upto4*3 ft)", rating: "4.85 (5K)", price: 299, img: "./images/Large.jpeg" }
+            ]
+          },
+          {
+            title: "Bathroom mirror Cabinet Installation & Assembly",
+            rating: "4.85 (18K reviews)",
+            img: "./images/16.jpeg",
+            subServices: [
+              { id: "sc-1", name: "With 1 Door", rating: "4.86 (10K)", price: 199, img: "./images/With 1 Door.jpeg" },
+              { id: "sc-2", name: "With 2 Door", rating: "4.85 (5K)", price: 299, img: "./images/With 2 Door.jpeg" }
+            ]
+          }
         ]
       },
       {
-        id: "lock-hinge",
+        id: "Lock & Hinge",
         title: "Lock & Hinge",
-        subtitle: "Door latches, hydraulic hinges, channels",
-        icon: "fa-key",
-        items: [
-          { id: "lh-1", name: "Main Door Lock Replacement & Fitting", price: 399, rating: 4.89, reviews: 3900, duration: "40 mins", description: "Rim lock, Godrej lock, or deadbolt fitting.", category: "Locks" },
-          { id: "lh-2", name: "Hydraulic Hinge Replacement (Pair)", price: 249, rating: 4.83, reviews: 1400, duration: "30 mins", description: "Soft-close hinge setup for modular cabinets.", category: "Hinges" },
-          { id: "lh-3", name: "Drawer Telescopic Channel Fitting", price: 229, rating: 4.81, reviews: 1100, duration: "30 mins", description: "Ball-bearing smooth motion drawer channel.", category: "Channels" }
-        ]
+        subtitle: "Door lock and Latches Repair, Door lock replace and Install",
+        image: "./images/Lock & Hinge.jpeg",
+        mainServices: [
+          {
+            title: "Door lock and Latches Repair",
+            rating: "4.82 (15K reviews)",
+            img: "./images/17.jpeg",
+            subServices: [
+              { id: "cd-1", name: "Chain Latch", rating: "4.85 (5K)", price: 149, img: "./images/Chain Latch.jpeg" },
+              { id: "cd-2", name: "Lockable Latch", rating: "4.80 (3K)", price: 199, img: "./images/Lockable Latch.jpeg" },
+              { id: "cd-3", name: "Tower Bolt", rating: "4.83 (7K)", price: 249, img: "./images/Hinge repair-replace (upto 2).jpeg" },
+              { id: "cd-4", name: "Handle Lock", rating: "4.81 (5K)", price: 299, img: "./images/Regular Channel repair.jpeg" },
+              { id: "cd-5", name: "Round Knob Lock", rating: "4.79 (3K)", price: 399, img: "./images/Soft Close Channel repair.jpeg" }
+            ]
+          },
+          {
+            title: "Door lock replace and Install services",
+            rating: "4.82 (15K reviews)",
+            img: "./images/18.jpeg",
+            subServices: [
+              { id: "cd-1", name: "Lockable Latch", rating: "4.85 (5K)", price: 149, img: "./images/Lockable Latch.jpeg" },
+              { id: "cd-2", name: "Tower Bolt", rating: "4.80 (3K)", price: 199, img: "./images/Tower Bolt.jpeg" },
+              { id: "cd-3", name: "Chain Latch", rating: "4.83 (7K)", price: 249, img: "./images/Chain Latch.jpeg" },
+              { id: "cd-4", name: "Handle Lock Replacement", rating: "4.81 (5K)", price: 299, img: "./images/Handle Lock Replacement.jpeg" },
+              { id: "cd-5", name: "Round Knob Lock", rating: "4.79 (3K)", price: 399, img: "./images/Round Knob Lock.jpeg" },
+              { id: "cd-6", name: "Handle Lock Installation", rating: "4.79 (3K)", price: 399, img: "./images/Handle Lock Installation.jpeg" }
+            ]
+          },
+          {
+            title: "Cupboard & Drawer locks",
+            rating: "4.82 (15K reviews)",
+            img: "./images/19.jpeg",
+            subServices: [
+              { id: "cd-1", name: "Magnet Repair / Install", rating: "4.85 (5K)", price: 149, img: "./images/Magnet Repair - Install.jpeg" },
+              { id: "cd-2", name: "Latch repair /install", rating: "4.80 (3K)", price: 199, img: "./images/Latch repair - install.jpeg" },
+              { id: "cd-3", name: "Drawer lock installation", rating: "4.83 (7K)", price: 249, img: "./images/Drawer lock installation.jpeg" },
+              { id: "cd-4", name: "Cupboard lock Installation", rating: "4.81 (5K)", price: 299, img: "./images/Cupboard lock Installation.jpeg" }
+            ]
+          },
+          {
+            title: "Door Hinges repair and replacement",
+            rating: "4.82 (15K reviews)",
+            img: "./images/20.jpeg",
+            subServices: [
+              { id: "cd-1", name: "Door Hinge Repair (per 1)", rating: "4.85 (5K)", price: 149, img: "./images/Door Hinge Repair (per 1).jpeg" },
+              { id: "cd-2", name: "Door Hinge Replace (per 1)", rating: "4.80 (3K)", price: 199, img: "./images/Door Hinge Replace (per 1).jpeg" },
+              { id: "cd-3", name: "Window hinge repair/install", rating: "4.83 (7K)", price: 249, img: "./images/Window hinge repair - install.jpeg" },
+              { id: "cd-4", name: "Cupboard hinge repair (upto 2)", rating: "4.81 (5K)", price: 299, img: "./images/Cupboard hinge repair (upto 2).jpeg" }
+            ]
+          },
+          {
+            title: "Cupboard repair & Installation",
+            rating: "4.82 (15K reviews)",
+            img: "./images/21.jpeg",
+            subServices: [
+              { id: "cd-1", name: "Regular Channel repair", rating: "4.81 (5K)", price: 299, img: "./images/Regular Channel repair.jpeg" },
+              { id: "cd-2", name: "Soft Close Channel repair", rating: "4.79 (3K)", price: 399, img: "./images/Soft Close Channel repair.jpeg" }
+            ]
+          }
+          ]
       },
       {
         id: "curtain-window",
         title: "Curtain & window",
-        subtitle: "Rods, blinds, mosquito net & frames",
-        icon: "fa-window-maximize",
-        items: [
-          { id: "cw-1", name: "Curtain Rod / Track Installation", price: 149, rating: 4.87, reviews: 4500, duration: "20 mins", description: "Wall bracket drilling and rod alignment.", category: "Curtains" },
-          { id: "cw-2", name: "Mosquito Net Frame Fitting", price: 299, rating: 4.78, reviews: 1600, duration: "35 mins", description: "Velcro or wooden frame mosquito mesh installation.", category: "Windows" },
-          { id: "cw-3", name: "Window Roller Blinds Installation", price: 249, rating: 4.84, reviews: 980, duration: "30 mins", description: "Precision blind roller mounting.", category: "Blinds" },
-          { id: "cw-4", name: "Window AC Wooden Frame Install", price: 349, rating: 4.75, reviews: 850, duration: "40 mins", description: "Custom wooden frame sealing around window AC.", category: "Frames" }
+        subtitle: "Curtain rod, Mosquito net, Blinds, AC frames & Window repair",
+        image: "./images/Curtain & window.jpeg",
+        mainServices: [
+          {
+            title: "Curtain rod Installation",
+            rating: "4.82 (12K reviews)",
+            img: "./images/22.jpeg",
+            subServices: [
+              { id: "cur-1", name: "Curtain rod Installation", rating: "4.83 (12K)", price: 149, img: "./images/curtain rod installation.Jpeg" }
+            ]
+          },
+          {
+            title: "Mosquito net Installation",
+            rating: "4.85 (18K reviews)",
+            img: "./images/23.jpeg",
+            subServices: [
+              { id: "mos-1", name: "Small (2*3 feet)", rating: "4.86 (8K)", price: 299, img: "./images/small M.jpeg" },
+              { id: "mos-2", name: "Medium (5*6 feet)", rating: "4.85 (7K)", price: 499, img: "./images/Medium.jpeg" },
+              { id: "mos-3", name: "Large (7*8 feet)", rating: "4.84 (3K)", price: 799, img: "./images/Large M.jpeg" }
+            ]
+          },
+          {
+            title: "Blinds fitting inspection & measurement",
+            rating: "4.79 (4K reviews)",
+            img: "./images/24.jpeg",
+            subServices: [
+              { id: "bld-1", name: "Non motorised blinds fitting", rating: "4.80 (2K)", price: 199, img: "./images/non motorised blinds.jpeg" },
+              { id: "bld-2", name: "Motorised blinds fitting", rating: "4.82 (1K)", price: 349, img: "./images/motorised blinds.jpeg" },
+              { id: "bld-3", name: "Measurement for blinds", rating: "4.78 (1K)", price: 149, img: "./images/measurement for blinds.jpeg" }
+            ]
+          },
+          {
+            title: "Window accessories",
+            rating: "4.81 (6K reviews)",
+            img: "./images/25.jpeg",
+            subServices: [
+              { id: "wacc-1", name: "Window Hook", rating: "4.82 (2K)", price: 129, img: "./images/window hook.jpeg" },
+              { id: "wacc-2", name: "Window Latch", rating: "4.81 (2K)", price: 129, img: "./images/window latch.jpeg" },
+              { id: "wacc-3", name: "Window Handle", rating: "4.80 (2K)", price: 129, img: "./images/window handle.jpeg" }
+            ]
+          },
+          {
+            title: "Window AC frame Install / Uninstall",
+            rating: "4.86 (9K reviews)",
+            img: "./images/26.jpeg",
+            subServices: [
+              { id: "wac-1", name: "Window AC frame Installation", rating: "4.87 (6K)", price: 349, img: "./images/window ac frame installation.jpeg" },
+              { id: "wac-2", name: "Window Closing (post AC removal)", rating: "4.84 (3K)", price: 299, img: "./images/window closing.jpeg" }
+            ]
+          },
+          {
+            title: "Window Misalignment/Jam repair",
+            rating: "4.80 (7K reviews)",
+            img: "./images/27.jpeg",
+            subServices: [
+              { id: "wjam-1", name: "Window hinge repair / replace", rating: "4.81 (4K)", price: 199, img: "./images/window hinge repair.jpeg" },
+              { id: "wjam-2", name: "Misalignment issues", rating: "4.79 (3K)", price: 299, img: "./images/window misalignment.jpeg" }
+            ]
+          }
         ]
       },
+
       {
         id: "furniture-repair",
         title: "Furniture repair",
-        subtitle: "Wooden bed, chair, sofa, table & leg buffers",
-        icon: "fa-chair",
-        items: [
-          { id: "fr-1", name: "Wooden Chair / Table Leg Repair", price: 199, rating: 4.82, reviews: 2100, duration: "30 mins", description: "Re-gluing, joint tightening, or leg buffer fitting.", category: "Chairs & Tables" },
-          { id: "fr-2", name: "Wooden Bed Slat / Support Repair", price: 349, rating: 4.80, reviews: 1750, duration: "45 mins", description: "Reinforcing broken bed boards and side rails.", category: "Beds" },
-          { id: "fr-3", name: "Sofa Frame Joint Tightening", price: 399, rating: 4.77, reviews: 920, duration: "50 mins", description: "Strengthening loose wooden sofa inner structure.", category: "Sofa" }
+        subtitle: "Wooden bed, Chair, Table, Sofa repair & Buffers",
+        image: "./images/Furniture repair.jpeg",
+        mainServices: [
+          {
+            title: "Wooden bed repair",
+            rating: "4.82 (14K reviews)",
+            img: "./images/28.jpeg",
+            subServices: [
+              { id: "fbed-1", name: "Headboard repair", rating: "4.83 (8K)", price: 299, img: "./images/headboard repair.jpeg" },
+              { id: "fbed-2", name: "Bed Support Repair", rating: "4.81 (6K)", price: 349, img: "./images/bed support repair.jpeg" }
+            ]
+          },
+          {
+            title: "Wooden Chair Repair",
+            rating: "4.79 (9K reviews)",
+            img: "./images/29.jpeg",
+            subServices: [
+              { id: "fchr-1", name: "Squeaky/wobbly chair repair", rating: "4.80 (9K)", price: 199, img: "./images/chair repair.jpeg" },
+              { id: "fchr-2", name: "Balance", rating: "4.78 (7K)", price: 149, img: "./images/Balance.jpeg" }
+            ]
+          },
+          {
+            title: "Wooden Table Repair",
+            rating: "4.81 (7K reviews)",
+            img: "./images/30.jpeg",
+            subServices: [
+              { id: "ftbl-1", name: "Squeaky/wobbly table repair", rating: "4.82 (4K)", price: 229, img: "./images/table squeaky repair.jpeg" },
+              { id: "ftbl-2", name: "Balance Issue", rating: "4.79 (3K)", price: 199, img: "./images/table balance issue.jpeg" }
+            ]
+          },
+          {
+            title: "Wooden Sofa Repair",
+            rating: "4.85 (11K reviews)",
+            img: "./images/31.jpeg",
+            subServices: [
+              { id: "fsof-1", name: "Squeaky/wobbly sofa repair", rating: "4.86 (6K)", price: 349, img: "./images/sofa squeaky repair.jpeg" },
+              { id: "fsof-2", name: "Leg Repair", rating: "4.83 (5K)", price: 299, img: "./images/sofa leg repair.jpeg" }
+            ]
+          },
+          {
+            title: "Plastic buffer Installation",
+            rating: "4.78 (5K reviews)",
+            img: "./images/32.jpeg",
+            subServices: [
+              { id: "fbuf-1", name: "Chair Plastic Buffer", rating: "4.79 (3K)", price: 129, img: "./images/chair plastic buffer.jpeg" },
+              { id: "fbuf-2", name: "Table plastic buffer", rating: "4.77 (2K)", price: 129, img: "./images/table plastic buffer.jpeg" }
+            ]
+          },
+          {
+            title: "Table/Chair Wheel Fitting",
+            rating: "4.80 (8K reviews)",
+            img: "./images/33.jpeg",
+            subServices: [
+              { id: "fwhe-1", name: "Table/Chair Wheel Fitting", rating: "4.80 (8K)", price: 149, img: "./images/wheel fitting.jpeg" }
+            ]
+          }
         ]
-      },
-      {
+      },{
         id: "furniture-assembly",
-        title: "Furniture assembly",
-        subtitle: "Bed, study table, wardrobe, shoe rack & mandir",
-        icon: "fa-couch",
-        items: [
-          { id: "fa-1", name: "Single / Double Bed Assembly", price: 499, rating: 4.86, reviews: 3100, duration: "60 mins", description: "Complete frame, headboard and slat assembly.", category: "Beds" },
-          { id: "fa-2", name: "Hydraulic Bed Assembly", price: 899, rating: 4.81, reviews: 1420, duration: "90 mins", description: "Hydraulic lift mechanism and storage box installation.", category: "Beds" },
-          { id: "fa-3", name: "Study Table / Office Desk Assembly", price: 399, rating: 4.88, reviews: 2400, duration: "45 mins", description: "Multi-drawer desk and cable grommet setup.", category: "Tables" },
-          { id: "fa-4", name: "2-Door / 3-Door Wardrobe Assembly", price: 999, rating: 4.79, reviews: 1800, duration: "120 mins", description: "Engineered wood/plywood wardrobe construction.", category: "Wardrobes" },
-          { id: "fa-5", name: "Wooden Mandir / Shrine Fitting", price: 299, rating: 4.91, reviews: 1100, duration: "30 mins", description: "Wall mounting or floor standing temple setup.", category: "Decor" }
-        ]
+        title: "Furniture Assembly",
+        subtitle: "Beds, tables, cabinets, wardrobes & shoe racks",
+        image: "./images/Furniture assembly.jpeg",
+        mainServices: [
+          {
+            title: "Single bed Assembly",
+            rating: "4.86 (15K reviews)",
+            img: "./images/34.jpeg",
+            subServices: [
+              { id: "fas-1", name: "Without Storage", rating: "4.85 (8K)", price: 399, img: "./images/single bed without storage.jpeg" },
+              { id: "fas-2", name: "With Storage", rating: "4.88 (7K)", price: 499, img: "./images/single bed with storage.jpeg" }
+            ]
+          },
+          {
+            title: "Double bed assembly",
+            rating: "4.89 (20K reviews)",
+            img: "./images/35.jpeg",
+            subServices: [
+              { id: "fad-1", name: "Without Storage", rating: "4.87 (10K)", price: 599, img: "./images/double bed without storage.jpeg" },
+              { id: "fad-2", name: "With Storage", rating: "4.90 (10K)", price: 799, img: "./images/double bed with storage.jpeg" }
+            ]
+          },
+          {
+            title: "Hydraulic bed assembly",
+            rating: "4.91 (12K reviews)",
+            img: "./images/36.jpeg",
+            subServices: [
+              { id: "fah-1", name: "Single Bed", rating: "4.90 (5K)", price: 799, img: "./images/hydraulic single bed.jpeg" },
+              { id: "fah-2", name: "Double Bed", rating: "4.92 (7K)", price: 999, img: "./images/hydraulic double bed.jpeg" }
+            ]
+          },
+          {
+            title: "Study table assembly",
+            rating: "4.82 (8K reviews)",
+            img: "./images/37.jpeg",
+            subServices: [
+              { id: "fast-1", name: "With Drawers", rating: "4.83 (5K)", price: 349, img: "./images/study table with drawers.jpeg" },
+              { id: "fast-2", name: "Without Drawers", rating: "4.80 (3K)", price: 299, img: "./images/study table without drawers.jpeg" }
+            ]
+          },
+          {
+            title: "Coffee table assembly",
+            rating: "4.81 (6K reviews)",
+            img: "./images/38.jpeg",
+            subServices: [
+              { id: "fact-1", name: "Regular", rating: "4.82 (3K)", price: 299, img: "./images/coffee table regular.jpeg" },
+              { id: "fact-2", name: "Foldable", rating: "4.80 (2K)", price: 349, img: "./images/coffee table foldable.jpeg" },
+              { id: "fact-3", name: "Nest of tables", rating: "4.83 (1K)", price: 399, img: "./images/nest of tables.jpeg" }
+            ]
+          },
+          {
+            title: "Cabinet assembly",
+            rating: "4.84 (9K reviews)",
+            img: "./images/39.jpeg",
+            subServices: [
+              { id: "facab-1", name: "1 Door", rating: "4.82 (2K)", price: 399, img: "./images/cabinet 1 door.jpeg" },
+              { id: "facab-2", name: "2 Doors", rating: "4.84 (3K)", price: 599, img: "./images/cabinet 2 doors.jpeg" },
+              { id: "facab-3", name: "3 Doors", rating: "4.85 (2K)", price: 799, img: "./images/cabinet 3 doors.jpeg" },
+              { id: "facab-4", name: "Glass Door", rating: "4.87 (2K)", price: 899, img: "./images/cabinet glass door.jpeg" }
+            ]
+          },
+          {
+            title: "Shelving unit assembly & installation",
+            rating: "4.83 (7K reviews)",
+            img: "./images/40.jpeg",
+            subServices: [
+              { id: "fasu-1", name: "Shelving Unit", rating: "4.81 (2K)", price: 349, img: "./images/shelving unit.jpeg" },
+              { id: "fasu-2", name: "Upto 4 Shelves", rating: "4.84 (3K)", price: 449, img: "./images/upto 4 shelves.jpeg" },
+              { id: "fasu-3", name: "Upto 16 Shelves", rating: "4.86 (2K)", price: 899, img: "./images/upto 16 shelves.jpeg" }
+            ]
+          },
+          {
+            title: "Mandir assembly & installation",
+            rating: "4.92 (5K reviews)",
+            img: "./images/41.jpeg",
+            subServices: [
+              { id: "fam-1", name: "Mandir assembly & installation", rating: "4.92 (5K)", price: 499, img: "./images/mandir assembly.jpeg" }
+            ]
+          },
+          {
+            title: "Double door wardrobe assembly",
+            rating: "4.88 (11K reviews)",
+            img: "./images/42.jpeg",
+            subServices: [
+              { id: "fadw-1", name: "Double door wardrobe assembly", rating: "4.88 (11K)", price: 899, img: "./images/double door wardrobe.jpeg" }
+            ]
+          },
+          {
+            title: "Three door wardrobe assembly",
+            rating: "4.89 (8K reviews)",
+            img: "./images/43.jpeg",
+            subServices: [
+              { id: "fatw-1", name: "Three door wardrobe assembly", rating: "4.89 (8K)", price: 1199, img: "./images/three door wardrobe.jpeg" }
+            ]
+          },
+          {
+            title: "Office chair assembly",
+            rating: "4.80 (10K reviews)",
+            img: "./images/44.jpeg",
+            subServices: [
+              { id: "faoc-1", name: "Without Wheels", rating: "4.78 (3K)", price: 249, img: "./images/office chair without wheels.jpeg" },
+              { id: "faoc-2", name: "Hydraulic With arm Support", rating: "4.82 (5K)", price: 349, img: "./images/office chair hydraulic arm.jpeg" },
+              { id: "faoc-3", name: "Hydraulic Without arm Support", rating: "4.80 (2K)", price: 299, img: "./images/office chair hydraulic no arm.jpeg" }
+            ]
+          },
+          {
+            title: "Book shelf/bookcase assembly & installation",
+            rating: "4.83 (6K reviews)",
+            img: "./images/45.jpeg",
+            subServices: [
+              { id: "fabs-1", name: "Single Shelf", rating: "4.81 (1K)", price: 199, img: "./images/bookshelf single.jpeg" },
+              { id: "fabs-2", name: "3 Shelfs", rating: "4.82 (2K)", price: 349, img: "./images/bookshelf 3 shelves.jpeg" },
+              { id: "fabs-3", name: "6 Shelfs", rating: "4.84 (2K)", price: 549, img: "./images/bookshelf 6 shelves.jpeg" },
+              { id: "fabs-4", name: "9 Shelfs", rating: "4.85 (500)", price: 749, img: "./images/bookshelf 9 shelves.jpeg" },
+              { id: "fabs-5", name: "12 Shelfs", rating: "4.87 (500)", price: 999, img: "./images/bookshelf 12 shelves.jpeg" }
+            ]
+          },
+          {
+            title: "Cot assembly",
+            rating: "4.85 (9K reviews)",
+            img: "./images/46.jpeg",
+            subServices: [
+              { id: "facot-1", name: "Cot assembly", rating: "4.85 (9K)", price: 499, img: "./images/cot assembly.jpeg" }
+            ]
+          },
+          {
+            title: "Single door wardrobe assembly",
+            rating: "4.81 (4K reviews)",
+            img: "./images/47.jpeg",
+            subServices: [
+              { id: "fasdw-1", name: "Single door wardrobe assembly", rating: "4.81 (4K)", price: 599, img: "./images/single door wardrobe.jpeg" }
+            ]
+          },
+          {
+            title: "Table/chair wheel fitting",
+            rating: "4.79 (5K reviews)",
+            img: "./images/48.jpeg",
+            subServices: [
+              { id: "fatcw-1", name: "Table/chair wheel fitting", rating: "4.79 (5K)", price: 149, img: "./images/table chair wheel.jpeg" }
+            ]
+          },
+          {
+            title: "Four door wardrobe assembly",
+            rating: "4.90 (6K reviews)",
+            img: "./images/49.jpeg",
+            subServices: [
+              { id: "fafd-1", name: "Four door wardrobe assembly", rating: "4.90 (6K)", price: 1499, img: "./images/four door wardrobe.jpeg" }
+            ]
+          },
+          {
+            title: "Shoe rack assembly",
+            rating: "4.82 (7K reviews)",
+            img: "./images/50.jpeg",
+            subServices: [
+              { id: "fasr-1", name: "Regular", rating: "4.81 (4K)", price: 299, img: "./images/shoe rack regular.jpeg" },
+              { id: "fasr-2", name: "Till out", rating: "4.84 (3K)", price: 399, img: "./images/shoe rack till out.jpeg" }
+            ]
+          },
+          {
+            title: "Standing table assembly",
+            rating: "4.84 (3K reviews)",
+            img: "./images/51.jpeg",
+            subServices: [
+              { id: "fastab-1", name: "Standing table assembly", rating: "4.84 (3K)", price: 499, img: "./images/standing table.jpeg" }
+            ]
+          },
+          {
+            title: "Shoe cabinet assembly",
+            rating: "4.86 (8K reviews)",
+            img: "./images/52.jpeg",
+            subServices: [
+              { id: "fasc-1", name: "2 Compartments", rating: "4.83 (2K)", price: 399, img: "./images/shoe cabinet 2 comp.jpeg" },
+              { id: "fasc-2", name: "3 Compartments", rating: "4.85 (3K)", price: 549, img: "./images/shoe cabinet 3 comp.jpeg" },
+              { id: "fasc-3", name: "4 Compartments", rating: "4.87 (2K)", price: 699, img: "./images/shoe cabinet 4 comp.jpeg" },
+              { id: "fasc-4", name: "4+ Compartments", rating: "4.89 (1K)", price: 899, img: "./images/shoe cabinet 4plus comp.jpeg" }
+            ]
+          }
+          ]
       },
       {
         id: "kitchen-fittings",
         title: "Kitchen fittings",
-        subtitle: "Modular drawers, utensil racks & shelves",
-        icon: "fa-utensils",
-        items: [
-          { id: "kf-1", name: "Modular Utensil Rack Installation", price: 249, rating: 4.85, reviews: 1900, duration: "30 mins", description: "Stainless steel rack mounting inside modular cabinets.", category: "Racks" },
-          { id: "kf-2", name: "Kitchen Shelf & Spice Rack Fitting", price: 199, rating: 4.83, reviews: 1450, duration: "25 mins", description: "Wall drilling with tile-safe drill bits.", category: "Shelves" }
+        subtitle: "Drawer & cabinet, Utensil rack & Shelf installation",
+         image: "./images/Kitchen fittings.jpeg",
+        mainServices: [
+          {
+            title: "Drawer & cabinet",
+            rating: "4.84 (11K reviews)",
+            img: "./images/53.jpeg",
+            subServices: [
+              { id: "kit-1", name: "Cabinet Hydraulic repair", rating: "4.82 (4K)", price: 299, img: "./images/cabinet hydraulic repair.jpeg" },
+              { id: "kit-2", name: "Hinge repair/Replace (upto 2)", rating: "4.85 (5K)", price: 249, img: "./images/hinge repair replace.jpeg" },
+              { id: "kit-3", name: "Regular Channel repair", rating: "4.81 (3K)", price: 199, img: "./images/Regular channel repair.jpeg" },
+              { id: "kit-4", name: "Soft close channel repair", rating: "4.87 (6K)", price: 299, img: "./images/soft close channel repair.jpeg" }
+            ]
+          },
+          {
+            title: "Utensil rack installation",
+            rating: "4.86 (8K reviews)",
+            img: "./images/54.jpeg",
+            subServices: [
+              { id: "kit-5", name: "Utensil rack installation", rating: "4.86 (8K)", price: 249, img: "./images/utensil rack installation.jpeg" }
+            ]
+          },
+          {
+            title: "Shelf installation",
+            rating: "4.83 (9K reviews)",
+            img: "./images/55.jpeg",
+            subServices: [
+              { id: "kit-6", name: "Wooden Shelf", rating: "4.82 (5K)", price: 199, img: "./images/wooden shelf.jpeg" },
+              { id: "kit-7", name: "Glass Floating Shelf", rating: "4.85 (4K)", price: 249, img: "./images/glass floating shelf.jpeg" }
+            ]
+          }
         ]
       },
       {
         id: "bath-fittings",
         title: "Bath fittings & mirrors",
-        subtitle: "Mirror cabinets, towel rods & soap holders",
-        icon: "fa-bath",
-        items: [
-          { id: "bf-1", name: "Bathroom Mirror Cabinet Installation", price: 299, rating: 4.87, reviews: 2600, duration: "35 mins", description: "Level checking & tile drilling for cabinet.", category: "Cabinets" },
-          { id: "bf-2", name: "Towel Rod & Soap Holder Fitting", price: 149, rating: 4.89, reviews: 3800, duration: "20 mins", description: "Set of 2 bath accessories drilling into tiles.", category: "Accessories" }
+        subtitle: "Mirror installation, cabinets, soap holders & towel racks",
+        image: "./images/Bath fittings & mirrors.jpeg",
+        mainServices: [
+          {
+            title: "Mirror installation",
+            rating: "4.88 (14K reviews)",
+            img: "./images/56.jpeg",
+            subServices: [
+              { id: "bath-1", name: "Small (Upto 2ft & 3ft)", rating: "4.87 (8K)", price: 199, img: "./images/mirror-small.jpeg" },
+              { id: "bath-2", name: "Large (Upto 2ft & 6ft)", rating: "4.90 (6K)", price: 299, img: "./images/mirror-large.jpeg" }
+            ]
+          },
+          {
+            title: "Bathroom mirror cabinet installation",
+            rating: "4.85 (7K reviews)",
+            img: "./images/57.jpeg",
+            subServices: [
+              { id: "bath-3", name: "With 1 Door", rating: "4.84 (4K)", price: 299, img: "./images/With 1 Door.jpeg" },
+              { id: "bath-4", name: "With 2 Door", rating: "4.87 (3K)", price: 399, img: "./images/With 2 Door.jpeg" }
+            ]
+          },
+          {
+            title: "Soap holder installation",
+            rating: "4.80 (5K reviews)",
+            img: "./images/58.jpeg",
+            subServices: [
+              { id: "bath-5", name: "Soap holder installation", rating: "4.80 (5K)", price: 149, img: "./images/soap holder installation.jpeg" }
+            ]
+          },
+          {
+            title: "Bath accessories installation",
+            rating: "4.82 (10K reviews)",
+            img: "./images/59.jpeg",
+            subServices: [
+              { id: "bath-6", name: "Soap Holder", rating: "4.81 (3K)", price: 129, img: "./images/soap holder.jpeg" },
+              { id: "bath-7", name: "Small Holder", rating: "4.80 (2K)", price: 129, img: "./images/small holder.jpeg" },
+              { id: "bath-8", name: "Holding rod", rating: "4.83 (3K)", price: 149, img: "./images/holding rod.jpeg" },
+              { id: "bath-9", name: "Towel Rack", rating: "4.85 (4K)", price: 199, img: "./images/towel rack.jpeg" }
+            ]
+          }
         ]
       },
       {
         id: "balcony-fittings",
         title: "Balcony fittings",
-        subtitle: "Cloth drying hangers, ropes & ceiling hooks",
-        icon: "fa-sun",
-        items: [
-          { id: "bal-1", name: "Ceiling Cloth Hanger Installation (Pulley)", price: 599, rating: 4.84, reviews: 2900, duration: "60 mins", description: "6-pipe pulley ceiling drying hanger installation.", category: "Drying Hangers" },
-          { id: "bal-2", name: "Cloth Drying Rope / Wall Bracket", price: 199, rating: 4.80, reviews: 1150, duration: "25 mins", description: "Heavy duty nylon line bracket mounting.", category: "Drying Hangers" }
+        subtitle: "Clothes hanger, drying rope & ceiling hooks",
+        image: "./images/Balcony fittings.jpeg",
+        mainServices: [
+          {
+            title: "Clothes hanger installation",
+            rating: "4.89 (16K reviews)",
+            img: "./images/60.jpeg",
+            subServices: [
+              { id: "bal-1", name: "Wall Hanger Installation", rating: "4.87 (6K)", price: 499, img: "./images/wall hanger installation.jpeg" },
+              { id: "bal-2", name: "Ceiling-mounted (fixed frame)", rating: "4.90 (7K)", price: 599, img: "./images/ceiling mounted fixed.jpeg" },
+              { id: "bal-3", name: "Ceiling-mounted (Modular frame)", rating: "4.92 (3K)", price: 699, img: "./images/ceiling mounted modular.jpeg" }
+            ]
+          },
+          {
+            title: "Cloth drying rope installation",
+            rating: "4.81 (6K reviews)",
+            img: "./images/61.jpeg",
+            subServices: [
+              { id: "bal-4", name: "Cloth drying rope installation", rating: "4.81 (6K)", price: 149, img: "./images/cloth drying rope.jpeg" }
+            ]
+          },
+          {
+            title: "Ceiling Hook/Fastener Installation",
+            rating: "4.84 (8K reviews)",
+            img: "./images/62.jpeg",
+            subServices: [
+              { id: "bal-5", name: "Ceiling Hook/Fastener Installation", rating: "4.84 (8K)", price: 149, img: "./images/ceiling-hook.jpeg" }
+            ]
+          }
         ]
       },
       {
         id: "at-home-consultation",
         title: "At home consultation",
-        subtitle: "Book an expert carpenter for custom estimation",
-        icon: "fa-user-gear",
-        items: [
-          { id: "ahc-1", name: "Book a Carpenter Consultation", price: 99, rating: 4.92, reviews: 6200, duration: "30 mins", description: "In-person inspection for full home woodworking, custom furniture & quotes. Fully adjustable against final bill.", category: "Consultation" }
-        ]
+        subtitle: "Book a professional carpenter for custom woodworking",
+        image: "./images/At home consultation.PNG",
+        mainServices: [
+          {
+            title: "Book a carpenter",
+            rating: "4.95 (25K reviews)",
+            img: "./images/At home consultation.PNG",
+            subServices: [
+              { id: "con-1", name: "Book a carpenter", rating: "4.95 (25K)", price: 99, img: "./images/At home consultation.PNG"}
+            ]
+          }
+          ]
       }
     ];
 
-    /* ==========================================================================
-       GLOBAL APP STATE
-       ========================================================================== */
-    let cart = []; // Array of { item, quantity }
-    let currentSelectedCategory = carpenterSubServices[0]; // Default Wooden Door
-    let currentFilterPill = "All";
-    let appliedTip = 75; // Default Tip
-    let appliedCoupon = true; // Default 10% discount promo
+    let cart = [];
+    let currentCategoryIdx = 0;
 
-    /* ==========================================================================
-       INITIALIZATION
-       ========================================================================== */
     window.onload = function () {
       renderSubServicesGrid();
       renderServiceDetailsList();
+      renderCarpenterSubCategoryModal();
       updateCartUI();
     };
 
-    /* ==========================================================================
-       NAVIGATION CONTROLLER
-       ========================================================================== */
     function navigateTo(viewName) {
       document.getElementById('view-home').classList.add('hidden');
       document.getElementById('view-service-selector').classList.add('hidden');
       document.getElementById('view-service-detail-list').classList.add('hidden');
       document.getElementById('view-checkout').classList.add('hidden');
 
-      if (viewName === 'home') {
-        document.getElementById('view-home').classList.remove('hidden');
-      } else if (viewName === 'services-menu') {
-        document.getElementById('view-service-selector').classList.remove('hidden');
-      } else if (viewName === 'service-details') {
-        document.getElementById('view-service-detail-list').classList.remove('hidden');
-      } else if (viewName === 'checkout') {
-        if (cart.length === 0) {
-          showToast("Your cart is empty! Add a service first.");
-          document.getElementById('view-service-detail-list').classList.remove('hidden');
-          return;
-        }
+      if (viewName === 'home') document.getElementById('view-home').classList.remove('hidden');
+      else if (viewName === 'services-menu') document.getElementById('view-service-selector').classList.remove('hidden');
+      else if (viewName === 'service-details') document.getElementById('view-service-detail-list').classList.remove('hidden');
+      else if (viewName === 'checkout') {
         renderCheckoutView();
         document.getElementById('view-checkout').classList.remove('hidden');
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    /* ==========================================================================
-       MODAL CONTROLLERS
-       ========================================================================== */
-    function openSubCategoryModal() {
-      document.getElementById('subcategory-modal').classList.remove('hidden');
+    /* MODAL CONTROLLERS */
+    function openMainCategoryModal() {
+      document.getElementById('main-category-modal').classList.remove('hidden');
     }
 
-    function closeSubCategoryModal() {
-      document.getElementById('subcategory-modal').classList.add('hidden');
+    function closeMainCategoryModal() {
+      document.getElementById('main-category-modal').classList.add('hidden');
     }
 
-    function selectCategoryAndNavigate(catName) {
-      closeSubCategoryModal();
-      if (catName === 'Carpenter') {
-        navigateTo('services-menu');
-      } else {
-        showToast(`Selected "${catName}". Redirecting to Carpenter Services...`);
-        navigateTo('services-menu');
-      }
+    function openCarpenterSubCategoryModal() {
+      closeMainCategoryModal();
+      document.getElementById('carpenter-subcategory-modal').classList.remove('hidden');
     }
 
-    function openServiceDetailModal(itemId) {
-      let foundItem = null;
-      carpenterSubServices.forEach(cat => {
-        cat.items.forEach(it => {
-          if (it.id === itemId) foundItem = it;
-        });
-      });
-
-      if (!foundItem) return;
-
-      const modalContent = document.getElementById('service-detail-modal-content');
-      const inCart = cart.find(c => c.item.id === foundItem.id);
-      const qty = inCart ? inCart.quantity : 0;
-
-      modalContent.innerHTML = `
-        <div class="relative rounded-2xl overflow-hidden bg-slate-100 h-48 flex items-center justify-center">
-          <img src="https://placehold.co/600x300/475569/ffffff?text=${encodeURIComponent(foundItem.name)}" class="w-full h-full object-cover" />
-          <div class="absolute bottom-2 left-2 bg-slate-900/80 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur">
-            <i class="fa-solid fa-clock mr-1"></i> ${foundItem.duration}
-          </div>
-        </div>
-
-        <div class="space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-ucPurple bg-purple-50 px-2 py-0.5 rounded-full">${foundItem.category}</span>
-            <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
-              <i class="fa-solid fa-star"></i> ${foundItem.rating} (${foundItem.reviews} reviews)
-            </span>
-          </div>
-          <h2 class="text-xl font-bold text-gray-900">${foundItem.name}</h2>
-          <p class="text-xs text-gray-600 leading-relaxed">${foundItem.description}</p>
-        </div>
-
-        <div class="flex items-center justify-between pt-3 border-t border-gray-100">
-          <div>
-            <span class="text-xs text-gray-400 block">Total Price</span>
-            <span class="text-xl font-extrabold text-gray-900">₹${foundItem.price}</span>
-          </div>
-
-          <div id="modal-btn-container-${foundItem.id}">
-            ${renderCartButton(foundItem, qty)}
-          </div>
-        </div>
-
-        <div class="bg-gray-50 rounded-xl p-3 text-xs text-gray-600 space-y-1.5 border border-gray-200 mt-2">
-          <p class="font-bold text-gray-800"><i class="fa-solid fa-shield-halved text-ucPurple mr-1"></i> Urban Company Promise</p>
-          <ul class="list-disc list-inside text-[11px] text-gray-500 space-y-1">
-            <li>Verified background-checked Carpenters</li>
-            <li>30-day post-service warranty</li>
-            <li>Fixed transparent rates - no hidden charges</li>
-          </ul>
-        </div>
-      `;
-
-      document.getElementById('service-detail-modal').classList.remove('hidden');
+    function closeCarpenterSubCategoryModal() {
+      document.getElementById('carpenter-subcategory-modal').classList.add('hidden');
     }
 
-    function closeServiceDetailModal() {
-      document.getElementById('service-detail-modal').classList.add('hidden');
-    }
-
-    /* ==========================================================================
-       VIEW RENDERING FUNCTIONS
-       ========================================================================== */
-
-    // Render 12 sub-service cards (Image 3)
-    function renderSubServicesGrid() {
-      const grid = document.getElementById('sub-services-grid');
-      grid.innerHTML = '';
-
-      carpenterSubServices.forEach(sub => {
-        const card = document.createElement('div');
-        card.className = "bg-white p-4 rounded-2xl border border-gray-200 hover:border-ucPurple hover:shadow-md cursor-pointer transition flex flex-col justify-between group";
-        card.onclick = () => {
-          currentSelectedCategory = sub;
+    function renderCarpenterSubCategoryModal() {
+      const list = document.getElementById('carpenter-subcat-list');
+      list.innerHTML = '';
+      carpenterCategories.forEach((cat, index) => {
+        const item = document.createElement('div');
+        item.className = "p-3.5 border border-gray-200 rounded-xl hover:border-ucPurple hover:bg-purple-50/40 cursor-pointer flex items-center justify-between transition bg-white";
+        item.onclick = () => {
+          closeCarpenterSubCategoryModal();
+          currentCategoryIdx = index;
           renderServiceDetailsList();
           navigateTo('service-details');
         };
-
-        card.innerHTML = `
-          <div class="space-y-3">
-            <div class="w-12 h-12 rounded-xl bg-purple-50 group-hover:bg-ucPurple group-hover:text-white text-ucPurple flex items-center justify-center text-xl transition">
-              <i class="fa-solid ${sub.icon}"></i>
+        item.innerHTML = `
+          <div class="flex items-center gap-3.5">
+            <!-- Periya size image popup list-la varum -->
+            <div class="w-14 h-14 rounded-xl overflow-hidden bg-gray-100 shrink-0 shadow-sm">
+              <img src="${cat.image}" onerror="this.src='https://placehold.co/100x100/e2e8f0/0f172a?text=Service'" class="w-full h-full object-cover" />
             </div>
             <div>
-              <h3 class="font-bold text-sm text-gray-900 leading-tight group-hover:text-ucPurple transition">${sub.title}</h3>
-              <p class="text-xs text-gray-500 mt-1 line-clamp-2">${sub.subtitle}</p>
+              <h4 class="font-bold text-sm text-gray-900">${cat.title}</h4>
+              <p class="text-xs text-gray-500">${cat.subtitle}</p>
             </div>
           </div>
-          <div class="pt-3 flex items-center text-xs font-bold text-ucPurple mt-2">
-            <span>Explore Options</span>
-            <i class="fa-solid fa-arrow-right ml-1 text-[10px] group-hover:translate-x-1 transition"></i>
+          <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    /* SUB SERVICES POPUP MODAL */
+    function openSubServicesPopupModal(catIdx, mainSrvIdx) {
+      const cat = carpenterCategories[catIdx] || carpenterCategories[0];
+      const mainSrv = cat.mainServices[mainSrvIdx] || cat.mainServices[0];
+
+      document.getElementById('popup-service-title').innerText = mainSrv.title;
+      document.getElementById('popup-service-rating').innerHTML = `<i class="fa-solid fa-star text-amber-400"></i> ${mainSrv.rating}`;
+
+      const container = document.getElementById('popup-subservices-container');
+      container.innerHTML = '';
+
+      mainSrv.subServices.forEach(sub => {
+        const inCart = cart.find(c => c.item.id === sub.id);
+        const qty = inCart ? inCart.quantity : 0;
+
+        const card = document.createElement('div');
+        card.className = "min-w-[190px] max-w-[200px] border border-gray-200 rounded-2xl p-3 bg-white shadow-sm flex flex-col justify-between shrink-0";
+        card.innerHTML = `
+          <div>
+            <div class="w-full h-28 rounded-xl overflow-hidden bg-gray-100 mb-2">
+              <img src="${sub.img}" onerror="this.src='https://placehold.co/200x200/e2e8f0/0f172a?text=Service'" class="w-full h-full object-cover" />
+            </div>
+            <h4 class="font-bold text-sm text-gray-900 leading-tight mb-1">${sub.name}</h4>
+            <p class="text-[11px] text-gray-500 font-semibold mb-2"><i class="fa-solid fa-star text-amber-400"></i> ${sub.rating}</p>
+          </div>
+          <div>
+            <div class="font-extrabold text-sm text-gray-900 mb-2">₹${sub.price}</div>
+            <div id="popup-btn-${sub.id}">
+              ${renderPopupButton(sub, qty)}
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      document.getElementById('subservices-popup-modal').classList.remove('hidden');
+    }
+
+    function closeSubServicesPopupModal() {
+      document.getElementById('subservices-popup-modal').classList.add('hidden');
+    }
+
+    function renderPopupButton(sub, qty) {
+      if (qty === 0) {
+        return `<button onclick="updateCartFromPopup('${sub.id}', 1)" class="w-full py-1.5 border border-purple-300 text-ucPurple bg-purple-50 hover:bg-ucPurple hover:text-white transition font-bold text-xs rounded-xl">Add</button>`;
+      } else {
+        return `
+          <div class="flex items-center justify-between bg-ucPurple text-white rounded-xl overflow-hidden font-extrabold text-xs py-1 px-2">
+            <button onclick="updateCartFromPopup('${sub.id}', ${qty - 1})">-</button>
+            <span>${qty}</span>
+            <button onclick="updateCartFromPopup('${sub.id}', ${qty + 1})">+</button>
+          </div>
+        `;
+      }
+    }
+
+    function updateCartFromPopup(subId, newQty) {
+      let targetSub = null;
+      carpenterCategories.forEach(cat => {
+        cat.mainServices.forEach(ms => {
+          ms.subServices.forEach(s => {
+            if (s.id === subId) targetSub = s;
+          });
+        });
+      });
+
+      if (!targetSub) return;
+
+      const idx = cart.findIndex(c => c.item.id === subId);
+      if (newQty <= 0) {
+        if (idx > -1) cart.splice(idx, 1);
+      } else {
+        if (idx > -1) cart[idx].quantity = newQty;
+        else cart.push({ item: targetSub, quantity: newQty });
+      }
+
+      updateCartUI();
+      const btnContainer = document.getElementById(`popup-btn-${subId}`);
+      if (btnContainer) {
+        btnContainer.innerHTML = renderPopupButton(targetSub, newQty);
+      }
+    }
+
+    function renderSubServicesGrid() {
+      const grid = document.getElementById('sub-services-grid');
+      grid.innerHTML = '';
+      carpenterCategories.forEach((cat, idx) => {
+        const card = document.createElement('div');
+        card.className = "bg-white p-4 rounded-2xl border border-gray-200 hover:border-ucPurple hover:shadow-md cursor-pointer transition flex flex-col justify-between";
+        card.onclick = () => {
+          currentCategoryIdx = idx;
+          renderServiceDetailsList();
+          navigateTo('service-details');
+        };
+        card.innerHTML = `
+          <div class="space-y-3">
+            <!-- Innum periya size image grid view-la varum -->
+            <div class="w-16 h-16 rounded-2xl overflow-hidden bg-gray-100 shadow-sm">
+              <img src="${cat.image}" onerror="this.src='https://placehold.co/100x100/e2e8f0/0f172a?text=Service'" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h3 class="font-bold text-sm text-gray-900">${cat.title}</h3>
+              <p class="text-xs text-gray-500 mt-0.5">${cat.subtitle}</p>
+            </div>
           </div>
         `;
         grid.appendChild(card);
       });
     }
 
-    // Render detailed list of options (Image 4 & 6)
     function renderServiceDetailsList() {
-      document.getElementById('selected-subcategory-title').innerText = currentSelectedCategory.title;
-      document.getElementById('selected-subcategory-subtitle').innerText = currentSelectedCategory.subtitle;
+      const currentCat = carpenterCategories[currentCategoryIdx] || carpenterCategories[0];
+      document.getElementById('selected-subcategory-title').innerText = currentCat.title;
+      document.getElementById('selected-subcategory-subtitle').innerText = currentCat.subtitle;
 
-      // Category filter pills
-      const pillsContainer = document.getElementById('category-pills');
-      const categories = ["All", ...new Set(currentSelectedCategory.items.map(i => i.category))];
-      
-      pillsContainer.innerHTML = categories.map(cat => `
-        <button onclick="filterCategoryPill('${cat}')" 
-                class="px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition ${currentFilterPill === cat ? 'bg-ucPurple text-white shadow' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-100'}">
-          ${cat}
-        </button>
-      `).join('');
-
-      // Items Container
       const container = document.getElementById('service-items-container');
       container.innerHTML = '';
 
-      const filteredItems = currentFilterPill === "All" 
-        ? currentSelectedCategory.items 
-        : currentSelectedCategory.items.filter(i => i.category === currentFilterPill);
-
-      filteredItems.forEach(item => {
-        const inCart = cart.find(c => c.item.id === item.id);
-        const qty = inCart ? inCart.quantity : 0;
-
-        const itemCard = document.createElement('div');
-        itemCard.className = "bg-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center hover:border-purple-200 transition";
-        
-        itemCard.innerHTML = `
-          <div class="flex-1 space-y-1.5">
-            <div class="flex items-center gap-2">
-              <span class="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded">${item.category}</span>
-              <span class="text-xs text-emerald-600 font-bold"><i class="fa-solid fa-star text-amber-400"></i> ${item.rating} (${item.reviews})</span>
+      currentCat.mainServices.forEach((ms, mIdx) => {
+        const card = document.createElement('div');
+        card.className = "bg-white p-4 rounded-2xl border border-gray-200 shadow-sm flex justify-between items-center cursor-pointer hover:border-ucPurple transition";
+        card.onclick = () => openSubServicesPopupModal(currentCategoryIdx, mIdx);
+        card.innerHTML = `
+          <div class="flex items-center gap-4">
+            <!-- Main Service Image Thumbnail -->
+            <div class="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 shrink-0 shadow-sm">
+              <img src="${ms.img || './images/service default.jpeg'}" onerror="this.src='https://placehold.co/100x100/e2e8f0/0f172a?text=Service'" class="w-full h-full object-cover" />
             </div>
-            <h3 class="font-bold text-base text-gray-900">${item.name}</h3>
-            <div class="text-sm font-extrabold text-gray-900">
-              ₹${item.price} <span class="text-xs text-gray-400 font-normal"> • ${item.duration}</span>
-            </div>
-            <p class="text-xs text-gray-500 leading-relaxed">${item.description}</p>
-            <button onclick="openServiceDetailModal('${item.id}')" class="text-xs font-bold text-ucPurple underline pt-1 inline-block">View details</button>
-          </div>
-
-          <div class="w-full sm:w-auto flex sm:flex-col items-center sm:items-end justify-between border-t sm:border-t-0 pt-3 sm:pt-0 border-gray-100 gap-3">
-            <div class="w-24 h-20 rounded-xl overflow-hidden bg-gray-100 hidden sm:block relative">
-              <img src="https://placehold.co/200x150/475569/ffffff?text=UC+Service" class="w-full h-full object-cover" />
-            </div>
-            <div id="btn-container-${item.id}">
-              ${renderCartButton(item, qty)}
+            <div class="space-y-1">
+              <h3 class="font-bold text-base text-gray-900">${ms.title}</h3>
+              <p class="text-xs text-emerald-600 font-semibold"><i class="fa-solid fa-star text-amber-400"></i> ${ms.rating}</p>
+              <p class="text-xs text-gray-500">Includes ${ms.subServices.length} sub-services options</p>
             </div>
           </div>
+          <button class="px-4 py-2 border border-ucPurple text-ucPurple text-xs font-bold rounded-xl hover:bg-purple-50 shrink-0">View Services &rarr;</button>
         `;
-
-        container.appendChild(itemCard);
+        container.appendChild(card);
       });
-
-      // Frequently added together section (Image 6 requirement)
-      if (cart.length > 0) {
-        const freqSection = document.createElement('div');
-        freqSection.className = "mt-8 p-5 bg-purple-50/60 rounded-2xl border border-purple-100 space-y-3";
-        freqSection.innerHTML = `
-          <h4 class="font-bold text-sm text-gray-900 flex items-center gap-2">
-            <i class="fa-solid fa-bolt text-amber-500"></i> Frequently added together
-          </h4>
-          <div class="flex items-center justify-between bg-white p-3 rounded-xl border border-gray-200">
-            <div>
-              <p class="font-bold text-xs text-gray-900">Door Hinge Lubrication & Tightening</p>
-              <p class="text-[11px] text-gray-500">₹99 • 10 mins</p>
-            </div>
-            <button onclick="quickAddExtra('Door Hinge Lubrication', 99)" class="px-3 py-1 bg-purple-100 text-ucPurple font-bold text-xs rounded-lg hover:bg-ucPurple hover:text-white transition">
-              + Add
-            </button>
-          </div>
-        `;
-        container.appendChild(freqSection);
-      }
-    }
-
-    function filterCategoryPill(category) {
-      currentFilterPill = category;
-      renderServiceDetailsList();
-    }
-
-    /* ==========================================================================
-       CART & QUANTITY MANAGEMENT
-       ========================================================================== */
-
-    function renderCartButton(item, qty) {
-      if (qty === 0) {
-        return `
-          <button onclick="updateCartQuantity('${item.id}', 1)" 
-                  class="px-6 py-2 bg-white border-2 border-ucPurple text-ucPurple font-extrabold text-xs rounded-xl hover:bg-purple-50 transition shadow-sm">
-            ADD
-          </button>
-        `;
-      } else {
-        return `
-          <div class="flex items-center bg-ucPurple text-white rounded-xl overflow-hidden shadow-md font-extrabold text-xs">
-            <button onclick="updateCartQuantity('${item.id}', ${qty - 1})" class="px-3 py-2 hover:bg-ucPurpleDark transition">-</button>
-            <span class="px-3 py-2 bg-ucPurpleDark">${qty}</span>
-            <button onclick="updateCartQuantity('${item.id}', ${qty + 1})" class="px-3 py-2 hover:bg-ucPurpleDark transition">+</button>
-          </div>
-        `;
-      }
-    }
-
-    function updateCartQuantity(itemId, newQty) {
-      let foundItem = null;
-      carpenterSubServices.forEach(cat => {
-        cat.items.forEach(it => {
-          if (it.id === itemId) foundItem = it;
-        });
-      });
-
-      if (!foundItem) return;
-
-      const cartIndex = cart.findIndex(c => c.item.id === itemId);
-
-      if (newQty <= 0) {
-        if (cartIndex > -1) cart.splice(cartIndex, 1);
-        showToast(`Removed "${foundItem.name}"`);
-      } else {
-        if (cartIndex > -1) {
-          cart[cartIndex].quantity = newQty;
-        } else {
-          cart.push({ item: foundItem, quantity: newQty });
-          showToast(`Added "${foundItem.name}" to cart`);
-        }
-      }
-
-      updateCartUI();
-      renderServiceDetailsList();
-      
-      // Update modal button if open
-      const modalBtn = document.getElementById(`modal-btn-container-${itemId}`);
-      if (modalBtn) {
-        modalBtn.innerHTML = renderCartButton(foundItem, newQty);
-      }
-    }
-
-    function quickAddExtra(name, price) {
-      const extraItem = {
-        id: "extra-" + Date.now(),
-        name: name,
-        price: price,
-        rating: 4.9,
-        reviews: 800,
-        duration: "10 mins",
-        category: "Add-on"
-      };
-      cart.push({ item: extraItem, quantity: 1 });
-      showToast(`Added ${name} to your booking!`);
-      updateCartUI();
-      renderServiceDetailsList();
     }
 
     function updateCartUI() {
       const totalItems = cart.reduce((acc, curr) => acc + curr.quantity, 0);
       const subtotal = cart.reduce((acc, curr) => acc + (curr.item.price * curr.quantity), 0);
 
-      // Header Badge
       const headerBadge = document.getElementById('header-cart-count');
       if (totalItems > 0) {
         headerBadge.innerText = totalItems;
@@ -1109,9 +1200,8 @@
         headerBadge.classList.add('hidden');
       }
 
-      // Floating Bottom Bar
       const floatBar = document.getElementById('floating-cart-bar');
-      if (totalItems > 0 && !document.getElementById('view-checkout').classList.contains('hidden') === false) {
+      if (totalItems > 0 && document.getElementById('view-checkout').classList.contains('hidden')) {
         floatBar.classList.remove('hidden');
         document.getElementById('float-item-count').innerText = `${totalItems} ${totalItems === 1 ? 'ITEM' : 'ITEMS'}`;
         document.getElementById('float-total-price').innerText = `₹${subtotal}`;
@@ -1120,139 +1210,38 @@
       }
     }
 
-    /* ==========================================================================
-       CHECKOUT VIEW LOGIC (IMAGE 7)
-       ========================================================================== */
-
     function renderCheckoutView() {
-      const cartItemsContainer = document.getElementById('checkout-cart-items-list');
-      cartItemsContainer.innerHTML = '';
-
+      const list = document.getElementById('checkout-cart-items-list');
+      list.innerHTML = '';
       let subtotal = 0;
-      let totalCount = 0;
 
       cart.forEach(c => {
         subtotal += c.item.price * c.quantity;
-        totalCount += c.quantity;
-
-        const row = document.createElement('div');
-        row.className = "flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100";
-        row.innerHTML = `
-          <div>
-            <p class="font-bold text-xs text-gray-900">${c.item.name}</p>
-            <p class="text-[11px] text-gray-500">₹${c.item.price} x ${c.quantity}</p>
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="font-extrabold text-xs text-gray-900">₹${c.item.price * c.quantity}</span>
-            ${renderCartButton(c.item, c.quantity)}
-          </div>
-        `;
-        cartItemsContainer.appendChild(row);
+        list.innerHTML += `<div class="flex justify-between text-xs text-gray-800"><span>${c.item.name} (x${c.quantity})</span><span class="font-bold">₹${c.item.price * c.quantity}</span></div>`;
       });
-
-      document.getElementById('checkout-item-count-badge').innerText = `${totalCount} Items`;
-
-      // Calculations
-      const discount = appliedCoupon ? Math.round(subtotal * 0.10) : 0;
-      const taxes = 49;
-      const grandTotal = subtotal - discount + taxes + (appliedTip === 'custom' ? 0 : appliedTip);
-
-      document.getElementById('bill-item-total').innerText = `₹${subtotal}`;
-      
-      const discountRow = document.getElementById('bill-discount-row');
-      if (appliedCoupon && discount > 0) {
-        discountRow.classList.remove('hidden');
-        document.getElementById('bill-discount-amount').innerText = `-₹${discount}`;
-      } else {
-        discountRow.classList.add('hidden');
-      }
-
-      document.getElementById('bill-tip-amount').innerText = appliedTip === 'custom' ? '₹0' : `₹${appliedTip}`;
-      document.getElementById('bill-grand-total').innerText = `₹${grandTotal}`;
-      document.getElementById('checkout-cta-price').innerText = `₹${grandTotal}`;
-      document.getElementById('bill-savings-badge').innerText = `₹${discount + 50} Saved`;
-    }
-
-    function setTip(btnElement, amount) {
-      document.querySelectorAll('.tip-btn').forEach(btn => {
-        btn.classList.remove('border-2', 'border-ucPurple', 'bg-purple-50', 'text-ucPurple');
-        btn.classList.add('border-gray-200');
-      });
-
-      btnElement.classList.remove('border-gray-200');
-      btnElement.classList.add('border-2', 'border-ucPurple', 'bg-purple-50', 'text-ucPurple');
-
-      appliedTip = amount;
-      renderCheckoutView();
-    }
-
-    function applyCouponPrompt() {
-      appliedCoupon = !appliedCoupon;
-      document.getElementById('coupon-status-text').innerText = appliedCoupon 
-        ? "UC 10% Instant Discount Applied!" 
-        : "Coupons and offers (8 offers available)";
-      showToast(appliedCoupon ? "Promo Coupon Applied successfully!" : "Coupon removed.");
-      renderCheckoutView();
-    }
-
-    function editMobileNumber() {
-      const newNum = prompt("Enter mobile number for booking updates:", "+91 98765 43210");
-      if (newNum) {
-        document.getElementById('checkout-mobile').innerText = newNum;
-        showToast("Mobile number updated!");
-      }
-    }
-
-    function selectDate(el, dateText) {
-      document.querySelectorAll('.slot-date-btn').forEach(btn => {
-        btn.classList.remove('border-2', 'border-ucPurple', 'bg-purple-50');
-        btn.classList.add('border-gray-200');
-      });
-      el.classList.remove('border-gray-200');
-      el.classList.add('border-2', 'border-ucPurple', 'bg-purple-50');
-      showToast(`Selected date: ${dateText}`);
-    }
-
-    function selectTime(el, timeText) {
-      document.querySelectorAll('.time-slot-btn').forEach(btn => {
-        btn.classList.remove('border-2', 'border-ucPurple', 'bg-purple-50', 'text-gray-900');
-        btn.classList.add('border-gray-200', 'text-gray-700');
-      });
-      el.classList.remove('border-gray-200', 'text-gray-700');
-      el.classList.add('border-2', 'border-ucPurple', 'bg-purple-50', 'text-gray-900');
-      showToast(`Selected slot: ${timeText}`);
-    }
-
-    function openCartModal() {
-      if (cart.length === 0) {
-        showToast("Your cart is empty! Add services to proceed.");
-      } else {
-        navigateTo('checkout');
-      }
+      document.getElementById('bill-grand-total').innerText = `₹${subtotal}`;
     }
 
     function processOrder() {
-      alert("🎉 Booking Confirmed!\n\nYour Urban Company Professional will reach your location as per the selected slot.\n\nThank you for choosing Urban Company!");
+      alert("🎉 Order Confirmed! EPC Services professional will arrive soon.");
       cart = [];
       updateCartUI();
       navigateTo('home');
     }
 
-    /* ==========================================================================
-       TOAST MESSAGE BOX (NON-BLOCKING ALERT)
-       ========================================================================== */
+    function openCartModal() {
+      if (cart.length === 0) {
+        showToast("Cart is empty! Add services to proceed.");
+      } else {
+        navigateTo('checkout');
+      }
+    }
+
     function showToast(text) {
       const toast = document.getElementById('toast-message');
       document.getElementById('toast-text').innerText = text;
       toast.classList.remove('hidden');
-      setTimeout(() => {
-        toast.classList.add('hidden');
-      }, 3000);
-    }
-
-    function showCategoryToast(catName) {
-      showToast(`Exploring ${catName}... Opening options.`);
-      openSubCategoryModal();
+      setTimeout(() => toast.classList.add('hidden'), 2500);
     }
   </script>
 </body>

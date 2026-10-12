@@ -28,6 +28,26 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../backend/index.html')); // or ungal file irukkura correct folder path
 });
 
+// Static images folder-ai serve pannugiradhu
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+// Dynamic Image Finder (JPG, JPEG, PNG, WEBP, SVG edhuvaga irundhalum auto-detect pannum)
+app.get('/api/image/:filename', (req, res) => {
+  const baseName = req.params.filename;
+  const imagesDir = path.join(__dirname, 'images');
+  const extensions = ['.jpg', '.jpeg', '.png', '.webp', '.svg'];
+
+  for (let ext of extensions) {
+    const fullPath = path.join(imagesDir, baseName + ext);
+    if (fs.existsSync(fullPath)) {
+      return res.sendFile(fullPath);
+    }
+  }
+
+  // File illai endral default fallback placeholder image
+  res.redirect('https://placehold.co/200x200/e2e8f0/0f172a?text=No+Image');
+});
+
 // Real-time WebSockets logic
 io.on('connection', (socket) => {
   console.log(`⚡ Client Connected: ${socket.id}`);
