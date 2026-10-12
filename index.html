@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <!-- Google Font - Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Razorpay SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -51,9 +53,17 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-5">
         <button onclick="navigateTo('home')" class="text-sm font-semibold text-gray-700 hover:text-ucPurple">Home</button>
         <button onclick="openMainCategoryModal()" class="text-sm font-semibold text-gray-700 hover:text-ucPurple">Services</button>
+        
+        <!-- LOGIN BUTTON (HEADER RIGHT SIDE) -->
+        <div id="header-auth-container">
+          <button onclick="openPhoneAuthModal()" class="text-sm font-bold text-gray-900 hover:text-ucPurple flex items-center gap-1.5 bg-gray-100 px-3 py-1.5 rounded-xl border border-gray-200">
+            <i class="fa-regular fa-user text-gray-600"></i> Login
+          </button>
+        </div>
+
         <div class="relative cursor-pointer" onclick="openCartModal()">
           <i class="fa-solid fa-bag-shopping text-xl text-gray-800"></i>
           <span id="header-cart-count" class="hidden absolute -top-2 -right-2 bg-ucPurple text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">0</span>
@@ -103,7 +113,6 @@
           <span class="text-xs sm:text-sm font-semibold text-gray-800">AC & Appliance Repair</span>
         </div>
 
-        <!-- MAIN TRIGGER (MAIN CATEGORY CLICK -> SUB CATEGORY POPUP) -->
         <div onclick="openMainCategoryModal()" class="col-span-1 bg-purple-50 p-4 rounded-2xl border-2 border-ucPurple/30 shadow-sm text-center cursor-pointer hover:shadow-md transition">
           <div class="w-14 h-14 rounded-2xl bg-ucPurple text-white text-2xl mx-auto flex items-center justify-center mb-2"><i class="fa-solid fa-wrench"></i></div>
           <span class="text-xs sm:text-sm font-bold text-gray-900">Electrician, Plumber & Carpenter</span>
@@ -139,29 +148,119 @@
 
     <!-- CHECKOUT PAGE -->
     <section id="view-checkout" class="hidden p-4 sm:p-6 animate-fadeIn">
-      <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-200">
+      <div class="flex items-center gap-3 mb-6 pb-2">
         <button onclick="navigateTo('service-details')" class="p-2 rounded-full hover:bg-gray-200"><i class="fa-solid fa-arrow-left text-lg"></i></button>
-        <h1 class="text-xl font-extrabold text-gray-900">EPC Checkout Summary</h1>
+        <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <span class="bg-black text-white px-2 py-0.5 rounded text-sm font-black">UC</span> Checkout
+        </h1>
       </div>
 
-      <div class="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm space-y-4 max-w-xl mx-auto">
-        <h2 class="font-bold text-base border-b pb-2 text-gray-900">Selected Services</h2>
-        <div id="checkout-cart-items-list" class="space-y-3"></div>
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6 max-w-5xl mx-auto">
+        <div class="md:col-span-7 space-y-4">
+          <div class="bg-white rounded-2xl border border-gray-200 shadow-sm divide-y divide-gray-100">
+            <div class="p-4 flex items-center gap-4">
+              <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500 shrink-0"><i class="fa-solid fa-location-dot"></i></div>
+              <div>
+                <p class="text-xs font-semibold text-gray-500">Send booking details to</p>
+                <p id="checkout-phone-display" class="font-bold text-sm text-gray-900">+91 6381796419</p>
+              </div>
+            </div>
 
-        <div class="pt-3 border-t text-sm font-extrabold flex justify-between">
-          <span>Total Amount Payable</span>
-          <span id="bill-grand-total">₹0</span>
+            <div class="p-4 flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500 shrink-0"><i class="fa-solid fa-house"></i></div>
+                <div>
+                  <p class="text-xs font-semibold text-gray-500">Address</p>
+                  <p id="checkout-address-display" class="font-bold text-sm text-gray-900">Select address to proceed</p>
+                </div>
+              </div>
+              <button onclick="openAddressModal()" id="address-action-btn" class="px-4 py-2 bg-ucPurple text-white rounded-xl text-xs font-bold hover:bg-ucPurpleDark transition">Select address</button>
+            </div>
+
+            <div class="p-4 flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500 shrink-0"><i class="fa-regular fa-clock"></i></div>
+                <div>
+                  <p class="text-xs font-semibold text-gray-500">Slot</p>
+                  <p id="checkout-slot-display" class="font-bold text-sm text-gray-400">Select time & date</p>
+                </div>
+              </div>
+              <button onclick="openSlotModal()" id="slot-action-btn" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl text-xs font-bold hover:bg-gray-50 transition hidden">Edit</button>
+            </div>
+
+            <div class="p-4 flex items-center gap-4 opacity-50" id="payment-method-row">
+              <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500 shrink-0"><i class="fa-regular fa-credit-card"></i></div>
+              <p class="font-semibold text-sm text-gray-500">Payment Method</p>
+            </div>
+          </div>
+
+          <button id="btn-proceed-pay" onclick="initiateRazorpayPayment()" disabled class="w-full bg-ucPurple/50 text-white py-3.5 rounded-xl font-bold text-sm shadow-md cursor-not-allowed transition">
+            Proceed to pay
+          </button>
+
+          <div class="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm space-y-1">
+            <h3 class="font-bold text-sm text-gray-900">Cancellation policy</h3>
+            <p class="text-xs text-gray-500">Free cancellations if done more than 12 hrs before the service. A fee will be charged otherwise.</p>
+            <a href="#" class="text-xs font-bold text-gray-900 underline block pt-1">Read full policy</a>
+          </div>
         </div>
 
-        <button onclick="processOrder()" class="w-full bg-ucPurple text-white py-3.5 rounded-xl font-bold text-sm shadow-md hover:bg-ucPurpleDark transition">
-          Confirm & Schedule Booking
-        </button>
+        <div class="md:col-span-5 space-y-4">
+          <div class="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm space-y-4">
+            <h2 class="font-bold text-base text-gray-900 border-b pb-2">Service Booking</h2>
+            
+            <div id="checkout-cart-items-list" class="space-y-3"></div>
+
+            <div class="flex items-center gap-2 pt-2">
+              <input type="checkbox" id="avoid-call" class="rounded text-ucPurple focus:ring-ucPurple" checked />
+              <label for="avoid-call" class="text-xs text-gray-700 font-medium">Avoid calling before reaching the location</label>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm flex justify-between items-center cursor-pointer hover:border-ucPurple transition">
+            <div class="flex items-center gap-3">
+              <i class="fa-solid fa-percent text-emerald-600 text-lg"></i>
+              <span class="font-bold text-sm text-gray-900">Coupons and offers</span>
+            </div>
+            <span class="text-xs font-bold text-ucPurple">8 offers &gt;</span>
+          </div>
+
+          <div class="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm space-y-3 cursor-pointer" onclick="openBillSummaryModal()">
+            <div class="flex justify-between items-center">
+              <div class="flex items-center gap-2">
+                <i class="fa-regular fa-newspaper text-gray-700"></i>
+                <span class="font-bold text-sm text-gray-900">Total bill <span id="bill-total-text">₹212</span></span>
+              </div>
+              <i class="fa-solid fa-angle-right text-xs text-gray-400"></i>
+            </div>
+            <p class="text-[11px] text-gray-400 font-medium -mt-1">Incl. govt. taxes & charges</p>
+
+            <div class="pt-3 border-t space-y-2" onclick="event.stopPropagation()">
+              <p class="text-xs font-bold text-gray-800">Add a tip to thank the Professional</p>
+              <div class="flex gap-2 text-xs font-bold">
+                <button onclick="selectTip(50)" class="tip-btn flex-1 py-2 border rounded-xl hover:border-ucPurple">₹50</button>
+                <button onclick="selectTip(75)" class="tip-btn flex-1 py-2 border border-emerald-500 bg-emerald-50 text-emerald-700 rounded-xl relative">₹75 <span class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-[9px] px-1 rounded">POPULAR</span></button>
+                <button onclick="selectTip(100)" class="tip-btn flex-1 py-2 border rounded-xl hover:border-ucPurple">₹100</button>
+                <button onclick="selectTip('custom')" class="tip-btn flex-1 py-2 border rounded-xl hover:border-ucPurple">Custom</button>
+              </div>
+              <p class="text-[10px] text-gray-400">100% of the tip goes to the professional.</p>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm flex justify-between items-center">
+            <div>
+              <p class="text-xs text-gray-500 font-semibold">Amount to pay</p>
+              <span onclick="openBillSummaryModal()" class="text-xs text-gray-900 font-bold underline cursor-pointer">View breakup</span>
+            </div>
+            <span id="final-payable-amount" class="text-xl font-extrabold text-gray-900">₹212</span>
+          </div>
+        </div>
       </div>
     </section>
 
   </main>
 
-  <!-- FLOATING CART "DONE" BAR -->
+  <!-- FLOATING CART BAR -->
   <div id="floating-cart-bar" class="hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200 shadow-2xl p-4 animate-fadeIn">
     <div class="max-w-3xl mx-auto flex items-center justify-between">
       <div>
@@ -175,7 +274,76 @@
     </div>
   </div>
 
-  <!-- POPUP 1: MAIN CATEGORY -> SUB CATEGORY MODAL -->
+  <!-- POPUP 1: ENTER PHONE NUMBER MODAL -->
+  <div id="phone-auth-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl animate-fadeIn relative p-6 space-y-5">
+      <button onclick="closePhoneAuthModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 hover:bg-gray-200">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="w-12 h-12 bg-blue-500 rounded-2xl flex items-center justify-center text-white text-xl shadow-md">
+        <i class="fa-solid fa-phone-flip"></i>
+      </div>
+
+      <div>
+        <h2 class="font-black text-2xl text-gray-900 leading-snug">Enter your phone number</h2>
+        <p class="text-xs text-gray-500 mt-1 leading-relaxed">We'll send you a text with a verification code. Standard tariff may apply.</p>
+      </div>
+
+      <div class="flex items-center border border-gray-300 rounded-2xl overflow-hidden focus-within:border-gray-900 focus-within:ring-1 focus-within:ring-gray-900 transition">
+        <div class="px-3.5 py-3 border-r border-gray-200 bg-gray-50 text-sm font-bold text-gray-700 flex items-center gap-1 shrink-0">
+          +91 <i class="fa-solid fa-angle-down text-xs text-gray-400"></i>
+        </div>
+        <input type="tel" id="user-phone-input" maxlength="10" placeholder="Enter your phone number" oninput="validatePhoneInput()" class="w-full px-3 py-3 text-sm font-medium text-gray-900 focus:outline-none" />
+      </div>
+
+      <button id="btn-phone-continue" onclick="openOtpAuthModal()" disabled class="w-full bg-gray-200 text-gray-400 py-3.5 rounded-2xl font-bold text-sm cursor-not-allowed transition">
+        Continue
+      </button>
+
+      <p class="text-[11px] text-gray-500 text-center leading-normal">
+        By continuing, you agree to our <a href="#" class="underline font-bold text-gray-800">T&C</a> and <a href="#" class="underline font-bold text-gray-800">Privacy policy</a>.
+      </p>
+    </div>
+  </div>
+
+  <!-- POPUP 2: ENTER OTP VERIFICATION MODAL -->
+  <div id="otp-auth-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl animate-fadeIn relative p-6 space-y-5">
+      <button onclick="closeOtpAuthModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 hover:bg-gray-200">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-xl shadow-md">
+        <i class="fa-solid fa-comment-dots"></i>
+      </div>
+
+      <div>
+        <h2 class="font-black text-2xl text-gray-900 leading-snug">Enter verification code</h2>
+        <p class="text-xs text-gray-500 mt-1 leading-relaxed">A 6-digit verification code has been sent to <span id="otp-phone-display" class="font-bold text-gray-800">+916381796419</span></p>
+      </div>
+
+      <div class="flex justify-between gap-1.5" id="otp-inputs-container">
+        <input type="text" maxlength="1" onkeyup="handleOtpInput(this, 0)" class="otp-box w-11 h-12 border border-gray-300 rounded-xl text-center text-lg font-bold focus:border-gray-900 focus:outline-none" />
+        <input type="text" maxlength="1" onkeyup="handleOtpInput(this, 1)" class="otp-box w-11 h-12 border border-gray-300 rounded-xl text-center text-lg font-bold focus:border-gray-900 focus:outline-none" />
+        <input type="text" maxlength="1" onkeyup="handleOtpInput(this, 2)" class="otp-box w-11 h-12 border border-gray-300 rounded-xl text-center text-lg font-bold focus:border-gray-900 focus:outline-none" />
+        <input type="text" maxlength="1" onkeyup="handleOtpInput(this, 3)" class="otp-box w-11 h-12 border border-gray-300 rounded-xl text-center text-lg font-bold focus:border-gray-900 focus:outline-none" />
+        <input type="text" maxlength="1" onkeyup="handleOtpInput(this, 4)" class="otp-box w-11 h-12 border border-gray-300 rounded-xl text-center text-lg font-bold focus:border-gray-900 focus:outline-none" />
+        <input type="text" maxlength="1" onkeyup="handleOtpInput(this, 5)" class="otp-box w-11 h-12 border border-gray-300 rounded-xl text-center text-lg font-bold focus:border-gray-900 focus:outline-none" />
+      </div>
+
+      <div class="text-xs font-semibold text-gray-500 flex items-center gap-1.5">
+        <i class="fa-regular fa-clock"></i>
+        <span id="otp-timer-text">00:25</span>
+      </div>
+
+      <button id="btn-otp-login" onclick="verifyAndLoginUser()" disabled class="w-full bg-gray-200 text-gray-400 py-3.5 rounded-2xl font-bold text-sm cursor-not-allowed transition">
+        Login
+      </button>
+    </div>
+  </div>
+
+  <!-- POPUP 3: MAIN CATEGORY MODAL -->
   <div id="main-category-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl animate-fadeIn">
       <div class="p-4 border-b flex justify-between items-center bg-gray-50">
@@ -191,9 +359,10 @@
               <i class="fa-solid fa-hammer text-2xl text-ucPurple mb-1 block"></i>
               <span class="text-xs font-bold text-gray-900">Carpenter</span>
             </div>
-            <div onclick="showToast('Electrician options')" class="p-3 border rounded-xl cursor-pointer text-center hover:border-ucPurple">
+            <!-- ELECTRICIAN BUTTON FIXED HERE -->
+            <div onclick="openElectricianSubCategoryModal()" class="p-3 border rounded-xl cursor-pointer text-center hover:border-ucPurple bg-amber-50/50">
               <i class="fa-solid fa-plug text-2xl text-amber-500 mb-1 block"></i>
-              <span class="text-xs font-semibold">Electrician</span>
+              <span class="text-xs font-bold text-gray-900">Electrician</span>
             </div>
             <div onclick="showToast('Plumber options')" class="p-3 border rounded-xl cursor-pointer text-center hover:border-ucPurple">
               <i class="fa-solid fa-faucet-drip text-2xl text-blue-500 mb-1 block"></i>
@@ -201,21 +370,11 @@
             </div>
           </div>
         </div>
-
-        <div>
-          <h3 class="font-extrabold text-xs text-gray-400 uppercase tracking-wider mb-3">Home installation</h3>
-          <div class="grid grid-cols-2 gap-3 text-xs font-semibold">
-            <div onclick="openCarpenterSubCategoryModal()" class="p-3 border rounded-xl cursor-pointer hover:border-ucPurple"><i class="fa-solid fa-fan mr-2"></i> Fan Installation</div>
-            <div onclick="openCarpenterSubCategoryModal()" class="p-3 border rounded-xl cursor-pointer hover:border-ucPurple"><i class="fa-solid fa-couch mr-2"></i> Furniture Assembly</div>
-            <div onclick="openCarpenterSubCategoryModal()" class="p-3 border rounded-xl cursor-pointer hover:border-ucPurple"><i class="fa-solid fa-fire-burner mr-2"></i> Geyser Service</div>
-            <div onclick="openCarpenterSubCategoryModal()" class="p-3 border rounded-xl cursor-pointer hover:border-ucPurple"><i class="fa-solid fa-box mr-2"></i> IKEA Assembly</div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
 
-  <!-- POPUP 2: CARPENTER SUB CATEGORIES MODAL -->
+  <!-- POPUP 4: CARPENTER SUB CATEGORIES MODAL -->
   <div id="carpenter-subcategory-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl animate-fadeIn">
       <div class="p-4 border-b flex justify-between items-center bg-gray-50">
@@ -226,32 +385,164 @@
         <button onclick="closeCarpenterSubCategoryModal()" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <div id="carpenter-subcat-list" class="p-5 space-y-3 max-h-[70vh] overflow-y-auto custom-scrollbar">
-        <!-- Dynamically rendered sub categories -->
-      </div>
+      <div id="carpenter-subcat-list" class="p-5 space-y-3 max-h-[70vh] overflow-y-auto custom-scrollbar"></div>
     </div>
   </div>
 
-  <!-- POPUP 3: SUB SERVICES POPUP MODAL -->
+  <!-- POPUP 4B: ELECTRICIAN SUB CATEGORIES MODAL -->
+  <div id="electrician-subcategory-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl animate-fadeIn">
+      <div class="p-4 border-b flex justify-between items-center bg-gray-50">
+        <div>
+          <h2 class="font-bold text-base text-gray-900">Electrician Sub Categories</h2>
+          <p class="text-xs text-gray-500">Select a category to view sub services</p>
+        </div>
+        <button onclick="closeElectricianSubCategoryModal()" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div id="electrician-subcat-list" class="p-5 space-y-3 max-h-[70vh] overflow-y-auto custom-scrollbar"></div>
+    </div>
+  </div>
+
+  <!-- POPUP 5: SUB SERVICES POPUP MODAL -->
   <div id="subservices-popup-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl animate-fadeIn relative">
-      <div class="p-5 border-b flex justify-between items-start">
+      <div class="p-5 border-b flex justify-between items-center">
         <div>
-          <h2 id="popup-service-title" class="font-extrabold text-2xl text-gray-900">Door repair</h2>
-          <p id="popup-service-rating" class="text-xs text-gray-500 mt-1"><i class="fa-solid fa-star text-amber-400"></i> 4.78 (166K reviews)</p>
+          <h2 id="popup-service-title" class="font-bold text-lg text-gray-900">Service Title</h2>
+          <p id="popup-service-rating" class="text-xs text-gray-500 font-semibold mt-0.5 flex items-center gap-1"></p>
         </div>
         <button onclick="closeSubServicesPopupModal()" class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 hover:bg-gray-200 transition">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
 
-      <div id="popup-subservices-container" class="p-5 flex gap-4 overflow-x-auto custom-scrollbar">
-        <!-- Dynamically injected sub-services cards -->
-      </div>
+      <div id="popup-subservices-container" class="p-5 flex gap-4 overflow-x-auto custom-scrollbar"></div>
       
       <div class="p-4 bg-gray-50 border-t flex justify-between items-center">
         <span class="text-xs text-gray-500">Select required sub-services & add to booking</span>
         <button onclick="closeSubServicesPopupModal()" class="px-5 py-2 bg-ucPurple text-white rounded-xl font-bold text-xs hover:bg-ucPurpleDark transition">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP 6: ADD ADDRESS MODAL -->
+  <div id="address-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-2xl overflow-hidden shadow-2xl animate-fadeIn">
+      <div class="p-4 border-b flex justify-between items-center bg-gray-50">
+        <h2 class="font-bold text-base text-gray-900">Enter Service Address</h2>
+        <button onclick="closeAddressModal()" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <div>
+          <label class="text-xs font-bold text-gray-700 block mb-1">House / Flat No, Building Name *</label>
+          <input type="text" id="input-house-no" placeholder="Home - 25" class="w-full border rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-ucPurple" />
+        </div>
+        <div>
+          <label class="text-xs font-bold text-gray-700 block mb-1">Street, Area, District *</label>
+          <input type="text" id="input-street" placeholder="Nandambakkam, Tamil Nadu" class="w-full border rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-ucPurple" />
+        </div>
+        <div>
+          <label class="text-xs font-bold text-gray-700 block mb-1">Pincode *</label>
+          <input type="text" id="input-pincode" placeholder="600089" class="w-full border rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-ucPurple" />
+        </div>
+        <div>
+          <label class="text-xs font-bold text-gray-700 block mb-1">Mobile Number *</label>
+          <input type="tel" id="input-mobile" placeholder="6381796419" class="w-full border rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-ucPurple" />
+        </div>
+
+        <button onclick="saveAddressDetails()" class="w-full bg-ucPurple text-white py-3 rounded-xl font-bold text-sm hover:bg-ucPurpleDark transition">
+          Save Address & Proceed
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP 7: SLOT BOOKING MODAL -->
+  <div id="slot-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-2xl overflow-hidden shadow-2xl animate-fadeIn relative">
+      <button onclick="closeSlotModal()" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 hover:bg-gray-200 z-10">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="p-5 space-y-4 max-h-[80vh] overflow-y-auto custom-scrollbar">
+        <div class="border rounded-2xl p-3 bg-gray-50 flex items-center justify-between opacity-60">
+          <div>
+            <span class="text-[10px] font-bold text-gray-500 uppercase flex items-center gap-1"><i class="fa-solid fa-bolt"></i> Instant</span>
+            <p class="font-bold text-xs text-gray-800">In 30 mins</p>
+            <p class="text-[10px] text-amber-600 font-semibold">Unavailable at the moment</p>
+          </div>
+          <input type="radio" disabled />
+        </div>
+
+        <div class="border-2 border-ucPurple/30 rounded-2xl p-4 bg-white space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="font-extrabold text-sm text-gray-900">Schedule for later</p>
+              <p class="text-xs text-gray-500">Select your preferred day & time</p>
+            </div>
+            <input type="radio" checked class="text-ucPurple focus:ring-ucPurple" />
+          </div>
+
+          <div id="dates-row" class="flex gap-2 overflow-x-auto pb-1 custom-scrollbar"></div>
+
+          <p class="font-extrabold text-sm text-gray-900 pt-2">Select start time of service</p>
+
+          <div id="time-slots-grid" class="grid grid-cols-3 gap-2"></div>
+        </div>
+      </div>
+
+      <div class="p-4 bg-gray-50 border-t">
+        <button id="btn-slot-confirm" onclick="confirmSlotBooking()" disabled class="w-full bg-gray-300 text-gray-500 py-3 rounded-xl font-bold text-sm cursor-not-allowed transition">
+          Proceed to checkout
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP 8: BILL SUMMARY MODAL -->
+  <div id="bill-summary-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl animate-fadeIn relative">
+      <button onclick="closeBillSummaryModal()" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 hover:bg-gray-200">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="p-6 space-y-4">
+        <h2 class="font-extrabold text-2xl text-gray-900">Bill summary</h2>
+
+        <div class="space-y-3 text-sm border-b pb-4">
+          <div class="flex justify-between font-medium text-gray-700">
+            <span>Item total</span>
+            <span id="bill-item-total" class="font-bold text-gray-900">₹99</span>
+          </div>
+          <div class="flex justify-between font-medium text-gray-700">
+            <span class="underline underline-offset-2 decoration-dashed">Visitation Fee</span>
+            <span class="font-bold text-gray-900">₹99</span>
+          </div>
+          <div class="flex justify-between font-medium text-gray-700">
+            <span class="underline underline-offset-2 decoration-dashed">Platform fee</span>
+            <span class="font-bold text-gray-900">₹8</span>
+          </div>
+          <div class="flex justify-between font-medium text-gray-700">
+            <span class="underline underline-offset-2 decoration-dashed">Est Govt. taxes</span>
+            <span class="font-bold text-gray-900">₹6</span>
+          </div>
+        </div>
+
+        <div class="flex justify-between font-extrabold text-base text-gray-900 pt-1">
+          <span>Total bill</span>
+          <span id="bill-modal-grand-total">₹212</span>
+        </div>
+
+        <div class="flex justify-between font-extrabold text-base text-gray-900 border-b pb-4">
+          <span>Amount to pay</span>
+          <span id="bill-modal-amount-pay">₹212</span>
+        </div>
+
+        <button onclick="closeBillSummaryModal()" class="w-full bg-ucPurple text-white py-3 rounded-xl font-bold text-sm hover:bg-ucPurpleDark transition">
+          Okay, got it
+        </button>
       </div>
     </div>
   </div>
@@ -263,7 +554,6 @@
   </div>
 
   <script>
-    /* Complete Structured Data from Carpender_6.docx */
     const carpenterCategories = [
       {
         id: "wooden-door",
@@ -276,12 +566,12 @@
             rating: "4.78 (166K reviews)",
             img: "./images/door repair main.jpeg",
             subServices: [
-              { id: "dr-1", name: "Tower bolt/Latch repair", rating: "4.75 (2K reviews)", price: 99, img: "./images/tower bolt-latch repair.jpeg" },
+              { id: "dr-1", name: "Tower bolt/ Latch repair", rating: "4.75 (2K reviews)", price: 99, img: "./images/tower bolt-latch repair.jpeg" },
               { id: "dr-2", name: "Bottom stopper repair", rating: "4.80 (730 reviews)", price: 99, img: "./images/bottom stopper repair.jpeg" },
               { id: "dr-3", name: "Handle lock repair", rating: "4.79 (75K reviews)", price: 229, img: "./images/handle lock repair.jpeg" },
               { id: "dr-4", name: "Hinge Repair (per hinge)", rating: "4.82 (12K reviews)", price: 149, img: "./images/hinge repair(per hinge).jpeg" },
-              { id: "dr-5", name: "Door not closing (swelling),", rating: "4.76 (5K reviews)", price: 299, img: "./images/door not closing (swelling).jpeg" },
-              { id: "dr-6", name: "Sliding Wooden repair,", rating: "4.76 (5K reviews)", price: 299, img: "./images/sliding wooden repair.jpeg" },
+              { id: "dr-5", name: "Door not closing (swelling)", rating: "4.76 (5K reviews)", price: 299, img: "./images/door not closing (swelling).jpeg" },
+              { id: "dr-6", name: "Sliding Wooden repair", rating: "4.76 (5K reviews)", price: 299, img: "./images/sliding wooden repair.jpeg" },
               { id: "dr-7", name: "Misalignment issues", rating: "4.76 (5K reviews)", price: 299, img: "./images/misalignment issues.jpeg" }
             ]
           },
@@ -306,42 +596,42 @@
               { id: "dll-5", name: "Round Knob Lock", rating: "4.79 (15K reviews)", price: 249, img: "./images/round knob lock.jpeg" }
             ]
           },
-         {
-          title: "Door Lock replace and install",
-          rating: "4.80 (45K reviews)",
-          img: "./images/4.jpeg",
-          subServices: [
-            { id: "dlr-1", name: "Chain Latch Repair", rating: "4.81 (3K reviews)", price: 129, img: "./images/chain latch repair.jpeg" },
-            { id: "dlr-2", name: "Lockable Latch", rating: "4.84 (10K reviews)", price: 199, img: "./images/lockable latch.jpeg" },
-            { id: "dlr-3", name: "Tower Bolt", rating: "4.84 (10K reviews)", price: 199, img: "./images/Tower Bolt.jpeg" },
-            { id: "dlr-4", name: "Handle lock", rating: "4.84 (10K reviews)", price: 199, img: "./images/Handle lock.jpeg" },
-            { id: "dlr-5", name: "Handle lock replacement", rating: "4.84 (10K reviews)", price: 199, img: "./images/Handle lock replacement.jpeg" },
-            { id: "dlr-6", name: "Handle Lock installation", rating: "4.84 (10K reviews)", price: 199, img: "./images/Handle Lock installation.jpeg" },
-            { id: "dlr-7", name: "Round Knob Lock", rating: "4.79 (15K reviews)", price: 249, img: "./images/round knob lock.jpeg" }
-         ]
+          {
+            title: "Door Lock replace and install",
+            rating: "4.80 (45K reviews)",
+            img: "./images/4.jpeg",
+            subServices: [
+              { id: "dlr-1", name: "Chain Latch Repair", rating: "4.81 (3K reviews)", price: 129, img: "./images/chain latch repair.jpeg" },
+              { id: "dlr-2", name: "Lockable Latch", rating: "4.84 (10K reviews)", price: 199, img: "./images/lockable latch.jpeg" },
+              { id: "dlr-3", name: "Tower Bolt", rating: "4.84 (10K reviews)", price: 199, img: "./images/Tower Bolt.jpeg" },
+              { id: "dlr-4", name: "Handle lock", rating: "4.84 (10K reviews)", price: 199, img: "./images/Handle lock.jpeg" },
+              { id: "dlr-5", name: "Handle lock replacement", rating: "4.84 (10K reviews)", price: 199, img: "./images/Handle lock replacement.jpeg" },
+              { id: "dlr-6", name: "Handle Lock installation", rating: "4.84 (10K reviews)", price: 199, img: "./images/Handle Lock installation.jpeg" },
+              { id: "dlr-7", name: "Round Knob Lock", rating: "4.79 (15K reviews)", price: 249, img: "./images/round knob lock.jpeg" }
+            ]
           },
-           {
-          title: "Door Hinges repair and replacement",
-          rating: "4.80 (45K reviews)",
-          img: "./images/5.jpeg",
-          subServices: [
-            { id: "dlr-1", name: "Hinge Repair(per Hinge)", rating: "4.81 (3K reviews)", price: 129, img: "./images/hinge repair(per hinge).jpeg" },
-            { id: "dlr-2", name: "Replacement (per Hinge)", rating: "4.84 (10K reviews)", price: 199, img: "./images/Replacement (per Hinge).jpeg" }
-         ]
+          {
+            title: "Door Hinges repair and replacement",
+            rating: "4.80 (45K reviews)",
+            img: "./images/5.jpeg",
+            subServices: [
+              { id: "dhr-1", name: "Hinge Repair (per Hinge)", rating: "4.81 (3K reviews)", price: 129, img: "./images/hinge repair(per hinge).jpeg" },
+              { id: "dhr-2", name: "Replacement (per Hinge)", rating: "4.84 (10K reviews)", price: 199, img: "./images/Replacement (per Hinge).jpeg" }
+            ]
           },
           {
             title: "Door accessories & mesh installation",
             rating: "4.80 (45K reviews)",
             img: "./images/6.jpeg",
             subServices: [
-              { id: "dlr-1", name: "Chain Latch", rating: "4.81 (3K reviews)", price: 129, img: "./images/Chain Latch.jpeg" },
-              { id: "dlr-2", name: "Lockable latch", rating: "4.84 (10K reviews)", price: 199, img: "./images/Lockable latch.jpeg" },
-              { id: "dlr-3", name: "Tower Bolt", rating: "4.84 (10K reviews)", price: 199, img: "./images/Tower Bolt.jpeg" },
-              { id: "dlr-4", name: "Bottom Stopper Repair", rating: "4.84 (10K reviews)", price: 199, img: "./images/Bottom Stopper Repair.jpeg" },
-              { id: "dlr-5", name: "Peephole", rating: "4.79 (15K reviews)", price: 249, img: "./images/Peephole.jpeg" },
-              { id: "dlr-6", name: "Overhead /Wall mounted Closer", rating: "4.79 (15K reviews)", price: 249, img: "./images/Overhead -Wall mounted Closer.jpeg" },
-              { id: "dlr-7", name: "Consealed Closer", rating: "4.79 (15K reviews)", price: 249, img: "./images/Consealed Closer.jpeg" },
-              { id: "dlr-8", name: "Mesh Replacement", rating: "4.79 (15K reviews)", price: 249, img: "./images/Mesh Replacement.jpeg" }
+              { id: "dam-1", name: "Chain Latch", rating: "4.81 (3K reviews)", price: 129, img: "./images/Chain Latch.jpeg" },
+              { id: "dam-2", name: "Lockable latch", rating: "4.84 (10K reviews)", price: 199, img: "./images/Lockable latch.jpeg" },
+              { id: "dam-3", name: "Tower Bolt", rating: "4.84 (10K reviews)", price: 199, img: "./images/Tower Bolt.jpeg" },
+              { id: "dam-4", name: "Bottom Stopper Repair", rating: "4.84 (10K reviews)", price: 199, img: "./images/Bottom Stopper Repair.jpeg" },
+              { id: "dam-5", name: "Peephole", rating: "4.79 (15K reviews)", price: 249, img: "./images/Peephole.jpeg" },
+              { id: "dam-6", name: "Overhead /Wall mounted Closer", rating: "4.79 (15K reviews)", price: 249, img: "./images/Overhead -Wall mounted Closer.jpeg" },
+              { id: "dam-7", name: "Consealed Closer", rating: "4.79 (15K reviews)", price: 249, img: "./images/Consealed Closer.jpeg" },
+              { id: "dam-8", name: "Mesh Replacement", rating: "4.79 (15K reviews)", price: 249, img: "./images/Mesh Replacement.jpeg" }
             ]
           }
         ]
@@ -370,21 +660,21 @@
             rating: "4.82 (15K reviews)",
             img: "./images/8.jpeg",
             subServices: [
-              { id: "cd-1", name: "Magnet Repair / Install", rating: "4.85 (5K)", price: 149, img: "./images/Magnet Repair - Install.jpeg" },
-              { id: "cd-2", name: "Latch repair /install", rating: "4.80 (3K)", price: 199, img: "./images/Latch repair - install.jpeg" },
-              { id: "cd-3", name: "Drawer lock installation", rating: "4.83 (7K)", price: 249, img: "./images/Drawer lock installation.jpeg" },
-              { id: "cd-4", name: "Cupboard lock Installation", rating: "4.81 (5K)", price: 299, img: "./images/Cupboard lock Installation.jpeg" }
+              { id: "cdl-1", name: "Magnet Repair / Install", rating: "4.85 (5K)", price: 149, img: "./images/Magnet Repair - Install.jpeg" },
+              { id: "cdl-2", name: "Latch repair /install", rating: "4.80 (3K)", price: 199, img: "./images/Latch repair - install.jpeg" },
+              { id: "cdl-3", name: "Drawer lock installation", rating: "4.83 (7K)", price: 249, img: "./images/Drawer lock installation.jpeg" },
+              { id: "cdl-4", name: "Cupboard lock Installation", rating: "4.81 (5K)", price: 299, img: "./images/Cupboard lock Installation.jpeg" }
             ]
           },
-      {
+          {
             title: "Drawer repair & Installation services",
             rating: "4.82 (15K reviews)",
             img: "./images/9.jpeg",
             subServices: [
-              { id: "cd-1", name: "Drawer handle repair/installation", rating: "4.85 (5K)", price: 149, img: "./images/Drawer handle repair - installation.jpeg" },
-              { id: "cd-2", name: "Regular Channel repair", rating: "4.80 (3K)", price: 199, img: "./images/Regular Channel repair.jpeg" },
-              { id: "cd-3", name: "Drawer lock installation", rating: "4.83 (7K)", price: 249, img: "./images/Drawer lock installation.jpeg" },
-              { id: "cd-4", name: "Soft close channel repair", rating: "4.81 (5K)", price: 299, img: "./images/Soft close channel repair.jpeg" }
+              { id: "cdr-1", name: "Drawer handle repair/installation", rating: "4.85 (5K)", price: 149, img: "./images/Drawer handle repair - installation.jpeg" },
+              { id: "cdr-2", name: "Regular Channel repair", rating: "4.80 (3K)", price: 199, img: "./images/Regular Channel repair.jpeg" },
+              { id: "cdr-3", name: "Drawer lock installation", rating: "4.83 (7K)", price: 249, img: "./images/Drawer lock installation.jpeg" },
+              { id: "cdr-4", name: "Soft close channel repair", rating: "4.81 (5K)", price: 299, img: "./images/Soft close channel repair.jpeg" }
             ]
           },
           {
@@ -457,8 +747,8 @@
             rating: "4.85 (18K reviews)",
             img: "./images/15.jpeg",
             subServices: [
-              { id: "sc-1", name: "Small (Upto 2*2ft)", rating: "4.86 (10K)", price: 199, img: "./images/Small.jpeg" },
-              { id: "sc-2", name: "Large (Upto4*3 ft)", rating: "4.85 (5K)", price: 299, img: "./images/Large.jpeg" }
+              { id: "wca-1", name: "Small (Upto 2*2ft)", rating: "4.86 (10K)", price: 199, img: "./images/Small.jpeg" },
+              { id: "wca-2", name: "Large (Upto 4*3 ft)", rating: "4.85 (5K)", price: 299, img: "./images/Large.jpeg" }
             ]
           },
           {
@@ -466,8 +756,8 @@
             rating: "4.85 (18K reviews)",
             img: "./images/16.jpeg",
             subServices: [
-              { id: "sc-1", name: "With 1 Door", rating: "4.86 (10K)", price: 199, img: "./images/With 1 Door.jpeg" },
-              { id: "sc-2", name: "With 2 Door", rating: "4.85 (5K)", price: 299, img: "./images/With 2 Door.jpeg" }
+              { id: "bmc-1", name: "With 1 Door", rating: "4.86 (10K)", price: 199, img: "./images/With 1 Door.jpeg" },
+              { id: "bmc-2", name: "With 2 Door", rating: "4.85 (5K)", price: 299, img: "./images/With 2 Door.jpeg" }
             ]
           }
         ]
@@ -483,11 +773,11 @@
             rating: "4.82 (15K reviews)",
             img: "./images/17.jpeg",
             subServices: [
-              { id: "cd-1", name: "Chain Latch", rating: "4.85 (5K)", price: 149, img: "./images/Chain Latch.jpeg" },
-              { id: "cd-2", name: "Lockable Latch", rating: "4.80 (3K)", price: 199, img: "./images/Lockable Latch.jpeg" },
-              { id: "cd-3", name: "Tower Bolt", rating: "4.83 (7K)", price: 249, img: "./images/Hinge repair-replace (upto 2).jpeg" },
-              { id: "cd-4", name: "Handle Lock", rating: "4.81 (5K)", price: 299, img: "./images/Regular Channel repair.jpeg" },
-              { id: "cd-5", name: "Round Knob Lock", rating: "4.79 (3K)", price: 399, img: "./images/Soft Close Channel repair.jpeg" }
+              { id: "dlr-1", name: "Chain Latch", rating: "4.85 (5K)", price: 149, img: "./images/Chain Latch.jpeg" },
+              { id: "dlr-2", name: "Lockable Latch", rating: "4.80 (3K)", price: 199, img: "./images/Lockable Latch.jpeg" },
+              { id: "dlr-3", name: "Tower Bolt", rating: "4.83 (7K)", price: 249, img: "./images/Hinge repair-replace (upto 2).jpeg" },
+              { id: "dlr-4", name: "Handle Lock", rating: "4.81 (5K)", price: 299, img: "./images/Regular Channel repair.jpeg" },
+              { id: "dlr-5", name: "Round Knob Lock", rating: "4.79 (3K)", price: 399, img: "./images/Soft Close Channel repair.jpeg" }
             ]
           },
           {
@@ -495,12 +785,12 @@
             rating: "4.82 (15K reviews)",
             img: "./images/18.jpeg",
             subServices: [
-              { id: "cd-1", name: "Lockable Latch", rating: "4.85 (5K)", price: 149, img: "./images/Lockable Latch.jpeg" },
-              { id: "cd-2", name: "Tower Bolt", rating: "4.80 (3K)", price: 199, img: "./images/Tower Bolt.jpeg" },
-              { id: "cd-3", name: "Chain Latch", rating: "4.83 (7K)", price: 249, img: "./images/Chain Latch.jpeg" },
-              { id: "cd-4", name: "Handle Lock Replacement", rating: "4.81 (5K)", price: 299, img: "./images/Handle Lock Replacement.jpeg" },
-              { id: "cd-5", name: "Round Knob Lock", rating: "4.79 (3K)", price: 399, img: "./images/Round Knob Lock.jpeg" },
-              { id: "cd-6", name: "Handle Lock Installation", rating: "4.79 (3K)", price: 399, img: "./images/Handle Lock Installation.jpeg" }
+              { id: "dli-1", name: "Lockable Latch", rating: "4.85 (5K)", price: 149, img: "./images/Lockable Latch.jpeg" },
+              { id: "dli-2", name: "Tower Bolt", rating: "4.80 (3K)", price: 199, img: "./images/Tower Bolt.jpeg" },
+              { id: "dli-3", name: "Chain Latch", rating: "4.83 (7K)", price: 249, img: "./images/Chain Latch.jpeg" },
+              { id: "dli-4", name: "Handle Lock Replacement", rating: "4.81 (5K)", price: 299, img: "./images/Handle Lock Replacement.jpeg" },
+              { id: "dli-5", name: "Round Knob Lock", rating: "4.79 (3K)", price: 399, img: "./images/Round Knob Lock.jpeg" },
+              { id: "dli-6", name: "Handle Lock Installation", rating: "4.79 (3K)", price: 399, img: "./images/Handle Lock Installation.jpeg" }
             ]
           },
           {
@@ -508,10 +798,10 @@
             rating: "4.82 (15K reviews)",
             img: "./images/19.jpeg",
             subServices: [
-              { id: "cd-1", name: "Magnet Repair / Install", rating: "4.85 (5K)", price: 149, img: "./images/Magnet Repair - Install.jpeg" },
-              { id: "cd-2", name: "Latch repair /install", rating: "4.80 (3K)", price: 199, img: "./images/Latch repair - install.jpeg" },
-              { id: "cd-3", name: "Drawer lock installation", rating: "4.83 (7K)", price: 249, img: "./images/Drawer lock installation.jpeg" },
-              { id: "cd-4", name: "Cupboard lock Installation", rating: "4.81 (5K)", price: 299, img: "./images/Cupboard lock Installation.jpeg" }
+              { id: "cdl-1", name: "Magnet Repair / Install", rating: "4.85 (5K)", price: 149, img: "./images/Magnet Repair - Install.jpeg" },
+              { id: "cdl-2", name: "Latch repair /install", rating: "4.80 (3K)", price: 199, img: "./images/Latch repair - install.jpeg" },
+              { id: "cdl-3", name: "Drawer lock installation", rating: "4.83 (7K)", price: 249, img: "./images/Drawer lock installation.jpeg" },
+              { id: "cdl-4", name: "Cupboard lock Installation", rating: "4.81 (5K)", price: 299, img: "./images/Cupboard lock Installation.jpeg" }
             ]
           },
           {
@@ -519,10 +809,10 @@
             rating: "4.82 (15K reviews)",
             img: "./images/20.jpeg",
             subServices: [
-              { id: "cd-1", name: "Door Hinge Repair (per 1)", rating: "4.85 (5K)", price: 149, img: "./images/Door Hinge Repair (per 1).jpeg" },
-              { id: "cd-2", name: "Door Hinge Replace (per 1)", rating: "4.80 (3K)", price: 199, img: "./images/Door Hinge Replace (per 1).jpeg" },
-              { id: "cd-3", name: "Window hinge repair/install", rating: "4.83 (7K)", price: 249, img: "./images/Window hinge repair - install.jpeg" },
-              { id: "cd-4", name: "Cupboard hinge repair (upto 2)", rating: "4.81 (5K)", price: 299, img: "./images/Cupboard hinge repair (upto 2).jpeg" }
+              { id: "dhrr-1", name: "Door Hinge Repair (per 1)", rating: "4.85 (5K)", price: 149, img: "./images/Door Hinge Repair (per 1).jpeg" },
+              { id: "dhrr-2", name: "Door Hinge Replace (per 1)", rating: "4.80 (3K)", price: 199, img: "./images/Door Hinge Replace (per 1).jpeg" },
+              { id: "dhrr-3", name: "Window hinge repair/install", rating: "4.83 (7K)", price: 249, img: "./images/Window hinge repair - install.jpeg" },
+              { id: "dhrr-4", name: "Cupboard hinge repair (upto 2)", rating: "4.81 (5K)", price: 299, img: "./images/Cupboard hinge repair (upto 2).jpeg" }
             ]
           },
           {
@@ -530,11 +820,11 @@
             rating: "4.82 (15K reviews)",
             img: "./images/21.jpeg",
             subServices: [
-              { id: "cd-1", name: "Regular Channel repair", rating: "4.81 (5K)", price: 299, img: "./images/Regular Channel repair.jpeg" },
-              { id: "cd-2", name: "Soft Close Channel repair", rating: "4.79 (3K)", price: 399, img: "./images/Soft Close Channel repair.jpeg" }
+              { id: "cri-1", name: "Regular Channel repair", rating: "4.81 (5K)", price: 299, img: "./images/Regular Channel repair.jpeg" },
+              { id: "cri-2", name: "Soft Close Channel repair", rating: "4.79 (3K)", price: 399, img: "./images/Soft Close Channel repair.jpeg" }
             ]
           }
-          ]
+        ]
       },
       {
         id: "curtain-window",
@@ -600,7 +890,6 @@
           }
         ]
       },
-
       {
         id: "furniture-repair",
         title: "Furniture repair",
@@ -661,7 +950,8 @@
             ]
           }
         ]
-      },{
+      },
+      {
         id: "furniture-assembly",
         title: "Furniture Assembly",
         subtitle: "Beds, tables, cabinets, wardrobes & shoe racks",
@@ -840,13 +1130,13 @@
               { id: "fasc-4", name: "4+ Compartments", rating: "4.89 (1K)", price: 899, img: "./images/shoe cabinet 4plus comp.jpeg" }
             ]
           }
-          ]
+        ]
       },
       {
         id: "kitchen-fittings",
         title: "Kitchen fittings",
         subtitle: "Drawer & cabinet, Utensil rack & Shelf installation",
-         image: "./images/Kitchen fittings.jpeg",
+        image: "./images/Kitchen fittings.jpeg",
         mainServices: [
           {
             title: "Drawer & cabinet",
@@ -968,21 +1258,364 @@
             rating: "4.95 (25K reviews)",
             img: "./images/At home consultation.PNG",
             subServices: [
-              { id: "con-1", name: "Book a carpenter", rating: "4.95 (25K)", price: 99, img: "./images/At home consultation.PNG"}
+              { id: "con-1", name: "Book a carpenter", rating: "4.95 (25K)", price: 99, img: "./images/At home consultation.PNG" }
             ]
           }
-          ]
+        ]
       }
     ];
 
-    let cart = [];
-    let currentCategoryIdx = 0;
+    const electricianCategories = [
+      {
+        id: "switch-socket",
+        title: "Switch & socket",
+        subtitle: "New switchbox / switchboard installation",
+        image: "./images/electrician_switch.jpeg",
+        mainServices: [
+          {
+            title: "New switchbox / switchboard installation",
+            rating: "4.82 (15K reviews)",
+            img: "./images/electrician_switchbox.jpeg",
+            subServices: [
+              { id: "esw-1", name: "Small (Upto 2 Modules)", rating: "4.85 (5K)", price: 149, img: "./images/esw_small.jpeg" },
+              { id: "esw-2", name: "2 Switches", rating: "4.80 (3K)", price: 199, img: "./images/esw_2switches.jpeg" },
+              { id: "esw-3", name: "Large (Upto 6+ Regular Modules)", rating: "4.83 (7K)", price: 299, img: "./images/esw_large.jpeg" },
+              { id: "esw-4", name: "Power AC Switch Box (small)", rating: "4.81 (5K)", price: 349, img: "./images/esw_ac.jpeg" }
+            ]
+          }
+        ]
+      },
+      {
+        id: "fan",
+        title: "Fan",
+        subtitle: "Fan repair, ceiling, decorative & BLDC fan installation",
+        image: "./images/electrician_fan.jpeg",
+        mainServices: [
+          {
+            title: "Fan repair",
+            rating: "4.78 (12K reviews)",
+            img: "./images/fan_repair.jpeg",
+            subServices: [
+              { id: "efan-1", name: "Noise", rating: "4.76 (4K)", price: 149, img: "./images/fan_noise.jpeg" },
+              { id: "efan-2", name: "Slow Speed", rating: "4.79 (5K)", price: 179, img: "./images/fan_slow.jpeg" },
+              { id: "efan-3", name: "Blades not Spinning", rating: "4.80 (3K)", price: 199, img: "./images/fan_spinning.jpeg" }
+            ]
+          },
+          {
+            title: "Regular ceiling fan installation",
+            rating: "4.85 (20K reviews)",
+            img: "./images/regular_fan.jpeg",
+            subServices: [
+              { id: "ercf-1", name: "Installation", rating: "4.86 (10K)", price: 179, img: "./images/fan_install.jpeg" },
+              { id: "ercf-2", name: "Replacement", rating: "4.84 (7K)", price: 219, img: "./images/fan_replace.jpeg" },
+              { id: "ercf-3", name: "Uninstallation", rating: "4.82 (3K)", price: 99, img: "./images/fan_uninstall.jpeg" }
+            ]
+          },
+          {
+            title: "Decorative fan installation",
+            rating: "4.88 (8K reviews)",
+            img: "./images/decorative_fan.jpeg",
+            subServices: [
+              { id: "edf-1", name: "Installation", rating: "4.89 (4K)", price: 299, img: "./images/fan_installing.jpeg" },
+              { id: "edf-2", name: "Replacement", rating: "4.87 (3K)", price: 349, img: "./images/fan_replaced.jpeg" },
+              { id: "edf-3", name: "Uninstallation", rating: "4.80 (1K)", price: 149, img: "./images/fan_uninstalling.jpeg" }
+            ]
+          },
+          {
+            title: "Smart/BLDC fan installation",
+            rating: "4.90 (6K reviews)",
+            img: "./images/bldc_fan.jpeg",
+            subServices: [
+              { id: "ebldc-1", name: "Installation", rating: "4.91 (3K)", price: 249, img: "./images/fan_install 1.jpeg" },
+              { id: "ebldc-2", name: "Replacement", rating: "4.89 (2K)", price: 299, img: "./images/fan_replace 2.jpeg" },
+              { id: "ebldc-3", name: "Uninstallation", rating: "4.85 (1K)", price: 129, img: "./images/fan_uninstall 3.jpeg" }
+            ]
+          },
+          {
+            title: "Exhaust/pedestal/tower fan installation",
+            rating: "4.81 (5K reviews)",
+            img: "./images/exhaust_fan.jpeg",
+            subServices: [
+              { id: "eex-1", name: "Installation", rating: "4.82 (3K)", price: 179, img: "./images/fan_install 4.jpeg" },
+              { id: "eex-2", name: "Replacement", rating: "4.81 (1.5K)", price: 219, img: "./images/fan_replace 5.jpeg" },
+              { id: "eex-3", name: "Uninstallation", rating: "4.79 (500)", price: 99, img: "./images/fan_uninstall 6.jpeg" }
+            ]
+          },
+          {
+            title: "Fan regulator replacement",
+            rating: "4.83 (4K reviews)",
+            img: "./images/regulator.jpeg",
+            subServices: [
+              { id: "ereg-1", name: "Fan regulator replacement", rating: "4.83 (4K)", price: 149, img: "./images/regulator.jpeg" }
+            ]
+          }
+        ]
+      },
+      {
+        id: "light",
+        title: "Light",
+        subtitle: "Fancy lights, Tubelights, Bulbs, Ceiling & Chandelier lights",
+        image: "./images/electrician_light.jpeg",
+        mainServices: [
+          {
+            title: "Fancy light installation/replacement",
+            rating: "4.86 (9K reviews)",
+            img: "./images/fancy_light.jpeg",
+            subServices: [
+              { id: "flt-1", name: "Fancy light installation/replacement", rating: "4.86 (9K)", price: 249, img: "./images/fancy_light.jpeg" }
+            ]
+          },
+          {
+            title: "Tubelight Installation / Replacement",
+            rating: "4.82 (11K reviews)",
+            img: "./images/tubelight.jpeg",
+            subServices: [
+              { id: "tbl-1", name: "Tubelight Installation / Replacement", rating: "4.82 (11K)", price: 129, img: "./images/tubelight.jpeg" }
+            ]
+          },
+          {
+            title: "Bulb installation/replacement",
+            rating: "4.80 (7K reviews)",
+            img: "./images/bulb.jpeg",
+            subServices: [
+              { id: "bulb-1", name: "Only Bulb", rating: "4.81 (3K)", price: 99, img: "./images/only bulb.jpeg" },
+              { id: "bulb-2", name: "Only Bulb Holder", rating: "4.79 (2K)", price: 99, img: "./images/bulb holder.jpeg" },
+              { id: "bulb-3", name: "Bulb & Holder", rating: "4.82 (2K)", price: 149, img: "./images/bulb_holder.jpeg" }
+            ]
+          },
+          {
+            title: "Ceiling light installation",
+            rating: "4.85 (10K reviews)",
+            img: "./images/ceiling_light.jpeg",
+            subServices: [
+              { id: "clt-1", name: "Panel lights (False Ceiling)", rating: "4.86 (6K)", price: 179, img: "./images/panel_false.jpeg" },
+              { id: "clt-2", name: "Panel lights (Mounted On…)", rating: "4.84 (4K)", price: 179, img: "./images/panel_mounted.jpeg" }
+            ]
+          },
+          {
+            title: "Hanging light installation",
+            rating: "4.88 (5K reviews)",
+            img: "./images/hanging_light.jpeg",
+            subServices: [
+              { id: "hlt-1", name: "Hanging light installation", rating: "4.88 (5K)", price: 299, img: "./images/hanging_light.jpeg" }
+            ]
+          },
+          {
+            title: "Chandelier installation",
+            rating: "4.92 (3K reviews)",
+            img: "./images/chandelier.jpeg",
+            subServices: [
+              { id: "chan-1", name: "Small", rating: "4.90 (1K)", price: 499, img: "./images/chandelier 1.jpeg" },
+              { id: "chan-2", name: "Small (Single-tire / upto 6 lights)", rating: "4.91 (1K)", price: 699, img: "./images/chandelier 2.jpeg" },
+              { id: "chan-3", name: "Medium (Single-tire / upto 6+ lights)", rating: "4.93 (700)", price: 999, img: "./images/chandelier 3.jpeg" },
+              { id: "chan-4", name: "Extra Large (30+ Kg)", rating: "4.95 (300)", price: 1499, img: "./images/chandelier 4.jpeg" }
+            ]
+          }
+        ]
+      },
+      {
+        id: "wiring",
+        title: "Wiring",
+        subtitle: "New internal wiring services",
+        image: "./images/electrician_wiring.jpeg",
+        mainServices: [
+          {
+            title: "New internal wiring (per 5m)",
+            rating: "4.81 (4K reviews)",
+            img: "./images/wiring.jpeg",
+            subServices: [
+              { id: "wir-1", name: "With Casing", rating: "4.82 (2.5K)", price: 349, img: "./images/wiring_casing.jpeg" },
+              { id: "wir-2", name: "Without Casing", rating: "4.80 (1.5K)", price: 299, img: "./images/wiring_without.jpeg" }
+            ]
+          }
+        ]
+      },
+      {
+        id: "doorbell-security",
+        title: "Doorbell & security",
+        subtitle: "Regular doorbell, Video doorbell & Wireless CCTV installation",
+        image: "./images/electrician_security.jpeg",
+        mainServices: [
+          {
+            title: "Regular doorbell installation",
+            rating: "4.84 (8K reviews)",
+            img: "./images/doorbell.jpeg",
+            subServices: [
+              { id: "db-1", name: "Installation", rating: "4.85 (5K)", price: 149, img: "./images/doorbell 1.jpeg" },
+              { id: "db-2", name: "Replace", rating: "4.83 (3K)", price: 179, img: "./images/doorbell 2.jpeg" }
+            ]
+          },
+          {
+            title: "Video doorbell installation",
+            rating: "4.89 (4K reviews)",
+            img: "./images/video_doorbell.jpeg",
+            subServices: [
+              { id: "vdb-1", name: "Installation", rating: "4.90 (2.5K)", price: 399, img: "./images/video_doorbell 1.jpeg" },
+              { id: "vdb-2", name: "Replacement", rating: "4.88 (1.5K)", price: 449, img: "./images/video_doorbell 2.jpeg" }
+            ]
+          },
+          {
+            title: "Wireless CCTV installation",
+            rating: "4.91 (6K reviews)",
+            img: "./images/cctv.jpeg",
+            subServices: [
+              { id: "cctv-1", name: "Wireless CCTV installation", rating: "4.91 (6K)", price: 499, img: "./images/cctv.jpeg" }
+            ]
+          }
+        ]
+      },
+      {
+        id: "mcb-fuse",
+        title: "MCB/fuse",
+        subtitle: "MCB/Fuse repair, Submeter & Changeover switch installation",
+        image: "./images/electrician_mcb.jpeg",
+        mainServices: [
+          {
+            title: "MCB / Fuse Repair or Replacement",
+            rating: "4.82 (10K reviews)",
+            img: "./images/mcb.jpeg",
+            subServices: [
+              { id: "mcb-1", name: "Fuse Repair", rating: "4.80 (3K)", price: 199, img: "./images/fuse_repair.jpeg" },
+              { id: "mcb-2", name: "1 Switch (Install/Replace)", rating: "4.82 (3K)", price: 149, img: "./images/mcb_switch 1.jpeg" },
+              { id: "mcb-3", name: "2 Switch (Install/Replace)", rating: "4.83 (2K)", price: 229, img: "./images/mcb_switch 2.jpeg" },
+              { id: "mcb-4", name: "3 Switch (Install/Replace)", rating: "4.84 (1K)", price: 299, img: "./images/mcb_switch 3.jpeg" },
+              { id: "mcb-5", name: "4 Switch (Install/Replace)", rating: "4.85 (1K)", price: 379, img: "./images/mcb_switch 4.jpeg" }
+            ]
+          },
+          {
+            title: "Submeter installation",
+            rating: "4.86 (5K reviews)",
+            img: "./images/submeter.jpeg",
+            subServices: [
+              { id: "sub-1", name: "1 phase Sub Meter Installation", rating: "4.87 (3K)", price: 349, img: "./images/submeter 1.jpeg" },
+              { id: "sub-2", name: "3 phase Sub Meter Installation", rating: "4.85 (2K)", price: 499, img: "./images/submeter 2.jpeg" }
+            ]
+          },
+          {
+            title: "3-phase changeover switch installation",
+            rating: "4.88 (2K reviews)",
+            img: "./images/changeover.jpeg",
+            subServices: [
+              { id: "co-1", name: "3-phase changeover switch installation", rating: "4.88 (2K)", price: 599, img: "./images/changeover.jpeg" }
+            ]
+          }
+        ]
+      },
+      {
+        id: "appliances",
+        title: "Appliances",
+        subtitle: "Home theatre, TV installation, Inverters & Sound bar",
+        image: "./images/electrician_appliances.jpeg",
+        mainServices: [
+          {
+            title: "Home theatre installation",
+            rating: "4.87 (4K reviews)",
+            img: "./images/hometheatre.jpeg",
+            subServices: [
+              { id: "app-1", name: "Home theatre installation", rating: "4.87 (4K)", price: 399, img: "./images/hometheatre.jpeg" }
+            ]
+          },
+          {
+            title: "TV installation",
+            rating: "4.90 (18K reviews)",
+            img: "./images/tv_install.jpeg",
+            subServices: [
+              { id: "tv-1", name: "Upto 26 Inch", rating: "4.88 (3K)", price: 299, img: "./images/tv_install 1.jpeg" },
+              { id: "tv-2", name: "32 – 43 Inch", rating: "4.90 (8K)", price: 349, img: "./images/tv_install 1.jpeg" },
+              { id: "tv-3", name: "46 – 55 Inch", rating: "4.92 (5K)", price: 449, img: "./images/tv_install 1.jpeg" },
+              { id: "tv-4", name: "56 – 65 Inch", rating: "4.93 (1.5K)", price: 599, img: "./images/tv_install 1.jpeg" },
+              { id: "tv-5", name: "Over 75 Inch", rating: "4.95 (500)", price: 899, img: "./images/tv_install 1.jpeg" }
+            ]
+          },
+          {
+            title: "TV uninstallation",
+            rating: "4.83 (6K reviews)",
+            img: "./images/tv_uninstall.jpeg",
+            subServices: [
+              { id: "tvu-1", name: "Below 46 inch", rating: "4.82 (2K)", price: 199, img: "./images/tv_uninstall 1.jpeg" },
+              { id: "tvu-2", name: "46 – 55 Inch", rating: "4.84 (2K)", price: 249, img: "./images/tv_uninstall 1.jpeg" },
+              { id: "tvu-3", name: "56 – 65 Inch", rating: "4.85 (1.5K)", price: 299, img: "./images/tv_uninstall 1.jpeg" },
+              { id: "tvu-4", name: "Over 75 Inch", rating: "4.88 (500)", price: 399, img: "./images/tv_uninstall 1.jpeg" }
+            ]
+          },
+          {
+            title: "Sound bar installation",
+            rating: "4.85 (5K reviews)",
+            img: "./images/soundbar.jpeg",
+            subServices: [
+              { id: "sb-1", name: "Sound bar installation", rating: "4.85 (5K)", price: 249, img: "./images/soundbar.jpeg" }
+            ]
+          },
+          {
+            title: "Karban Airzone installation",
+            rating: "4.81 (1K reviews)",
+            img: "./images/airzone.jpeg",
+            subServices: [
+              { id: "kb-1", name: "Airzone", rating: "4.81 (1K)", price: 349, img: "./images/airzone.jpeg" }
+            ]
+          },
+          {
+            title: "Inverter installation",
+            rating: "4.89 (7K reviews)",
+            img: "./images/inverter.jpeg",
+            subServices: [
+              { id: "inv-1", name: "Installation (Single Battery)", rating: "4.88 (4K)", price: 399, img: "./images/inverter 1.jpeg" },
+              { id: "inv-2", name: "Installation (Double Battery)", rating: "4.90 (3K)", price: 599, img: "./images/inverter 2.jpeg" }
+            ]
+          },
+          {
+            title: "Inverter fuse replacement",
+            rating: "4.82 (3K reviews)",
+            img: "./images/inverter_fuse.jpeg",
+            subServices: [
+              { id: "inf-1", name: "Inverter fuse replacement", rating: "4.82 (3K)", price: 199, img: "./images/inverter_fuse.jpeg" }
+            ]
+          },
+          {
+            title: "Inverter servicing",
+            rating: "4.86 (4K reviews)",
+            img: "./images/inverter_service.jpeg",
+            subServices: [
+              { id: "ins-1", name: "Inverter servicing", rating: "4.86 (4K)", price: 349, img: "./images/inverter_service.jpeg" }
+            ]
+          },
+          {
+            title: "Inverter check-up",
+            rating: "4.80 (2K reviews)",
+            img: "./images/inverter_check.jpeg",
+            subServices: [
+              { id: "inc-1", name: "Inverter check-up", rating: "4.80 (2K)", price: 149, img: "./images/inverter_check.jpeg" }
+            ]
+          },
+          {
+            title: "Inverter uninstallation",
+            rating: "4.83 (2K reviews)",
+            img: "./images/inverter_uninstall.jpeg",
+            subServices: [
+              { id: "inu-1", name: "Inverter uninstallation", rating: "4.83 (2K)", price: 249, img: "./images/inverter_uninstall.jpeg" }
+            ]
+          }
+        ]
+      }
+    ];
+
+    let cart = [{ item: carpenterCategories[0].mainServices[0].subServices[0], quantity: 0 }];
+    let activeCategories = carpenterCategories;
+    let selectedAddress = null;
+    let selectedSlotDate = null;
+    let selectedSlotTime = null;
+    let addedTip = 0;
+    
+    let loggedInUserPhone = null;
+    let otpTimerInterval = null;
 
     window.onload = function () {
       renderSubServicesGrid();
       renderServiceDetailsList();
       renderCarpenterSubCategoryModal();
+      renderElectricianSubCategoryModal();
       updateCartUI();
+      setupSlotModalData();
     };
 
     function navigateTo(viewName) {
@@ -1001,191 +1634,214 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    /* LOGIN MODAL CONTROLLERS */
+    function openPhoneAuthModal() {
+      document.getElementById('phone-auth-modal').classList.remove('hidden');
+    }
+    function closePhoneAuthModal() {
+      document.getElementById('phone-auth-modal').classList.add('hidden');
+    }
+
+    function validatePhoneInput() {
+      const input = document.getElementById('user-phone-input');
+      const continueBtn = document.getElementById('btn-phone-continue');
+      if (input.value.length === 10) {
+        continueBtn.disabled = false;
+        continueBtn.className = "w-full bg-black hover:bg-gray-800 text-white py-3.5 rounded-2xl font-bold text-sm cursor-pointer transition shadow-md";
+      } else {
+        continueBtn.disabled = true;
+        continueBtn.className = "w-full bg-gray-200 text-gray-400 py-3.5 rounded-2xl font-bold text-sm cursor-not-allowed transition";
+      }
+    }
+
+    function openOtpAuthModal() {
+      const phoneNum = document.getElementById('user-phone-input').value;
+      loggedInUserPhone = phoneNum;
+      document.getElementById('otp-phone-display').innerText = `+91${phoneNum}`;
+      
+      closePhoneAuthModal();
+      document.getElementById('otp-auth-modal').classList.remove('hidden');
+
+      startOtpTimer();
+    }
+
+    function closeOtpAuthModal() {
+      document.getElementById('otp-auth-modal').classList.add('hidden');
+      if (otpTimerInterval) clearInterval(otpTimerInterval);
+    }
+
+    function handleOtpInput(element, index) {
+      if (element.value.length === 1 && index < 5) {
+        document.querySelectorAll('.otp-box')[index + 1].focus();
+      }
+
+      const otpBoxes = document.querySelectorAll('.otp-box');
+      let isComplete = true;
+      otpBoxes.forEach(box => { if (box.value === '') isComplete = false; });
+
+      const loginBtn = document.getElementById('btn-otp-login');
+      if (isComplete) {
+        loginBtn.disabled = false;
+        loginBtn.className = "w-full bg-black hover:bg-gray-800 text-white py-3.5 rounded-2xl font-bold text-sm cursor-pointer transition shadow-md";
+      } else {
+        loginBtn.disabled = true;
+        loginBtn.className = "w-full bg-gray-200 text-gray-400 py-3.5 rounded-2xl font-bold text-sm cursor-not-allowed transition";
+      }
+    }
+
+    function startOtpTimer() {
+      let seconds = 25;
+      const timerDisplay = document.getElementById('otp-timer-text');
+      timerDisplay.innerText = "00:25";
+      
+      if (otpTimerInterval) clearInterval(otpTimerInterval);
+
+      otpTimerInterval = setInterval(() => {
+        seconds--;
+        if (seconds < 10) timerDisplay.innerText = `00:0${seconds}`;
+        else timerDisplay.innerText = `00:${seconds}`;
+
+        if (seconds <= 0) {
+          clearInterval(otpTimerInterval);
+          timerDisplay.innerText = "Resend OTP";
+          timerDisplay.className = "text-ucPurple font-bold cursor-pointer underline";
+        }
+      }, 1000);
+    }
+
+    function verifyAndLoginUser() {
+      closeOtpAuthModal();
+      showToast("🎉 Login Successful!");
+
+      document.getElementById('header-auth-container').innerHTML = `
+        <div class="flex items-center gap-2 bg-purple-50 px-3 py-1.5 rounded-xl border border-purple-200">
+          <i class="fa-solid fa-circle-user text-ucPurple text-base"></i>
+          <span class="text-xs font-extrabold text-gray-900">+91 ${loggedInUserPhone}</span>
+        </div>
+      `;
+
+      document.getElementById('checkout-phone-display').innerText = `+91 ${loggedInUserPhone}`;
+    }
+
     /* MODAL CONTROLLERS */
-    function openMainCategoryModal() {
-      document.getElementById('main-category-modal').classList.remove('hidden');
+    function openMainCategoryModal() { document.getElementById('main-category-modal').classList.remove('hidden'); }
+    function closeMainCategoryModal() { document.getElementById('main-category-modal').classList.add('hidden'); }
+    
+    function openCarpenterSubCategoryModal() { 
+      closeMainCategoryModal(); 
+      activeCategories = carpenterCategories;
+      document.getElementById('carpenter-subcategory-modal').classList.remove('hidden'); 
+    }
+    function closeCarpenterSubCategoryModal() { document.getElementById('carpenter-subcategory-modal').classList.add('hidden'); }
+
+    function openElectricianSubCategoryModal() { 
+      closeMainCategoryModal(); 
+      activeCategories = electricianCategories;
+      document.getElementById('electrician-subcategory-modal').classList.remove('hidden'); 
+    }
+    function closeElectricianSubCategoryModal() { document.getElementById('electrician-subcategory-modal').classList.add('hidden'); }
+
+    function openAddressModal() { document.getElementById('address-modal').classList.remove('hidden'); }
+    function closeAddressModal() { document.getElementById('address-modal').classList.add('hidden'); }
+
+    function saveAddressDetails() {
+      const house = document.getElementById('input-house-no').value.trim() || 'Home - 25';
+      const street = document.getElementById('input-street').value.trim() || 'Nandambakkam, Tamil Nadu';
+      const pincode = document.getElementById('input-pincode').value.trim() || '600089';
+      const mobile = document.getElementById('input-mobile').value.trim() || '6381796419';
+
+      selectedAddress = `${house}, ${street} ${pincode}`;
+      document.getElementById('checkout-address-display').innerText = selectedAddress;
+      document.getElementById('checkout-phone-display').innerText = `+91 ${mobile}`;
+
+      const btn = document.getElementById('address-action-btn');
+      btn.innerText = 'Edit';
+      btn.className = 'px-4 py-2 border border-gray-300 text-gray-700 rounded-xl text-xs font-bold hover:bg-gray-50 transition';
+
+      closeAddressModal();
+      document.getElementById('slot-action-btn').classList.remove('hidden');
+      openSlotModal();
     }
 
-    function closeMainCategoryModal() {
-      document.getElementById('main-category-modal').classList.add('hidden');
-    }
+    function openSlotModal() { document.getElementById('slot-modal').classList.remove('hidden'); }
+    function closeSlotModal() { document.getElementById('slot-modal').classList.add('hidden'); }
 
-    function openCarpenterSubCategoryModal() {
-      closeMainCategoryModal();
-      document.getElementById('carpenter-subcategory-modal').classList.remove('hidden');
-    }
+    function setupSlotModalData() {
+      const datesContainer = document.getElementById('dates-row');
+      datesContainer.innerHTML = '';
 
-    function closeCarpenterSubCategoryModal() {
-      document.getElementById('carpenter-subcategory-modal').classList.add('hidden');
-    }
+      const days = ['Today', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      for (let i = 0; i < 5; i++) {
+        const d = new Date();
+        d.setDate(d.getDate() + i);
+        const dayName = i === 0 ? 'Today' : days[d.getDay()];
+        const dateNum = d.getDate();
 
-    function renderCarpenterSubCategoryModal() {
-      const list = document.getElementById('carpenter-subcat-list');
-      list.innerHTML = '';
-      carpenterCategories.forEach((cat, index) => {
-        const item = document.createElement('div');
-        item.className = "p-3.5 border border-gray-200 rounded-xl hover:border-ucPurple hover:bg-purple-50/40 cursor-pointer flex items-center justify-between transition bg-white";
-        item.onclick = () => {
-          closeCarpenterSubCategoryModal();
-          currentCategoryIdx = index;
-          renderServiceDetailsList();
-          navigateTo('service-details');
+        const card = document.createElement('div');
+        card.className = `min-w-[64px] py-2 px-3 border rounded-xl text-center cursor-pointer transition ${i === 1 ? 'border-ucPurple bg-purple-50 text-ucPurple font-bold' : 'border-gray-200 text-gray-700'}`;
+        card.onclick = (e) => {
+          document.querySelectorAll('#dates-row > div').forEach(el => el.className = 'min-w-[64px] py-2 px-3 border border-gray-200 rounded-xl text-center cursor-pointer transition text-gray-700');
+          card.className = 'min-w-[64px] py-2 px-3 border-2 border-ucPurple bg-purple-50 text-ucPurple font-bold rounded-xl text-center cursor-pointer transition';
+          selectedSlotDate = `${dayName}, Oct ${dateNum}`;
+          checkSlotValidity();
         };
-        item.innerHTML = `
-          <div class="flex items-center gap-3.5">
-            <!-- Periya size image popup list-la varum -->
-            <div class="w-14 h-14 rounded-xl overflow-hidden bg-gray-100 shrink-0 shadow-sm">
-              <img src="${cat.image}" onerror="this.src='https://placehold.co/100x100/e2e8f0/0f172a?text=Service'" class="w-full h-full object-cover" />
-            </div>
-            <div>
-              <h4 class="font-bold text-sm text-gray-900">${cat.title}</h4>
-              <p class="text-xs text-gray-500">${cat.subtitle}</p>
-            </div>
-          </div>
-          <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
-        `;
-        list.appendChild(item);
-      });
-    }
-
-    /* SUB SERVICES POPUP MODAL */
-    function openSubServicesPopupModal(catIdx, mainSrvIdx) {
-      const cat = carpenterCategories[catIdx] || carpenterCategories[0];
-      const mainSrv = cat.mainServices[mainSrvIdx] || cat.mainServices[0];
-
-      document.getElementById('popup-service-title').innerText = mainSrv.title;
-      document.getElementById('popup-service-rating').innerHTML = `<i class="fa-solid fa-star text-amber-400"></i> ${mainSrv.rating}`;
-
-      const container = document.getElementById('popup-subservices-container');
-      container.innerHTML = '';
-
-      mainSrv.subServices.forEach(sub => {
-        const inCart = cart.find(c => c.item.id === sub.id);
-        const qty = inCart ? inCart.quantity : 0;
-
-        const card = document.createElement('div');
-        card.className = "min-w-[190px] max-w-[200px] border border-gray-200 rounded-2xl p-3 bg-white shadow-sm flex flex-col justify-between shrink-0";
-        card.innerHTML = `
-          <div>
-            <div class="w-full h-28 rounded-xl overflow-hidden bg-gray-100 mb-2">
-              <img src="${sub.img}" onerror="this.src='https://placehold.co/200x200/e2e8f0/0f172a?text=Service'" class="w-full h-full object-cover" />
-            </div>
-            <h4 class="font-bold text-sm text-gray-900 leading-tight mb-1">${sub.name}</h4>
-            <p class="text-[11px] text-gray-500 font-semibold mb-2"><i class="fa-solid fa-star text-amber-400"></i> ${sub.rating}</p>
-          </div>
-          <div>
-            <div class="font-extrabold text-sm text-gray-900 mb-2">₹${sub.price}</div>
-            <div id="popup-btn-${sub.id}">
-              ${renderPopupButton(sub, qty)}
-            </div>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-
-      document.getElementById('subservices-popup-modal').classList.remove('hidden');
-    }
-
-    function closeSubServicesPopupModal() {
-      document.getElementById('subservices-popup-modal').classList.add('hidden');
-    }
-
-    function renderPopupButton(sub, qty) {
-      if (qty === 0) {
-        return `<button onclick="updateCartFromPopup('${sub.id}', 1)" class="w-full py-1.5 border border-purple-300 text-ucPurple bg-purple-50 hover:bg-ucPurple hover:text-white transition font-bold text-xs rounded-xl">Add</button>`;
-      } else {
-        return `
-          <div class="flex items-center justify-between bg-ucPurple text-white rounded-xl overflow-hidden font-extrabold text-xs py-1 px-2">
-            <button onclick="updateCartFromPopup('${sub.id}', ${qty - 1})">-</button>
-            <span>${qty}</span>
-            <button onclick="updateCartFromPopup('${sub.id}', ${qty + 1})">+</button>
-          </div>
-        `;
-      }
-    }
-
-    function updateCartFromPopup(subId, newQty) {
-      let targetSub = null;
-      carpenterCategories.forEach(cat => {
-        cat.mainServices.forEach(ms => {
-          ms.subServices.forEach(s => {
-            if (s.id === subId) targetSub = s;
-          });
-        });
-      });
-
-      if (!targetSub) return;
-
-      const idx = cart.findIndex(c => c.item.id === subId);
-      if (newQty <= 0) {
-        if (idx > -1) cart.splice(idx, 1);
-      } else {
-        if (idx > -1) cart[idx].quantity = newQty;
-        else cart.push({ item: targetSub, quantity: newQty });
+        card.innerHTML = `<p class="text-[10px] text-gray-400 font-semibold">${dayName}</p><p class="text-sm font-black">${dateNum}</p>`;
+        datesContainer.appendChild(card);
+        if (i === 1) selectedSlotDate = `${dayName}, Oct ${dateNum}`;
       }
 
-      updateCartUI();
-      const btnContainer = document.getElementById(`popup-btn-${subId}`);
-      if (btnContainer) {
-        btnContainer.innerHTML = renderPopupButton(targetSub, newQty);
-      }
-    }
+      const timeGrid = document.getElementById('time-slots-grid');
+      timeGrid.innerHTML = '';
+      const times = ['08:00 AM', '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', '02:00 PM', '03:00 PM', '04:00 PM', '05:00 PM', '05:30 PM', '06:00 PM', '07:00 PM', '07:30 PM'];
 
-    function renderSubServicesGrid() {
-      const grid = document.getElementById('sub-services-grid');
-      grid.innerHTML = '';
-      carpenterCategories.forEach((cat, idx) => {
-        const card = document.createElement('div');
-        card.className = "bg-white p-4 rounded-2xl border border-gray-200 hover:border-ucPurple hover:shadow-md cursor-pointer transition flex flex-col justify-between";
-        card.onclick = () => {
-          currentCategoryIdx = idx;
-          renderServiceDetailsList();
-          navigateTo('service-details');
+      times.forEach((t, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'py-2.5 px-2 border border-gray-200 rounded-xl text-xs font-semibold text-gray-700 hover:border-ucPurple transition relative';
+        if (index === 0) {
+          btn.innerHTML = `${t} <span class="absolute -top-2 right-1 bg-amber-100 text-amber-700 text-[9px] px-1 font-bold rounded">+ ₹100</span>`;
+        } else {
+          btn.innerText = t;
+        }
+
+        btn.onclick = () => {
+          document.querySelectorAll('#time-slots-grid > button').forEach(b => b.classList.remove('border-ucPurple', 'bg-purple-50', 'text-ucPurple', 'font-bold'));
+          btn.classList.add('border-ucPurple', 'bg-purple-50', 'text-ucPurple', 'font-bold');
+          selectedSlotTime = t;
+          checkSlotValidity();
         };
-        card.innerHTML = `
-          <div class="space-y-3">
-            <!-- Innum periya size image grid view-la varum -->
-            <div class="w-16 h-16 rounded-2xl overflow-hidden bg-gray-100 shadow-sm">
-              <img src="${cat.image}" onerror="this.src='https://placehold.co/100x100/e2e8f0/0f172a?text=Service'" class="w-full h-full object-cover" />
-            </div>
-            <div>
-              <h3 class="font-bold text-sm text-gray-900">${cat.title}</h3>
-              <p class="text-xs text-gray-500 mt-0.5">${cat.subtitle}</p>
-            </div>
-          </div>
-        `;
-        grid.appendChild(card);
+        timeGrid.appendChild(btn);
       });
     }
 
-    function renderServiceDetailsList() {
-      const currentCat = carpenterCategories[currentCategoryIdx] || carpenterCategories[0];
-      document.getElementById('selected-subcategory-title').innerText = currentCat.title;
-      document.getElementById('selected-subcategory-subtitle').innerText = currentCat.subtitle;
+    function checkSlotValidity() {
+      const confirmBtn = document.getElementById('btn-slot-confirm');
+      if (selectedSlotDate && selectedSlotTime) {
+        confirmBtn.disabled = false;
+        confirmBtn.className = 'w-full bg-ucPurple text-white py-3 rounded-xl font-bold text-sm hover:bg-ucPurpleDark transition shadow-md';
+      }
+    }
 
-      const container = document.getElementById('service-items-container');
-      container.innerHTML = '';
+    function confirmSlotBooking() {
+      const slotText = `${selectedSlotDate} - ${selectedSlotTime}`;
+      document.getElementById('checkout-slot-display').innerText = slotText;
+      document.getElementById('checkout-slot-display').classList.remove('text-gray-400');
+      document.getElementById('checkout-slot-display').classList.add('text-gray-900');
 
-      currentCat.mainServices.forEach((ms, mIdx) => {
-        const card = document.createElement('div');
-        card.className = "bg-white p-4 rounded-2xl border border-gray-200 shadow-sm flex justify-between items-center cursor-pointer hover:border-ucPurple transition";
-        card.onclick = () => openSubServicesPopupModal(currentCategoryIdx, mIdx);
-        card.innerHTML = `
-          <div class="flex items-center gap-4">
-            <!-- Main Service Image Thumbnail -->
-            <div class="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 shrink-0 shadow-sm">
-              <img src="${ms.img || './images/service default.jpeg'}" onerror="this.src='https://placehold.co/100x100/e2e8f0/0f172a?text=Service'" class="w-full h-full object-cover" />
-            </div>
-            <div class="space-y-1">
-              <h3 class="font-bold text-base text-gray-900">${ms.title}</h3>
-              <p class="text-xs text-emerald-600 font-semibold"><i class="fa-solid fa-star text-amber-400"></i> ${ms.rating}</p>
-              <p class="text-xs text-gray-500">Includes ${ms.subServices.length} sub-services options</p>
-            </div>
-          </div>
-          <button class="px-4 py-2 border border-ucPurple text-ucPurple text-xs font-bold rounded-xl hover:bg-purple-50 shrink-0">View Services &rarr;</button>
-        `;
-        container.appendChild(card);
-      });
+      closeSlotModal();
+
+      document.getElementById('payment-method-row').classList.remove('opacity-50');
+      const proceedBtn = document.getElementById('btn-proceed-pay');
+      proceedBtn.disabled = false;
+      proceedBtn.className = 'w-full bg-ucPurple hover:bg-ucPurpleDark text-white py-3.5 rounded-xl font-bold text-sm shadow-md transition cursor-pointer';
+    }
+
+    function openBillSummaryModal() { document.getElementById('bill-summary-modal').classList.remove('hidden'); }
+    function closeBillSummaryModal() { document.getElementById('bill-summary-modal').classList.add('hidden'); }
+
+    function selectTip(amount) {
+      addedTip = amount === 'custom' ? 50 : amount;
+      showToast(`Added ₹${addedTip} tip!`);
+      renderCheckoutView();
     }
 
     function updateCartUI() {
@@ -1213,35 +1869,290 @@
     function renderCheckoutView() {
       const list = document.getElementById('checkout-cart-items-list');
       list.innerHTML = '';
-      let subtotal = 0;
+      let itemTotal = 0;
 
       cart.forEach(c => {
-        subtotal += c.item.price * c.quantity;
-        list.innerHTML += `<div class="flex justify-between text-xs text-gray-800"><span>${c.item.name} (x${c.quantity})</span><span class="font-bold">₹${c.item.price * c.quantity}</span></div>`;
+        itemTotal += c.item.price * c.quantity;
+        list.innerHTML += `
+          <div class="flex justify-between items-center text-sm font-medium text-gray-800">
+            <span>${c.item.name}</span>
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2 border rounded-lg px-2 py-0.5 text-ucPurple bg-purple-50 font-bold text-xs">
+                <button onclick="updateCartFromCheckout('${c.item.id}', ${c.quantity - 1})">-</button>
+                <span>${c.quantity}</span>
+                <button onclick="updateCartFromCheckout('${c.item.id}', ${c.quantity + 1})">+</button>
+              </div>
+              <span class="font-bold text-gray-900">₹${c.item.price * c.quantity}</span>
+            </div>
+          </div>
+        `;
       });
-      document.getElementById('bill-grand-total').innerText = `₹${subtotal}`;
+
+      const visitationFee = 99;
+      const platformFee = 8;
+      const taxes = 6;
+      const grandTotal = itemTotal + visitationFee + platformFee + taxes + addedTip;
+
+      document.getElementById('bill-item-total').innerText = `₹${itemTotal}`;
+      document.getElementById('bill-total-text').innerText = `₹${grandTotal}`;
+      document.getElementById('bill-modal-grand-total').innerText = `₹${grandTotal}`;
+      document.getElementById('bill-modal-amount-pay').innerText = `₹${grandTotal}`;
+      document.getElementById('final-payable-amount').innerText = `₹${grandTotal}`;
     }
 
-    function processOrder() {
-      alert("🎉 Order Confirmed! EPC Services professional will arrive soon.");
-      cart = [];
+    function updateCartFromCheckout(id, newQty) {
+      const idx = cart.findIndex(c => c.item.id === id);
+      if (idx > -1) {
+        if (newQty <= 0) cart.splice(idx, 1);
+        else cart[idx].quantity = newQty;
+      }
       updateCartUI();
-      navigateTo('home');
+      renderCheckoutView();
     }
 
-    function openCartModal() {
-      if (cart.length === 0) {
-        showToast("Cart is empty! Add services to proceed.");
+    function initiateRazorpayPayment() {
+      const amount = parseInt(document.getElementById('final-payable-amount').innerText.replace('₹', '')) * 100;
+
+      const options = {
+        "key": "your_razorpay_key_id",
+        "amount": amount,
+        "currency": "INR",
+        "name": "EPC Services",
+        "description": "Home Services Booking Payment",
+        "image": "https://placehold.co/100x100/000000/FFFFFF?text=EPC",
+        "handler": function (response) {
+          alert("🎉 Payment Successful! Booking ID: " + response.razorpay_payment_id);
+          cart = [];
+          updateCartUI();
+          navigateTo('home');
+        },
+        "prefill": {
+          "name": "Customer",
+          "email": "customer@example.com",
+          "contact": loggedInUserPhone || "6381796419"
+        },
+        "theme": { "color": "#6e42e5" }
+      };
+
+      const rzp1 = new Razorpay(options);
+      rzp1.open();
+    }
+
+    let currentCategoryIdx = 0;
+
+    function renderCarpenterSubCategoryModal() {
+      const list = document.getElementById('carpenter-subcat-list');
+      if (!list) return;
+      list.innerHTML = '';
+      
+      carpenterCategories.forEach((cat, index) => {
+        const item = document.createElement('div');
+        item.className = "p-3.5 border border-gray-200 rounded-xl hover:border-ucPurple hover:bg-purple-50/40 cursor-pointer flex items-center justify-between transition bg-white";
+        
+        item.onclick = () => {
+          closeCarpenterSubCategoryModal();
+          currentCategoryIdx = index;
+          activeCategories = carpenterCategories;
+          renderServiceDetailsList();
+          navigateTo('service-details');
+        };
+        
+        item.innerHTML = `
+          <div class="flex items-center gap-3.5">
+            <div class="w-14 h-14 rounded-xl overflow-hidden bg-gray-100 shrink-0 shadow-sm">
+              <img src="${cat.image}" onerror="this.src='https://placehold.co/100x100/e2e8f0/0f172a?text=Service'" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h4 class="font-bold text-sm text-gray-900">${cat.title}</h4>
+              <p class="text-xs text-gray-500">${cat.subtitle}</p>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function renderElectricianSubCategoryModal() {
+      const list = document.getElementById('electrician-subcat-list');
+      if (!list) return;
+      list.innerHTML = '';
+      
+      electricianCategories.forEach((cat, index) => {
+        const item = document.createElement('div');
+        item.className = "p-3.5 border border-gray-200 rounded-xl hover:border-ucPurple hover:bg-purple-50/40 cursor-pointer flex items-center justify-between transition bg-white";
+        
+        item.onclick = () => {
+          closeElectricianSubCategoryModal();
+          currentCategoryIdx = index;
+          activeCategories = electricianCategories;
+          renderServiceDetailsList();
+          navigateTo('service-details');
+        };
+        
+        item.innerHTML = `
+          <div class="flex items-center gap-3.5">
+            <div class="w-14 h-14 rounded-xl overflow-hidden bg-gray-100 shrink-0 shadow-sm">
+              <img src="${cat.image}" onerror="this.src='https://placehold.co/100x100/e2e8f0/0f172a?text=Service'" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h4 class="font-bold text-sm text-gray-900">${cat.title}</h4>
+              <p class="text-xs text-gray-500">${cat.subtitle}</p>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function renderSubServicesGrid() {
+      const grid = document.getElementById('sub-services-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      
+      activeCategories.forEach((cat, idx) => {
+        const card = document.createElement('div');
+        card.className = "bg-white p-4 rounded-2xl border border-gray-200 hover:border-ucPurple hover:shadow-md cursor-pointer transition flex flex-col justify-between";
+        card.onclick = () => {
+          currentCategoryIdx = idx;
+          renderServiceDetailsList();
+          navigateTo('service-details');
+        };
+        card.innerHTML = `
+          <div class="space-y-3">
+            <div class="w-16 h-16 rounded-2xl overflow-hidden bg-gray-100 shadow-sm">
+              <img src="${cat.image}" onerror="this.src='https://placehold.co/100x100/e2e8f0/0f172a?text=Service'" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h3 class="font-bold text-sm text-gray-900">${cat.title}</h3>
+              <p class="text-xs text-gray-500 mt-0.5">${cat.subtitle}</p>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function renderServiceDetailsList() {
+      const currentCat = activeCategories[currentCategoryIdx] || activeCategories[0];
+      
+      document.getElementById('selected-subcategory-title').innerText = currentCat.title;
+      document.getElementById('selected-subcategory-subtitle').innerText = currentCat.subtitle;
+
+      const container = document.getElementById('service-items-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      currentCat.mainServices.forEach((ms, mIdx) => {
+        const card = document.createElement('div');
+        card.className = "bg-white p-4 rounded-2xl border border-gray-200 shadow-sm flex justify-between items-center cursor-pointer hover:border-ucPurple transition";
+        
+        card.onclick = () => openSubServicesPopupModal(currentCategoryIdx, mIdx);
+        
+        card.innerHTML = `
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 shrink-0 shadow-sm">
+              <img src="${ms.img || './images/service default.jpeg'}" onerror="this.src='https://placehold.co/100x100/e2e8f0/0f172a?text=Service'" class="w-full h-full object-cover" />
+            </div>
+            <div class="space-y-1">
+              <h3 class="font-bold text-base text-gray-900">${ms.title}</h3>
+              <p class="text-xs text-emerald-600 font-semibold"><i class="fa-solid fa-star text-amber-400"></i> ${ms.rating}</p>
+              <p class="text-xs text-gray-500">Includes ${ms.subServices.length} sub-services options</p>
+            </div>
+          </div>
+          <button onclick="event.stopPropagation(); openSubServicesPopupModal(${currentCategoryIdx}, ${mIdx});" class="px-4 py-2 border border-ucPurple text-ucPurple text-xs font-bold rounded-xl hover:bg-purple-50 shrink-0">View Services &rarr;</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function openSubServicesPopupModal(catIdx, mainSrvIdx) {
+      const category = activeCategories[catIdx];
+      if (!category || !category.mainServices[mainSrvIdx]) return;
+
+      const mainSrv = category.mainServices[mainSrvIdx];
+      
+      document.getElementById('popup-service-title').innerText = mainSrv.title;
+      document.getElementById('popup-service-rating').innerHTML = `<i class="fa-solid fa-star text-amber-400"></i> ${mainSrv.rating}`;
+
+      const container = document.getElementById('popup-subservices-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      mainSrv.subServices.forEach(sub => {
+        const inCart = cart.find(c => c.item.id === sub.id);
+        const qty = inCart ? inCart.quantity : 0;
+
+        const card = document.createElement('div');
+        card.className = "min-w-[190px] max-w-[200px] border border-gray-200 rounded-2xl p-3 bg-white shadow-sm flex flex-col justify-between shrink-0";
+        card.innerHTML = `
+          <div>
+            <div class="w-full h-28 rounded-xl overflow-hidden bg-gray-100 mb-2">
+              <img src="${sub.img}" onerror="this.src='https://placehold.co/200x200/e2e8f0/0f172a?text=Service'" class="w-full h-full object-cover" />
+            </div>
+            <h4 class="font-bold text-sm text-gray-900 leading-tight mb-1">${sub.name}</h4>
+            <p class="text-[11px] text-gray-500 font-semibold mb-2"><i class="fa-solid fa-star text-amber-400"></i> ${sub.rating}</p>
+          </div>
+          <div>
+            <div class="font-extrabold text-sm text-gray-900 mb-2">₹${sub.price}</div>
+            <div id="popup-btn-${sub.id}">${renderPopupButton(sub, qty, catIdx, mainSrvIdx)}</div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      document.getElementById('subservices-popup-modal').classList.remove('hidden');
+    }
+
+    function updateCartFromPopup(subId, newQty, catIdx, mainSrvIdx) {
+      let targetSub = null;
+      
+      if (catIdx !== undefined && mainSrvIdx !== undefined && activeCategories[catIdx]) {
+        targetSub = activeCategories[catIdx].mainServices[mainSrvIdx].subServices.find(s => s.id === subId);
+      }
+      
+      if (!targetSub) {
+        for (let cat of [...carpenterCategories, ...electricianCategories]) {
+          for (let ms of cat.mainServices) {
+            let found = ms.subServices.find(s => s.id === subId);
+            if (found) { targetSub = found; break; }
+          }
+          if (targetSub) break;
+        }
+      }
+
+      if (!targetSub) return;
+
+      const idx = cart.findIndex(c => c.item.id === subId);
+      if (newQty <= 0) {
+        if (idx > -1) cart.splice(idx, 1);
       } else {
-        navigateTo('checkout');
+        if (idx > -1) cart[idx].quantity = newQty;
+        else cart.push({ item: targetSub, quantity: newQty });
+      }
+
+      updateCartUI();
+      const btnContainer = document.getElementById(`popup-btn-${subId}`);
+      if (btnContainer) btnContainer.innerHTML = renderPopupButton(targetSub, newQty, catIdx, mainSrvIdx);
+    }
+
+    function renderPopupButton(sub, qty, catIdx, mainSrvIdx) {
+      if (qty === 0) {
+        return `<button onclick="updateCartFromPopup('${sub.id}', 1, ${catIdx}, ${mainSrvIdx})" class="w-full py-1.5 border border-purple-300 text-ucPurple bg-purple-50 hover:bg-ucPurple hover:text-white transition font-bold text-xs rounded-xl">Add</button>`;
+      } else {
+        return `
+          <div class="flex items-center justify-between bg-ucPurple text-white rounded-xl overflow-hidden font-extrabold text-xs py-1 px-2">
+            <button onclick="updateCartFromPopup('${sub.id}', ${qty - 1}, ${catIdx}, ${mainSrvIdx})">-</button>
+            <span>${qty}</span>
+            <button onclick="updateCartFromPopup('${sub.id}', ${qty + 1}, ${catIdx}, ${mainSrvIdx})">+</button>
+          </div>
+        `;
       }
     }
 
-    function showToast(text) {
-      const toast = document.getElementById('toast-message');
-      document.getElementById('toast-text').innerText = text;
-      toast.classList.remove('hidden');
-      setTimeout(() => toast.classList.add('hidden'), 2500);
+    function closeSubServicesPopupModal() {
+      document.getElementById('subservices-popup-modal').classList.add('hidden');
     }
   </script>
 </body>
