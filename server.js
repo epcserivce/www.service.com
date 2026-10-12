@@ -24,9 +24,10 @@ app.use(express.urlencoded({ extended: true }));
 const rootPath = path.join(__dirname, '../');
 app.use(express.static(rootPath));
 
+app.use(express.static(__dirname));
+
 app.get('/', (req, res) => {
-  // Inga 'index.html' root folder-la iruntha direct-ah 'index.html' path kodukkanum:
-  res.sendFile(path.join(rootPath, 'index.html')); 
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Static images folder-ai serve pannugiradhu
