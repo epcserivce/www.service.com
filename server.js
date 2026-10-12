@@ -3,6 +3,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
 const cors = require('cors');
+const fs = require('fs'); // Note: 'fs' module missing ah irundhal ithaiyum add pannikonga
 require('dotenv').config();
 
 const app = express();
@@ -20,18 +21,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // --- DIRECT ROOT PATH FIX ---
-// Inga __dirname enbadhu "backend" folder. Adhukku veliya irukkira root folder-ai point panrom.
 const rootPath = path.join(__dirname, '../');
 app.use(express.static(rootPath));
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../backend/index.html')); // or ungal file irukkura correct folder path
+  // Inga 'index.html' root folder-la iruntha direct-ah 'index.html' path kodukkanum:
+  res.sendFile(path.join(rootPath, 'index.html')); 
 });
 
 // Static images folder-ai serve pannugiradhu
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
-// Dynamic Image Finder (JPG, JPEG, PNG, WEBP, SVG edhuvaga irundhalum auto-detect pannum)
+// Dynamic Image Finder
 app.get('/api/image/:filename', (req, res) => {
   const baseName = req.params.filename;
   const imagesDir = path.join(__dirname, 'images');
@@ -44,7 +45,6 @@ app.get('/api/image/:filename', (req, res) => {
     }
   }
 
-  // File illai endral default fallback placeholder image
   res.redirect('https://placehold.co/200x200/e2e8f0/0f172a?text=No+Image');
 });
 
