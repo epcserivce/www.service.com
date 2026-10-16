@@ -391,39 +391,43 @@
       const result = await res.json();
       allPartnersData = result.partners || [];
 
-      let localPartners = JSON.parse(localStorage.getItem('epc_registered_partners') || '[]');
-      if(allPartnersData.length === 0 && localPartners.length > 0) {
-        allPartnersData = localPartners;
+      // Fallback to localStorage if API returns empty
+      if (allPartnersData.length === 0) {
+        allPartnersData = JSON.parse(localStorage.getItem('epc_registered_partners') || '[]');
       }
+    } catch (err) { 
+      console.warn("API fetch failed, loading from localStorage:", err);
+      // Fallback to localStorage on fetch error
+      allPartnersData = JSON.parse(localStorage.getItem('epc_registered_partners') || '[]');
+    }
 
-      const tbody = document.getElementById('partner-table-body');
-      tbody.innerHTML = '';
+    const tbody = document.getElementById('partner-table-body');
+    tbody.innerHTML = '';
 
-      if (allPartnersData.length > 0) {
-        allPartnersData.forEach((partner, index) => {
-          const statusBadge = partner.isVerified 
-            ? `<span class="badge bg-success">Verified & Approved</span>` 
-            : `<span class="badge bg-warning text-dark">Pending Admin Approval</span>`;
+    if (allPartnersData.length > 0) {
+      allPartnersData.forEach((partner, index) => {
+        const statusBadge = partner.isVerified 
+          ? `<span class="badge bg-success">Verified & Approved</span>` 
+          : `<span class="badge bg-warning text-dark">Pending Admin Approval</span>`;
 
-          tbody.innerHTML += `
-            <tr>
-              <td><strong>${partner.name || 'N/A'}</strong></td>
-              <td>${partner.designation || partner.category || 'General'}</td>
-              <td>${partner.phone || partner.mobile || 'N/A'}</td>
-              <td>${partner.email || 'N/A'}</td>
-              <td>${statusBadge}</td>
-              <td>
-                <button class="btn btn-sm btn-primary" onclick="viewAndVerifyPartner('${partner._id || index}')">
-                  <i class="fas fa-eye me-1"></i> Review & Approve
-                </button>
-              </td>
-            </tr>
-          `;
-        });
-      } else {
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center">No partner registration requests found</td></tr>';
-      }
-    } catch (err) { console.error(err); }
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${partner.name || 'N/A'}</strong></td>
+            <td>${partner.designation || partner.category || 'General'}</td>
+            <td>${partner.phone || partner.mobile || 'N/A'}</td>
+            <td>${partner.email || 'N/A'}</td>
+            <td>${statusBadge}</td>
+            <td>
+              <button class="btn btn-sm btn-primary" onclick="viewAndVerifyPartner('${partner._id || partner.partnerId || index}')">
+                <i class="fas fa-eye me-1"></i> Review & Approve
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    } else {
+      tbody.innerHTML = '<tr><td colspan="6" class="text-center">No partner registration requests found</td></tr>';
+    }
   }
 
   function viewAndVerifyPartner(id) {
@@ -456,9 +460,6 @@
           <p class="mb-1"><strong>Gmail ID:</strong> ${partner.email}</p>
           <p class="mb-1"><strong>Designation:</strong> ${partner.designation || 'Electrician'}</p>
           <p class="mb-1"><strong>Experience:</strong> ${partner.experience || '1-3 Years'}</p>
-          <p class="mb-1"><strong>Father Name:</strong> ${partner.fatherName || 'N/A'}</p>
-          <p class="mb-1"><strong>DOB:</strong> ${partner.dob || 'N/A'}</p>
-          <p class="mb-1"><strong>UPI ID:</strong> ${partner.upi || 'N/A'}</p>
           <p class="mb-1"><strong>Working Address:</strong> ${partner.currAddress || 'Kanchipuram'}</p>
         </div>
         <div class="col-md-6 text-center">
@@ -478,12 +479,6 @@
           <span class="d-block fw-bold fs-7 mb-1">PAN Card Copy</span>
           <img src="${docs.pan || 'https://via.placeholder.com/150'}" class="doc-img" alt="PAN">
         </div>
-
-        <div class="col-md-4 text-center">
-          <span class="d-block fw-bold fs-7 mb-1">Bank Passbook / Cheque</span>
-          <img src="${docs.bank || 'https://via.placeholder.com/150'}" class="doc-img" alt="Bank">
-        </div>
-      </div>
     `;
 
     modalFooter.innerHTML = `

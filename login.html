@@ -5,37 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - EPC Services</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { ucPurple: '#6e42e5' } } }
+    }
+  </script>
 </head>
-<body class="bg-slate-900 flex items-center justify-center min-h-screen">
+<body class="bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900 flex items-center justify-center min-h-screen p-4">
 
-  <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md space-y-6">
-    <div class="text-center">
-      <div class="bg-black text-white font-black text-xl px-3 py-1.5 rounded-xl inline-block mb-3">EPC</div>
-      <h1 class="text-2xl font-black text-gray-900">Customer Login</h1>
-      <p class="text-xs text-gray-500 mt-1">Enter your phone number to get OTP</p>
+  <div class="bg-white/95 backdrop-blur-md p-8 rounded-3xl shadow-2xl w-full max-w-md space-y-6 border border-white/20">
+    <div class="text-center space-y-2">
+      <div class="bg-black text-white font-black text-xl px-3 py-1.5 rounded-2xl inline-block shadow-md">EPC</div>
+      <h1 class="text-2xl font-black text-gray-900 tracking-tight">Customer Login</h1>
+      <p class="text-xs text-gray-500 font-medium">Enter your phone number to get verification OTP</p>
     </div>
 
     <!-- Phone Input Section -->
     <div id="phone-section" class="space-y-4">
-      <div>
-        <label class="text-xs font-bold text-gray-700 block mb-1">Mobile Number</label>
-        <div class="flex items-center border rounded-xl overflow-hidden">
-          <span class="bg-gray-100 px-3 py-3 text-sm font-bold text-gray-700 border-r">+91</span>
-          <input type="tel" id="login-phone" maxlength="10" placeholder="Enter 10-digit number" class="w-full px-3 py-3 text-sm focus:outline-none" />
+      <div class="space-y-1.5">
+        <label class="text-xs font-bold text-gray-700 block">Mobile Number</label>
+        <div class="flex items-center border border-gray-300 rounded-2xl overflow-hidden focus-within:border-ucPurple focus-within:ring-2 focus-within:ring-purple-100 transition">
+          <span class="bg-gray-50 px-4 py-3 text-sm font-bold text-gray-700 border-r border-gray-200">+91</span>
+          <input type="tel" id="login-phone" maxlength="10" placeholder="Enter 10-digit number" class="w-full px-4 py-3 text-sm font-medium text-gray-900 focus:outline-none" />
         </div>
       </div>
-      <button onclick="sendOTP()" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-bold text-sm transition cursor-pointer">
-        Send OTP
+      <button onclick="sendOTP()" class="w-full bg-ucPurple hover:bg-purple-700 text-white py-3.5 rounded-2xl font-extrabold text-sm transition shadow-lg shadow-purple-500/25 cursor-pointer">
+        Send OTP <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
       </button>
     </div>
 
     <!-- OTP Input Section (Hidden Initially) -->
     <div id="otp-section" class="space-y-4 hidden">
-      <div>
-        <label class="text-xs font-bold text-gray-700 block mb-1">Enter 6-digit OTP (Test OTP: 123456)</label>
-        <input type="text" id="login-otp" maxlength="6" placeholder="123456" class="w-full px-3 py-3 text-center text-lg tracking-widest font-bold border rounded-xl focus:outline-none" />
+      <div class="space-y-1.5">
+        <label class="text-xs font-bold text-gray-700 block">Enter 6-digit OTP <span class="text-purple-600 font-extrabold">(Test: 123456)</span></label>
+        <input type="text" id="login-otp" maxlength="6" placeholder="• • • • • •" class="w-full px-4 py-3.5 text-center text-xl tracking-[0.5em] font-black border border-gray-300 rounded-2xl focus:outline-none focus:border-ucPurple focus:ring-2 focus:ring-purple-100" />
       </div>
-      <button onclick="verifyOTP()" class="w-full bg-black hover:bg-gray-800 text-white py-3 rounded-xl font-bold text-sm transition cursor-pointer">
+      <button onclick="verifyOTP()" class="w-full bg-black hover:bg-gray-800 text-white py-3.5 rounded-2xl font-extrabold text-sm transition shadow-lg cursor-pointer">
         Verify & Login
       </button>
     </div>
@@ -45,56 +52,57 @@
     let userPhone = "";
 
     async function sendOTP() {
-      userPhone = document.getElementById('login-phone').value;
-      if (userPhone.length !== 10) {
-        alert("Please enter a valid 10-digit mobile number");
-        return;
-      }
+  userPhone = document.getElementById('login-phone').value;
+  if (userPhone.length !== 10) {
+    alert("Please enter a valid 10-digit mobile number");
+    return;
+  }
 
-      try {
-        const res = await fetch('/api/send-otp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phone: userPhone })
-        });
-        const data = await res.json();
+  try {
+    // ⚠️ CRITICAL: Must start with '/' -> '/api/send-otp'
+    const res = await fetch('/api/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: userPhone })
+    });
+    const data = await res.json();
 
-        if (data.success) {
-          alert("OTP sent successfully!");
-          document.getElementById('phone-section').classList.add('hidden');
-          document.getElementById('otp-section').classList.remove('hidden');
-        } else {
-          alert("Failed to send OTP: " + data.message);
-        }
-      } catch (err) {
-        console.error(err);
-      }
+    if (data.success) {
+      alert("OTP sent successfully!");
+      document.getElementById('phone-section').classList.add('hidden');
+      document.getElementById('otp-section').classList.remove('hidden');
+    } else {
+      alert("Failed to send OTP: " + data.message);
     }
+  } catch (err) {
+    console.error(err);
+  }
+}
 
-    async function verifyOTP() {
-      const code = document.getElementById('login-otp').value;
-      
-      try {
-        const res = await fetch('/api/verify-otp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phone: userPhone, code: code })
-        });
-        const data = await res.json();
+async function verifyOTP() {
+  const code = document.getElementById('login-otp').value;
+  
+  try {
+    // ⚠️ CRITICAL: Must start with '/' -> '/api/verify-otp'
+    const res = await fetch('/api/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: userPhone, code: code })
+    });
+    const data = await res.json();
 
-        if (data.success) {
-          alert("Login Successful!");
-          localStorage.setItem("customerLoggedIn", "true");
-          localStorage.setItem("customerPhone", userPhone);
-          // Dashboard-ku redirect aagum
-          window.location.href = "index.html";
-        } else {
-          alert("Invalid OTP! Try again (Test OTP: 123456).");
-        }
-      } catch (err) {
-        console.error(err);
-      }
+    if (data.success) {
+      alert("🎉 Login Successful!");
+      localStorage.setItem("customerLoggedIn", "true");
+      localStorage.setItem("customerPhone", userPhone);
+      window.location.href = "index.html";
+    } else {
+      alert("Invalid OTP! Try again (Test OTP: 123456).");
     }
+  } catch (err) {
+    console.error(err);
+  }
+}
   </script>
 </body>
 </html>

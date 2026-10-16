@@ -22,6 +22,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get('/partner', (req, res) => {
+  res.sendFile(__dirname + '/partner.html');
+});
+
+app.get('/admin', (req, res) => {
+  res.sendFile(__dirname + '/admin.html');
+});
+
 // Twilio Credentials & Client Setup
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -29,7 +37,7 @@ const verifyServiceSid = process.env.TWILIO_VERIFY_SERVICE_SID;
 
 const client = twilio(accountSid, authToken);
 
-// 1. Send OTP Route
+// 1. Send OTP Route (With Twilio Fallback for Testing)
 app.post('/api/send-otp', async (req, res) => {
     const { phone } = req.body;
     try {
@@ -39,8 +47,12 @@ app.post('/api/send-otp', async (req, res) => {
         
         res.json({ success: true, message: "OTP sent successfully via Twilio!" });
     } catch (error) {
-        console.error("Twilio Send Error:", error);
-        res.status(500).json({ success: false, message: error.message });
+        console.warn("Twilio trial exhausted/failed, switching to Mock OTP mode:", error.message);
+        // Twilio error vanthalum testing-kkaga bypass panni OTP sent nu sollidum
+        res.json({ 
+            success: true, 
+            message: "OTP sent (Development Mode: Use test OTP 123456)" 
+        });
     }
 });
 
@@ -48,7 +60,7 @@ app.post('/api/send-otp', async (req, res) => {
 app.post('/api/verify-otp', async (req, res) => {
     const { phone, code } = req.body;
     try {
-        // Temporary testing-kku '123456' vanthal direct-ah success kodukalam (Mock Bypass)
+        // Testing-kku '123456' vanthal direct-ah success
         if (code === "123456") {
             return res.json({ success: true, message: "Mock OTP Verified Successfully!" });
         }
@@ -63,7 +75,11 @@ app.post('/api/verify-otp', async (req, res) => {
             res.status(400).json({ success: false, message: "Invalid OTP code!" });
         }
     } catch (error) {
-        console.error("Twilio Verify Error:", error);
+        console.warn("Twilio verify error fallback to Mock OTP logic:", error.message);
+        // Fallback for testing when Twilio account is balance exhausted
+        if (code === "123456") {
+            return res.json({ success: true, message: "Mock OTP Verified Successfully!" });
+        }
         res.status(500).json({ success: false, message: error.message });
     }
 });

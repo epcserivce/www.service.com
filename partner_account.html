@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EPC Partner - My Account & Verification</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <script>
+    tailwind.config = {
+      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { ucPurple: '#6e42e5' } } }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-slate-900 p-4 sm:p-8">
+
+  <!-- HEADER -->
+  <header class="max-w-2xl w-full mx-auto bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center mb-6">
+    <div class="flex items-center gap-3">
+      <div class="bg-ucPurple text-white font-black text-lg px-3 py-1 rounded-xl">EPC</div>
+      <h1 class="font-extrabold text-lg text-slate-900">Partner Verification & KYC</h1>
+    </div>
+    <a href="partner_2.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl text-slate-700 transition">
+      <i class="fa-solid fa-arrow-left mr-1"></i> Back to Dashboard
+    </a>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-2xl w-full mx-auto bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-200 space-y-6">
+    
+    <!-- Ongoing Process & Progress Bar Heading -->
+    <div class="flex justify-between items-center border-b pb-4">
+      <div>
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ongoing Process</span>
+        <h2 class="text-xl font-black text-slate-900">KYC & Document Verification</h2>
+      </div>
+      <div class="text-right">
+        <span id="progress-text" class="text-sm font-black text-ucPurple">0%</span>
+        <p class="text-[10px] text-slate-400 font-bold uppercase">Completed</p>
+      </div>
+    </div>
+
+    <!-- Progress Bar Line -->
+    <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+      <div id="progress-bar" class="bg-ucPurple h-full transition-all duration-500" style="width: 0%;"></div>
+    </div>
+
+    <!-- Partner Account Form -->
+    <form id="partner-account-form" onsubmit="submitPartnerVerification(event)" class="space-y-4">
+      
+      <!-- Profile Photo Upload -->
+      <div class="p-4 border rounded-2xl flex justify-between items-center bg-slate-50/50">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl bg-purple-100 text-ucPurple flex items-center justify-center text-lg overflow-hidden">
+            <img id="preview-photo-img" src="https://via.placeholder.com/150" class="w-full h-full object-cover hidden" alt="Preview">
+            <i id="preview-photo-icon" class="fa-solid fa-camera"></i>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-slate-800">Profile Photo</p>
+            <p class="text-[11px] text-slate-400">Upload passport size photo</p>
+          </div>
+        </div>
+        <input type="file" id="input-photo" accept="image/*" onchange="previewAndTrackProgress(event)" class="text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-50 file:text-ucPurple hover:file:bg-purple-100 cursor-pointer"/>
+      </div>
+
+      <!-- Aadhaar Number & OTP Verification Section -->
+      <div class="p-4 border rounded-2xl space-y-3 bg-slate-50/50">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-id-card"></i></div>
+          <div class="w-full">
+            <p class="text-xs font-bold text-slate-800">Aadhaar Verification (OTP)</p>
+            <p class="text-[11px] text-slate-400">Enter 12-digit number & verify via OTP</p>
+          </div>
+        </div>
+
+        <div class="flex gap-2">
+          <input type="text" id="input-aadhaar" placeholder="Enter 12-digit Aadhaar" maxlength="12" class="w-full border rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-ucPurple"/>
+          <button type="button" onclick="sendAadhaarOTP()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-bold shrink-0 transition">Send OTP</button>
+        </div>
+
+        <!-- OTP Input Box (Hidden initially) -->
+        <div id="aadhaar-otp-box" class="hidden flex gap-2 pt-1">
+          <input type="text" id="input-aadhaar-otp" placeholder="Enter 6-digit OTP" maxlength="6" class="w-full border rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-ucPurple"/>
+          <button type="button" onclick="verifyAadhaarOTP()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold shrink-0 transition">Verify</button>
+        </div>
+        <p id="aadhaar-status-text" class="text-xs font-bold text-emerald-600 hidden"><i class="fa-solid fa-circle-check mr-1"></i> Aadhaar Verified Successfully</p>
+      </div>
+
+      <!-- PAN Card Number & Upload Section -->
+      <div class="p-4 border rounded-2xl space-y-3 bg-slate-50/50">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center"><i class="fa-solid id-card"></i></div>
+          <div class="w-full">
+            <p class="text-xs font-bold text-slate-800">PAN Card Details & Upload</p>
+            <p class="text-[11px] text-slate-400">Enter PAN ID & upload card document</p>
+          </div>
+        </div>
+
+        <input type="text" id="input-pan" placeholder="ABCDE1234F" maxlength="10" oninput="updateProgress()" class="w-full border rounded-xl px-3 py-2 text-sm font-medium uppercase focus:ring-2 focus:ring-ucPurple"/>
+        
+        <div class="flex items-center justify-between pt-1">
+          <span class="text-xs text-slate-500 font-medium">Upload PAN Document (Image/PDF)</span>
+          <input type="file" id="input-pan-file" accept="image/*,.pdf" onchange="updateProgress()" class="text-xs text-slate-500 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"/>
+        </div>
+      </div>
+
+      <!-- Gmail ID -->
+      <div class="p-4 border rounded-2xl space-y-2 bg-slate-50/50">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center"><i class="fa-solid fa-envelope"></i></div>
+          <div>
+            <p class="text-xs font-bold text-slate-800">Gmail ID (For Credentials)</p>
+            <p class="text-[11px] text-slate-400">Employee ID & Password destination</p>
+          </div>
+        </div>
+        <input type="email" id="input-gmail" placeholder="partner@gmail.com" oninput="updateProgress()" class="w-full border rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-ucPurple"/>
+      </div>
+
+      <!-- Address Update -->
+      <div class="p-4 border rounded-2xl space-y-2 bg-slate-50/50">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center"><i class="fa-solid fa-location-dot"></i></div>
+          <div>
+            <p class="text-xs font-bold text-slate-800">Residential Address</p>
+            <p class="text-[11px] text-slate-400">Door No, Street, City, Pincode</p>
+          </div>
+        </div>
+        <textarea id="input-address" rows="2" placeholder="Enter complete address" oninput="updateProgress()" class="w-full border rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-ucPurple"></textarea>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" id="submit-btn" disabled class="w-full bg-slate-300 text-slate-500 py-3.5 rounded-2xl font-bold text-sm cursor-not-allowed transition">
+        Submit for Admin Verification
+      </button>
+
+    </form>
+  </main>
+
+  <footer class="text-center text-xs text-slate-400 py-4">
+    &copy; 2026 EPC Services Statewide. All rights reserved.
+  </footer>
+
+  <!-- SCRIPT LOGIC -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script type="text/javascript">
+     (function(){
+        emailjs.init("bKmvjb7OBk9QAG0FG");
+     })();
+
+     let uploadedPhotoBase64 = "";
+     let isAadhaarVerified = false;
+
+     window.onload = function() {
+       let currentPartner = JSON.parse(localStorage.getItem('epc_partner_logged')) || {};
+       if (currentPartner.email) document.getElementById('input-gmail').value = currentPartner.email;
+       if (currentPartner.currAddress) document.getElementById('input-address').value = currentPartner.currAddress;
+       if (currentPartner.aadhaar) {
+         document.getElementById('input-aadhaar').value = currentPartner.aadhaar;
+         isAadhaarVerified = true;
+         document.getElementById('aadhaar-status-text').classList.remove('hidden');
+       }
+       if (currentPartner.pan) document.getElementById('input-pan').value = currentPartner.pan;
+       if (currentPartner.isAadhaarVerified) {
+         isAadhaarVerified = true;
+         document.getElementById('aadhaar-status-text').classList.remove('hidden');
+       }
+       if (currentPartner.docs && currentPartner.docs.photo) {
+         uploadedPhotoBase64 = currentPartner.docs.photo;
+         document.getElementById('preview-photo-img').src = uploadedPhotoBase64;
+         document.getElementById('preview-photo-img').classList.remove('hidden');
+         document.getElementById('preview-photo-icon').classList.add('hidden');
+       }
+       updateProgress();
+     };
+
+     function previewAndTrackProgress(event) {
+       const file = event.target.files[0];
+       if (file) {
+         const reader = new FileReader();
+         reader.onload = function(e) {
+           uploadedPhotoBase64 = e.target.result;
+           document.getElementById('preview-photo-img').src = uploadedPhotoBase64;
+           document.getElementById('preview-photo-img').classList.remove('hidden');
+           document.getElementById('preview-photo-icon').classList.add('hidden');
+           updateProgress();
+         };
+         reader.readAsDataURL(file);
+       }
+     }
+
+     function sendAadhaarOTP() {
+       const aadhaarVal = document.getElementById('input-aadhaar').value.trim();
+       if (aadhaarVal.length !== 12) {
+         alert("Please enter a valid 12-digit Aadhaar number first.");
+         return;
+       }
+       alert("📱 Simulated OTP sent to Aadhaar-registered mobile number: 123456");
+       document.getElementById('aadhaar-otp-box').classList.remove('hidden');
+     }
+
+     function verifyAadhaarOTP() {
+       const otpVal = document.getElementById('input-aadhaar-otp').value.trim();
+       if (otpVal === "123456" || otpVal.length === 6) {
+         isAadhaarVerified = true;
+         document.getElementById('aadhaar-otp-box').classList.add('hidden');
+         document.getElementById('aadhaar-status-text').classList.remove('hidden');
+         alert("✓ Aadhaar verified successfully via OTP!");
+         updateProgress();
+       } else {
+         alert("❌ Invalid OTP! Please enter 123456 for testing.");
+       }
+     }
+
+     function updateProgress() {
+       let filledCount = 0;
+       const totalFields = 5;
+
+       if (uploadedPhotoBase64 !== "") filledCount++;
+       if (isAadhaarVerified) filledCount++;
+       if (document.getElementById('input-pan').value.trim().length === 10 && document.getElementById('input-pan-file').files.length > 0) filledCount++;
+       if (document.getElementById('input-gmail').value.trim().includes('@')) filledCount++;
+       if (document.getElementById('input-address').value.trim().length > 5) filledCount++;
+
+       const percentage = (filledCount / totalFields) * 100;
+       document.getElementById('progress-bar').style.width = percentage + '%';
+       document.getElementById('progress-text').innerText = percentage + '%';
+
+       const btn = document.getElementById('submit-btn');
+       if (percentage === 100) {
+         btn.disabled = false;
+         btn.className = "w-full bg-ucPurple hover:bg-purple-700 text-white py-3.5 rounded-2xl font-bold text-sm shadow-lg shadow-purple-500/25 cursor-pointer transition";
+       } else {
+         btn.disabled = true;
+         btn.className = "w-full bg-slate-300 text-slate-500 py-3.5 rounded-2xl font-bold text-sm cursor-not-allowed transition";
+       }
+     }
+
+     function submitPartnerVerification(e) {
+       e.preventDefault();
+
+       let currentPartner = JSON.parse(localStorage.getItem('epc_partner_logged')) || {
+         partnerId: 'PRT-' + Math.floor(1000 + Math.random() * 9000),
+         name: "Partner Field User"
+       };
+
+       currentPartner.email = document.getElementById('input-gmail').value.trim();
+       currentPartner.aadhaar = document.getElementById('input-aadhaar').value.trim();
+       currentPartner.isAadhaarVerified = true;
+       currentPartner.pan = document.getElementById('input-pan').value.trim();
+       currentPartner.currAddress = document.getElementById('input-address').value.trim();
+       currentPartner.docs = currentPartner.docs || {};
+       currentPartner.docs.photo = uploadedPhotoBase64;
+       currentPartner.isVerified = false; // Pending Admin Approval
+
+       let registeredPartners = JSON.parse(localStorage.getItem('epc_registered_partners') || '[]');
+       let existingIndex = registeredPartners.findIndex(p => p.partnerId === currentPartner.partnerId || p.mobile === currentPartner.mobile);
+       
+       if (existingIndex > -1) {
+         registeredPartners[existingIndex] = currentPartner;
+       } else {
+         registeredPartners.push(currentPartner);
+       }
+
+       localStorage.setItem('epc_registered_partners', JSON.stringify(registeredPartners));
+       localStorage.setItem('epc_partner_logged', JSON.stringify(currentPartner));
+
+       alert("🎉 Verification details submitted successfully! Sent to Admin Panel for approval.");
+       window.location.href = "partner_3.html";
+     }
+  </script>
+</body>
+</html>

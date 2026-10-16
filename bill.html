@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EPC Services - Bill Dashboard & Summary</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { ucPurple: '#6e42e5' } } }
+    }
+  </script>
+  <style> body { font-family: 'Inter', sans-serif; background-color: #f8fafc; } </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-slate-900 p-4 sm:p-8">
+
+  <!-- HEADER -->
+  <header class="max-w-2xl w-full mx-auto bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center mb-6">
+    <div class="flex items-center gap-3">
+      <div class="bg-ucPurple text-white font-black text-lg px-3 py-1 rounded-xl">EPC</div>
+      <h1 class="font-extrabold text-lg text-slate-900">Service Bill Dashboard</h1>
+    </div>
+    <a href="index.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl text-slate-700 transition">
+      <i class="fa-solid fa-arrow-left mr-1"></i> Back to Home
+    </a>
+  </header>
+
+  <!-- MAIN BILL DASHBOARD CONTAINER -->
+  <main class="max-w-2xl w-full mx-auto bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-200 space-y-6">
+    
+    <div class="flex justify-between items-center border-b pb-4">
+      <div>
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Invoice / Receipt</span>
+        <h2 id="invoice-id" class="text-xl font-black text-slate-900">#EPC-BILL-2026</h2>
+      </div>
+      <span class="bg-emerald-50 text-emerald-600 border border-emerald-200 text-xs font-extrabold px-3 py-1 rounded-full">
+        <i class="fa-solid fa-circle-check mr-1"></i> Verified Bill
+      </span>
+    </div>
+
+    <!-- Items List Breakdown -->
+    <div class="space-y-3">
+      <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Selected Services & Items</h3>
+      <div id="dashboard-cart-items" class="divide-y divide-slate-100 border rounded-2xl p-4 bg-slate-50/50">
+        <!-- Dynamic Items rendered via JS -->
+      </div>
+    </div>
+
+    <!-- Bill Calculation Summary Box -->
+    <div class="bg-slate-900 text-white p-6 rounded-2xl space-y-3 shadow-md">
+      <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2">Bill Summary Breakup</h3>
+      
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-between text-slate-300">
+          <span>Item Total</span>
+          <span id="dash-item-total" class="font-bold text-white">₹0</span>
+        </div>
+        <div class="flex justify-between text-slate-300">
+          <span>Visitation Fee</span>
+          <span class="font-bold text-white">₹99</span>
+        </div>
+        <div class="flex justify-between text-slate-300">
+          <span>Platform Fee</span>
+          <span class="font-bold text-white">₹8</span>
+        </div>
+        <div class="flex justify-between text-slate-300">
+          <span>Est. Govt. Taxes</span>
+          <span class="font-bold text-white">₹6</span>
+        </div>
+        <div id="tip-row" class="flex justify-between text-emerald-400 hidden">
+          <span>Professional Tip</span>
+          <span id="dash-tip-amount" class="font-bold">₹0</span>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800 pt-3 flex justify-between items-center text-lg">
+        <span class="font-black">Total Payable Amount</span>
+        <span id="dash-grand-total" class="text-2xl font-black text-emerald-400">₹0</span>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex gap-3 pt-2">
+      <button onclick="window.print()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-800 py-3 rounded-2xl font-bold text-xs transition">
+        <i class="fa-solid fa-print mr-1"></i> Print / Download Invoice
+      </button>
+      <button onclick="proceedToCheckoutFromBill()" class="flex-1 bg-ucPurple hover:bg-purple-700 text-white py-3 rounded-2xl font-black text-xs transition shadow-lg shadow-purple-500/25">
+        Proceed to Secure Checkout <i class="fa-solid fa-arrow-right ml-1"></i>
+      </button>
+    </div>
+
+  </main>
+
+  <footer class="text-center text-xs text-slate-400 py-4">
+    &copy; 2026 EPC Services Statewide. All rights reserved.
+  </footer>
+
+  <!-- SCRIPT LOGIC FOR BILL DASHBOARD -->
+  <script>
+    window.onload = function() {
+      loadBillDashboardData();
+    };
+
+    function loadBillDashboardData() {
+      // LocalStorage-l irunthu cart items edukkrom (Customer cart state sync)
+      // Fallback-ku oru sample item vekkalam
+      let cart = JSON.parse(localStorage.getItem('epc_customer_cart')) || [
+        { item: { name: "Tower bolt/ Latch repair", price: 99, id: "dr-1" }, quantity: 1 }
+      ];
+
+      const container = document.getElementById('dashboard-cart-items');
+      container.innerHTML = '';
+      let itemTotal = 0;
+
+      if (cart.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">No items found in cart.</p>`;
+      }
+
+      cart.forEach(c => {
+        itemTotal += c.item.price * c.quantity;
+        container.innerHTML += `
+          <div class="flex justify-between items-center py-2 text-sm font-semibold text-slate-800">
+            <div>
+              <p>${c.item.name}</p>
+              <p class="text-[11px] text-slate-400 font-medium">Qty: ${c.quantity} × ₹${c.item.price}</p>
+            </div>
+            <span class="font-extrabold text-slate-900">₹${c.item.price * c.quantity}</span>
+          </div>
+        `;
+      });
+
+      const visitationFee = 99;
+      const platformFee = 8;
+      const taxes = 6;
+      let addedTip = parseInt(localStorage.getItem('epc_added_tip')) || 0;
+
+      const grandTotal = itemTotal + visitationFee + platformFee + taxes + addedTip;
+
+      document.getElementById('dash-item-total').innerText = `₹${itemTotal}`;
+      
+      if (addedTip > 0) {
+        document.getElementById('tip-row').classList.remove('hidden');
+        document.getElementById('dash-tip-amount').innerText = `₹${addedTip}`;
+      }
+
+      document.getElementById('dash-grand-total').innerText = `₹${grandTotal}`;
+    }
+
+    function proceedToCheckoutFromBill() {
+      window.location.href = "index.html#checkout";
+    }
+  </script>
+</body>
+</html>

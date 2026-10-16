@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Partner Tracking - EPC Services</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Leaflet CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    #map { height: calc(100vh - 70px); width: 100%; }
+  </style>
+</head>
+<body class="bg-slate-50 flex flex-col h-screen">
+
+  <header class="bg-white border-b border-gray-200 shadow-sm px-6 py-4 flex justify-between items-center z-40">
+    <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='my-bookings.html'">
+      <div class="bg-black text-white font-black text-base px-2.5 py-1 rounded-xl shadow">EPC</div>
+      <span class="font-extrabold text-gray-900 tracking-tight text-lg">Live Partner Tracking</span>
+    </div>
+    <a href="my-bookings.html" class="text-xs font-bold text-purple-600 hover:bg-purple-50 px-3 py-2 rounded-xl transition flex items-center gap-1.5">
+      <i class="fa-solid fa-arrow-left"></i> Back to Bookings
+    </a>
+  </header>
+
+  <div id="map"></div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('orderId');
+
+    // Default center (Kanchipuram / Nandambakkam)
+    const defaultLat = 12.8407;
+    const defaultLng = 79.6984;
+
+    const map = L.map('map').setView([defaultLat, defaultLng], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Custom Partner Bike Marker Icon
+    const bikeIcon = L.icon({
+      iconUrl: 'https://cdn-icons-png.flaticon.com/512/3448/3448339.png',
+      iconSize: [40, 40],
+      iconAnchor: [20, 20],
+      popupAnchor: [0, -20]
+    });
+
+    let partnerMarker = L.marker([defaultLat, defaultLng], { icon: bikeIcon }).addTo(map)
+      .bindPopup("<b>Partner Location</b><br>Heading to your doorstep!").openPopup();
+
+    function updateTrackingPosition() {
+      let bookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
+      let epcBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
+      let all = [...bookings, ...epcBookings];
+
+      let order = all.find(b => (b.id === orderId || b.bookingId === orderId));
+
+      if (order && order.liveLat && order.liveLng) {
+        const newLatLng = [order.liveLat, order.liveLng];
+        partnerMarker.setLatLng(newLatLng);
+        map.setView(newLatLng, 16);
+      }
+    }
+
+    updateTrackingPosition();
+    setInterval(updateTrackingPosition, 3000); // Sync every 3 seconds
+  </script>
+</body>
+</html>
