@@ -26,7 +26,7 @@
       <div class="bg-ucPurple text-white font-black text-lg px-3 py-1 rounded-xl">EPC</div>
       <h1 class="font-extrabold text-lg text-slate-900">Partner Verification & KYC</h1>
     </div>
-    <a href="partner_2.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl text-slate-700 transition">
+    <a href="partner.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl text-slate-700 transition">
       <i class="fa-solid fa-arrow-left mr-1"></i> Back to Dashboard
     </a>
   </header>
@@ -133,6 +133,17 @@
         </div>
         <textarea id="input-address" rows="2" placeholder="Enter complete address" oninput="updateProgress()" class="w-full border rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-ucPurple"></textarea>
       </div>
+      <!-- Partner Working Pincode Input Box -->
+<div class="p-4 border rounded-2xl space-y-2 bg-slate-50/50">
+  <div class="flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-purple-100 text-ucPurple flex items-center justify-center"><i class="fa-solid fa-map-pin"></i></div>
+    <div>
+      <p class="text-xs font-bold text-slate-800">Working Area Pincode (District)</p>
+      <p class="text-[11px] text-slate-400">eg. 631501 (Kanchipuram Town)</p>
+    </div>
+  </div>
+  <input type="text" id="input-partner-pincode" placeholder="Enter 6-digit Pincode" maxlength="6" oninput="updateProgress()" class="w-full border rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-ucPurple"/>
+</div>
 
       <!-- Submit Button -->
       <button type="submit" id="submit-btn" disabled class="w-full bg-slate-300 text-slate-500 py-3.5 rounded-2xl font-bold text-sm cursor-not-allowed transition">
@@ -249,6 +260,7 @@
          name: "Partner Field User"
        };
 
+       currentPartner.pincode = document.getElementById('input-partner-pincode').value.trim();
        currentPartner.email = document.getElementById('input-gmail').value.trim();
        currentPartner.aadhaar = document.getElementById('input-aadhaar').value.trim();
        currentPartner.isAadhaarVerified = true;

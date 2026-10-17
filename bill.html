@@ -104,11 +104,8 @@
     };
 
     function loadBillDashboardData() {
-      // LocalStorage-l irunthu cart items edukkrom (Customer cart state sync)
-      // Fallback-ku oru sample item vekkalam
-      let cart = JSON.parse(localStorage.getItem('epc_customer_cart')) || [
-        { item: { name: "Tower bolt/ Latch repair", price: 99, id: "dr-1" }, quantity: 1 }
-      ];
+      // Fallback-la irundha thappana carpenter item-ah remove panniyachu
+      let cart = JSON.parse(localStorage.getItem('epc_customer_cart')) || [];
 
       const container = document.getElementById('dashboard-cart-items');
       container.innerHTML = '';

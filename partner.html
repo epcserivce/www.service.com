@@ -71,9 +71,12 @@
             <option value="Painter">Painting & Waterproofing</option>
           </select>
         </div>
+        <!-- Working Area Dropdown -->
         <div class="space-y-1">
-          <label class="text-xs font-bold text-slate-700 block">Working Area / City *</label>
-          <input type="text" id="reg-address" placeholder="eg. Kanchipuram / Nandambakkam" class="w-full px-3 py-2.5 text-xs font-medium border rounded-xl focus:outline-none focus:ring-2 focus:ring-ucPurple" />
+          <label class="text-xs font-bold text-slate-700 block">Working Area / Taluk *</label>
+          <select id="reg-address" class="w-full px-3 py-2.5 text-xs font-bold border rounded-xl focus:outline-none focus:ring-2 focus:ring-ucPurple bg-white">
+            <option value="">-- Select Kanchipuram Area --</option>
+          </select>
         </div>
 
         <button onclick="registerNewPartner()" class="w-full bg-slate-900 hover:bg-black text-white py-3 rounded-xl font-black text-xs transition shadow-md mt-2">
@@ -261,6 +264,33 @@
       document.getElementById('login-form-box').classList.remove('hidden');
     }
 
+            // 1. Dropdown-ku areas load panra function
+        window.onload = function() {
+          // Existing onload logic...
+          populatePartnerRegisterAreasDropdown();
+
+          let currentPartner = JSON.parse(localStorage.getItem('epc_partner_logged')) || null;
+          if (!currentPartner) {
+            document.getElementById('auth-view').classList.remove('hidden');
+          } else {
+            document.getElementById('auth-view').classList.add('hidden');
+            loadPartnerProfileData();
+            loadPartnerJobs();
+          }
+        };
+
+        function populatePartnerRegisterAreasDropdown() {
+          const selectEl = document.getElementById('reg-address');
+          if (!selectEl) return;
+          selectEl.innerHTML = '<option value="">-- Select Kanchipuram Area --</option>';
+
+          if (typeof KANCHIPURAM_DISTRICT_AREAS !== 'undefined') {
+            KANCHIPURAM_DISTRICT_AREAS.forEach(loc => {
+              selectEl.innerHTML += `<option value="${loc.area}" data-pin="${loc.pincode}" data-lat="${loc.center[0]}" data-lng="${loc.center[1]}">${loc.area} (${loc.pincode})</option>`;
+            });
+          }
+        }
+
     function registerNewPartner() {
       const name = document.getElementById('reg-name').value.trim();
       const mobile = document.getElementById('reg-mobile').value.trim();
@@ -385,35 +415,47 @@
       const todayStr = `${yyyy}-${mm}-${dd}`;
 
       let filtered = bookings.filter(b => {
-        if (b.status === 'CANCELLED') return false;
+  if (b.status === 'CANCELLED') return false;
 
-        const reqDesig = (b.requiredDesignation || '').toLowerCase();
-        const sName = (b.serviceName || '').toLowerCase();
-        const isCatMatch = (reqDesig === partnerDesig) || sName.includes(partnerDesig);
-        if (!isCatMatch) return false;
+  const reqDesig = (b.requiredDesignation || '').toLowerCase();
+  const partnerDesig = (currentPartner.designation || 'Electrician').toLowerCase();
+  const sName = (b.serviceName || '').toLowerCase();
 
-        const isAssignedToMe = (b.assignedPartner === partnerName);
-        
-        let jobDateStr = b.date || todayStr;
-        if (jobDateStr.includes('T')) jobDateStr = jobDateStr.split('T')[0];
+  // 1. Category Match Check
+  const isCatMatch = (reqDesig === partnerDesig) || sName.includes(partnerDesig);
+  if (!isCatMatch) return false;
 
-        let jobDateObj = new Date(jobDateStr);
-        jobDateObj.setHours(0, 0, 0, 0);
-        let todayDateObj = new Date(todayStr);
-        todayDateObj.setHours(0, 0, 0, 0);
+  // 2. Pincode Match Check (Customer Pincode & Partner Pincode)
+  const partnerPincode = currentPartner.pincode || "";
+  const jobPincode = b.pincode || "";
+  
+  // Oru vela partner pincode save pannirundha, antha pincode match aaganum (illa na fallback-la ellam kaattum)
+  if (partnerPincode && jobPincode && partnerPincode !== jobPincode) {
+    return false; // Pincode match aagalaena intha partner-kku notification varadhu!
+  }
 
-        if (currentActiveJobTab === 'pending') {
-          return isAssignedToMe && (!b.isCompleted && !b.isCompletionOtpVerified && b.isStarted);
-        } else if (currentActiveJobTab === 'followup') {
-          const isToday = (jobDateStr === todayStr) || (jobDateObj.getTime() === todayDateObj.getTime());
-          return isToday && (!b.isCompleted) && !b.assignedPartner;
-        } else if (currentActiveJobTab === 'upcoming') {
-          return jobDateObj > todayDateObj && (!b.isCompleted) && !b.assignedPartner;
-        } else if (currentActiveJobTab === 'completed') {
-          return isAssignedToMe && (b.isCompleted || b.status === 'COMPLETED');
-        }
-        return false;
-      });
+  const isAssignedToMe = (b.assignedPartner === currentPartner.name);
+  
+  let jobDateStr = b.date || todayStr;
+  if (jobDateStr.includes('T')) jobDateStr = jobDateStr.split('T')[0];
+
+  let jobDateObj = new Date(jobDateStr);
+  jobDateObj.setHours(0, 0, 0, 0);
+  let todayDateObj = new Date(todayStr);
+  todayDateObj.setHours(0, 0, 0, 0);
+
+  if (currentActiveJobTab === 'pending') {
+    return isAssignedToMe && (!b.isCompleted && !b.isCompletionOtpVerified && b.isStarted);
+  } else if (currentActiveJobTab === 'followup') {
+    const isToday = (jobDateStr === todayStr) || (jobDateObj.getTime() === todayDateObj.getTime());
+    return isToday && (!b.isCompleted) && !b.assignedPartner;
+  } else if (currentActiveJobTab === 'upcoming') {
+    return jobDateObj > todayDateObj && (!b.isCompleted) && !b.assignedPartner;
+  } else if (currentActiveJobTab === 'completed') {
+    return isAssignedToMe && (b.isCompleted || b.status === 'COMPLETED');
+  }
+  return false;
+});
 
       if (filtered.length === 0) {
         container.innerHTML = `
@@ -792,6 +834,54 @@
         }, (err) => console.warn(err), { enableHighAccuracy: true });
       }
     }
+
+    // Example Notification Filter Logic
+function isJobMatchingPartner(job, partner) {
+  // Category names-ah lowercase-a mathi check panrom
+  const customerCategory = job.category ? job.category.toLowerCase().trim() : "";
+  const partnerCategory = partner.serviceCategory ? partner.serviceCategory.toLowerCase().trim() : "";
+
+  // Electrician / Electrical rendu peraiyum handles panna:
+  const isElectricianMatch = 
+    (customerCategory.includes("electr") && partnerCategory.includes("electr"));
+
+  return (customerCategory === partnerCategory) || isElectricianMatch;
+}
+
+// Filter jobs based on Working Area Category & Radius Search (15-20km)
+function isJobMatchingPartner(job, partner) {
+  // 1. Service Category Match Check (eg. Electrician / Carpenter)
+  const jobCategory = (job.requiredDesignation || job.serviceName || "").toLowerCase();
+  const partnerCategory = (partner.designation || "").toLowerCase();
+  
+  if (!jobCategory.includes(partnerCategory) && !partnerCategory.includes(jobCategory)) {
+    return false; // Category mismatch!
+  }
+
+  // 2. Working Area Match Check (if direct string matches)
+  if (job.area && partner.currAddress) {
+    if (job.area.toLowerCase().includes(partner.currAddress.toLowerCase())) {
+      return true; // Direct Area match
+    }
+  }
+
+  // 3. Smart GPS Radius Filter Check (15km - 20km)
+  const maxRadiusKm = 20; // 20 km radius limit
+  
+  const custLat = job.lat || (job.coords ? job.coords.lat : null);
+  const custLng = job.lng || (job.coords ? job.coords.lng : null);
+  
+  const partnerLat = partner.liveLat || partner.lat;
+  const partnerLng = partner.liveLng || partner.lng;
+
+  if (custLat && custLng && partnerLat && partnerLng) {
+    const distance = calculateHaversineDistance(custLat, custLng, partnerLat, partnerLng);
+    return distance <= maxRadiusKm; // True if within 20km
+  }
+
+  return true; // Default fallback if GPS is not active
+}
   </script>
+  <script src="kanchipuram-areas.js"></script>
 </body>
 </html>

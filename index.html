@@ -265,26 +265,50 @@
         </div>
 
         <div class="md:col-span-5 space-y-4">
-          <div class="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm space-y-4">
-            <h2 class="font-bold text-base text-gray-900 border-b pb-2">Service Booking</h2>
-            
-            <div id="checkout-cart-items-list" class="space-y-3"></div>
+  <div class="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm space-y-4">
+    <h2 class="font-bold text-base text-gray-900 border-b pb-2">Service Booking Summary</h2>
+    
+    <!-- Selected Items List -->
+    <div id="checkout-cart-items-list" class="space-y-3"></div>
 
-            <div class="flex items-center gap-2 pt-2">
-              <input type="checkbox" id="avoid-call" class="rounded text-ucPurple focus:ring-ucPurple" checked />
-              <label for="avoid-call" class="text-xs text-gray-700 font-medium">Avoid calling before reaching the location</label>
-            </div>
-          </div>
-
-          <div class="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm flex justify-between items-center cursor-pointer hover:border-ucPurple transition">
-            <div class="flex items-center gap-3">
-              <i class="fa-solid fa-percent text-emerald-600 text-lg"></i>
-              <span class="font-bold text-sm text-gray-900">Coupons and offers</span>
-            </div>
-            <span class="text-xs font-bold text-ucPurple">8 offers &gt;</span>
-          </div>
-        </div>
+    <!-- 📊 DYNAMIC BILL BREAKDOWN BOX -->
+    <div class="bg-slate-900 text-white p-4 rounded-xl space-y-2 text-xs mt-3">
+      <div class="flex justify-between text-slate-300">
+        <span>Est. Job Duration</span>
+        <span id="checkout-duration" class="font-bold text-white">30 - 45 Mins</span>
       </div>
+      <div class="flex justify-between text-slate-300">
+        <span>Item Subtotal</span>
+        <span id="checkout-item-total" class="font-bold text-white">₹0</span>
+      </div>
+      <div class="flex justify-between text-slate-300">
+        <span>Visitation Fee</span>
+        <span class="font-bold text-white">₹99</span>
+      </div>
+      <div class="flex justify-between text-slate-300">
+        <span>Taxes & Platform Fees</span>
+        <span class="font-bold text-white">₹14</span>
+      </div>
+      <div class="border-t border-slate-700 pt-2 flex justify-between items-center text-sm">
+        <span class="font-black text-white">Total Amount</span>
+        <span id="final-payable-amount" class="text-base font-black text-emerald-400">₹0</span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2 pt-1">
+      <input type="checkbox" id="avoid-call" class="rounded text-ucPurple focus:ring-ucPurple" checked />
+      <label for="avoid-call" class="text-xs text-gray-700 font-medium">Avoid calling before reaching the location</label>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm flex justify-between items-center cursor-pointer hover:border-ucPurple transition">
+    <div class="flex items-center gap-3">
+      <i class="fa-solid fa-percent text-emerald-600 text-lg"></i>
+      <span class="font-bold text-sm text-gray-900">Coupons and offers</span>
+    </div>
+    <span class="text-xs font-bold text-ucPurple">8 offers &gt;</span>
+  </div>
+</div>
     </section>
 
   </main>
@@ -399,9 +423,15 @@
           <input type="text" id="input-house-no" placeholder="Home - 25" class="w-full border rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-ucPurple" />
         </div>
         <div>
-          <label class="text-xs font-bold text-gray-700 block mb-1">Street, Area, District *</label>
+          <label class="text-xs font-bold text-gray-700 block mb-1">Street, Area*</label>
           <input type="text" id="input-street" placeholder="Nandambakkam, Tamil Nadu" class="w-full border rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-ucPurple" />
         </div>
+        <div>
+          <label class="text-xs font-bold text-gray-700 block mb-1">Select Kanchipuram Area / Taluk *</label>
+            <select id="input-district-area" onchange="autoFillPincodeAndCoords()" class="w-full border rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-ucPurple bg-white">
+                <option value="">-- Select District Area --</option>
+          </select>
+          </div>
         <div>
           <label class="text-xs font-bold text-gray-700 block mb-1">Pincode *</label>
           <input type="text" id="input-pincode" placeholder="600089" class="w-full border rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-ucPurple" />
@@ -484,6 +514,12 @@
             <label class="text-xs font-bold text-gray-700 block mb-1">Address *</label>
             <textarea id="profile-address" rows="2" placeholder="Door No, Street, City" class="w-full border rounded-xl px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-ucPurple"></textarea>
           </div>
+          <div class="space-y-1">
+          <label class="text-xs font-bold text-slate-700 block">Select Kanchipuram Area / Pincode *</label>
+          <select id="profile-input-area" class="w-full px-3 py-2.5 text-xs font-bold border rounded-xl focus:outline-none focus:ring-2 focus:ring-ucPurple bg-white">
+            <option value="">-- Select District Area --</option>
+          </select>
+        </div>
           <div>
             <label class="text-xs font-bold text-gray-700 block mb-1">Geo Location (Lat, Lng)</label>
             <div class="flex gap-2">
@@ -509,9 +545,10 @@
   </div>
 
   <script src="categories.js"></script>
+  <script src="kanchipuram-areas.js"></script>
 
   <script>  
-    let cart = [{ item: carpenterCategories[0].mainServices[0].subServices[0], quantity: 0 }];
+    let cart = [];
     let activeCategories = carpenterCategories;
     let selectedAddress = null;
     let selectedSlotDate = null;
@@ -585,7 +622,10 @@
     }
     function closeElectricianSubCategoryModal() { document.getElementById('electrician-subcategory-modal').classList.add('hidden'); }
 
-    function openAddressModal() { document.getElementById('address-modal').classList.remove('hidden'); }
+    function openAddressModal() { 
+  document.getElementById('address-modal').classList.remove('hidden'); 
+  populateKanchipuramAreasDropdown(); // <-- MODAL OPEN AAGUM PODHU AUTO POPULATE AAGUM
+}
     function closeAddressModal() { document.getElementById('address-modal').classList.add('hidden'); }
 
     function saveAddressDetails() {
@@ -749,68 +789,102 @@
     }
 
     function saveBookingToStorage(serviceName, totalAmount, payMethod) {
-      const bookingId = 'EPC' + Math.floor(100000 + Math.random() * 900000);
+  const bookingId = 'EPC' + Math.floor(100000 + Math.random() * 900000);
+  
+  // 1. DYNAMIC PRICE CALCULATION LOGIC
+  let finalCalculatedAmount = 0;
+
+  if (cart && cart.length > 0) {
+    let itemTotal = 0;
+    cart.forEach(c => {
+      itemTotal += (c.item.price * c.quantity);
+    });
+    // Extra fees (Visitation ₹99 + Platform ₹8 + Taxes ₹6 = ₹113)
+    const visitationFee = 99;
+    const platformFee = 8;
+    const taxes = 6;
+    
+    finalCalculatedAmount = itemTotal + visitationFee + platformFee + taxes;
+  } else {
+    // Cart empty-a irundha pass panna totalAmount edukkum
+    finalCalculatedAmount = totalAmount || 212;
+  }
+
+  // 2. DESIGNATION ASSIGNMENT LOGIC
+  let assignedDesig = 'Electrician'; 
+  const sName = (serviceName || "").toLowerCase();
+
+  if (
+    sName.includes('carpenter') || sName.includes('door') || sName.includes('latch') || 
+    sName.includes('bolt') || sName.includes('cupboard') || sName.includes('shelf') || 
+    sName.includes('hinge') || sName.includes('table') || sName.includes('bed') || 
+    sName.includes('sofa') || sName.includes('wardrobe') || sName.includes('cabinet') || 
+    sName.includes('decor') || sName.includes('mirror') || sName.includes('hook')
+  ) {
+    assignedDesig = 'Carpenter';
+  } else if (sName.includes('plumber') || sName.includes('faucet') || sName.includes('tap') || sName.includes('pipe')) {
+    assignedDesig = 'Plumber';
+  } else if (sName.includes('ac') || sName.includes('air conditioner')) {
+    assignedDesig = 'AC Technician';
+  } else if (
+    sName.includes('tubelight') || sName.includes('light') || sName.includes('fan') || 
+    sName.includes('switch') || sName.includes('wire') || sName.includes('electric') || 
+    sName.includes('inch') || sName.includes('cctv') || sName.includes('mcb') || 
+    sName.includes('fuse') || sName.includes('inverter') || sName.includes('bell') ||
+    sName.includes('installation')
+  ) {
+    assignedDesig = 'Electrician';
+  }
+
+  const dynamicAddress = document.getElementById('checkout-address-display') ? document.getElementById('checkout-address-display').innerText : 'Nandambakkam, Tamil Nadu';
+  const dynamicSlot = document.getElementById('checkout-slot-display') ? document.getElementById('checkout-slot-display').innerText : 'Wed, Oct 14 - 10:00 AM';
+
+  let parsedDateStr = new Date().toISOString().split('T')[0];
+  try {
+    if (typeof selectedSlotDate !== 'undefined' && selectedSlotDate) {
+      const currentYear = new Date().getFullYear();
+      const cleanDateText = selectedSlotDate.replace(/^Today,?\s*/i, '').trim();
+      const parts = cleanDateText.split(',');
+      let datePart = parts.length > 1 ? parts[1].trim() : cleanDateText;
       
-      let assignedDesig = 'Electrician';
-      const sName = serviceName.toLowerCase();
-
-      if (sName.includes('carpenter') || sName.includes('door') || sName.includes('latch') || sName.includes('bolt') || sName.includes('cupboard') || sName.includes('shelf')) {
-        assignedDesig = 'Carpenter';
-      } else if (sName.includes('plumber') || sName.includes('faucet') || sName.includes('tap') || sName.includes('pipe')) {
-        assignedDesig = 'Plumber';
-      } else if (sName.includes('ac') || sName.includes('air conditioner')) {
-        assignedDesig = 'AC Technician';
+      const dateObj = new Date(`${datePart} ${currentYear}`);
+      if (!isNaN(dateObj.getTime())) {
+        const yyyy = dateObj.getFullYear();
+        const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const dd = String(dateObj.getDate()).padStart(2, '0');
+        parsedDateStr = `${yyyy}-${mm}-${dd}`;
       }
-
-      const dynamicAddress = document.getElementById('checkout-address-display') ? document.getElementById('checkout-address-display').innerText : 'Nandambakkam, Tamil Nadu';
-      const dynamicSlot = document.getElementById('checkout-slot-display') ? document.getElementById('checkout-slot-display').innerText : 'Wed, Oct 14 - 10:00 AM';
-
-      let parsedDateStr = new Date().toISOString().split('T')[0];
-      try {
-        if (typeof selectedSlotDate !== 'undefined' && selectedSlotDate) {
-          const currentYear = new Date().getFullYear();
-          const cleanDateText = selectedSlotDate.replace(/^Today,?\s*/i, '').trim();
-          const parts = cleanDateText.split(',');
-          let datePart = parts.length > 1 ? parts[1].trim() : cleanDateText;
-          
-          const dateObj = new Date(`${datePart} ${currentYear}`);
-          if (!isNaN(dateObj.getTime())) {
-            const yyyy = dateObj.getFullYear();
-            const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const dd = String(dateObj.getDate()).padStart(2, '0');
-            parsedDateStr = `${yyyy}-${mm}-${dd}`;
-          }
-        }
-      } catch (err) {
-        console.warn("Date parse error:", err);
-      }
-
-      const bookingData = {
-        id: bookingId,
-        bookingId: bookingId,
-        serviceName: serviceName,
-        slot: dynamicSlot, 
-        date: parsedDateStr,
-        time: dynamicSlot,
-        address: dynamicAddress,
-        amount: totalAmount,
-        totalAmount: totalAmount,
-        status: 'ACTIVE',
-        payMethod: payMethod || 'Online/COD',
-        requiredDesignation: assignedDesig,
-        assignedPartner: null,
-        partnerStatus: 'PENDING',
-        startOTP: Math.floor(100000 + Math.random() * 900000)
-      };
-
-      const customerBookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
-      customerBookings.push(bookingData);
-      localStorage.setItem('customerBookings', JSON.stringify(customerBookings));
-
-      const partnerBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
-      partnerBookings.push(bookingData);
-      localStorage.setItem('epc_bookings', JSON.stringify(partnerBookings));
     }
+  } catch (err) {
+    console.warn("Date parse error:", err);
+  }
+
+  const selectedAreaOption = document.getElementById('input-district-area');
+const customerPincode = (selectedAreaOption && selectedAreaOption.options[selectedAreaOption.selectedIndex]) 
+  ? selectedAreaOption.options[selectedAreaOption.selectedIndex].getAttribute('data-pin') 
+  : (document.getElementById('input-pincode') ? document.getElementById('input-pincode').value : "631501");
+
+const bookingData = {
+  id: bookingId,
+  bookingId: bookingId,
+  serviceName: serviceName,
+  pincode: customerPincode, // 👈 Inga customer pincode save aagum!
+  slot: dynamicSlot, 
+  date: parsedDateStr,
+  amount: finalCalculatedAmount,
+  requiredDesignation: assignedDesig,
+  assignedPartner: null,
+  partnerStatus: 'PENDING'
+};
+
+  const customerBookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
+  customerBookings.push(bookingData);
+  localStorage.setItem('customerBookings', JSON.stringify(customerBookings));
+
+  const partnerBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
+  partnerBookings.push(bookingData);
+  localStorage.setItem('epc_bookings', JSON.stringify(partnerBookings));
+}
 
     let currentCategoryIdx = 0;
 
@@ -1061,38 +1135,73 @@
     }
 
     function renderCheckoutView() {
-      const container = document.getElementById('checkout-cart-items-list');
-      if (!container) return;
-      container.innerHTML = '';
+  const container = document.getElementById('checkout-cart-items-list');
+  if (!container) return;
+  container.innerHTML = '';
 
-      let subtotal = 0;
-      cart.forEach(c => {
-        subtotal += (c.item.price * c.quantity);
-        const div = document.createElement('div');
-        div.className = "flex justify-between items-center text-xs";
-        div.innerHTML = `
-          <div>
-            <p class="font-bold text-gray-900">${c.item.name}</p>
-            <p class="text-gray-500">Qty: ${c.quantity}</p>
-          </div>
-          <span class="font-extrabold text-gray-900">₹${c.item.price * c.quantity}</span>
-        `;
-        container.appendChild(div);
-      });
-    }
+  let itemSubtotal = 0;
+  let totalItemsCount = 0;
+
+  cart.forEach(c => {
+    const itemTotal = (c.item.price * c.quantity);
+    itemSubtotal += itemTotal;
+    totalItemsCount += c.quantity;
+
+    const div = document.createElement('div');
+    div.className = "flex justify-between items-center text-xs py-1 border-b border-gray-100 last:border-b-0";
+    div.innerHTML = `
+      <div>
+        <p class="font-bold text-gray-900">${c.item.name}</p>
+        <p class="text-[11px] text-gray-500 font-medium">Qty: ${c.quantity} × ₹${c.item.price}</p>
+      </div>
+      <span class="font-extrabold text-gray-900">₹${itemTotal}</span>
+    `;
+    container.appendChild(div);
+  });
+
+  // Dynamic Fees Calculation
+  const visitationFee = 99;
+  const taxesAndFees = 14; // Platform Fee (₹8) + Taxes (₹6)
+  const grandTotal = itemSubtotal + visitationFee + taxesAndFees;
+
+  // Dynamic Job Duration Calculation (Item Count-kku yetha maari)
+  let estDuration = "30 - 45 Mins";
+  if (totalItemsCount >= 3) {
+    estDuration = "60 - 90 Mins";
+  } else if (totalItemsCount === 2) {
+    estDuration = "45 - 60 Mins";
+  }
+
+  // Update UI Elements
+  if (document.getElementById('checkout-duration')) {
+    document.getElementById('checkout-duration').innerText = estDuration;
+  }
+  if (document.getElementById('checkout-item-total')) {
+    document.getElementById('checkout-item-total').innerText = `₹${itemSubtotal}`;
+  }
+  if (document.getElementById('final-payable-amount')) {
+    document.getElementById('final-payable-amount').innerText = `₹${grandTotal}`;
+  }
+}
 
     function openProfileModal() {
-      toggleDropdown();
-      document.getElementById('profile-modal').classList.remove('hidden');
+  toggleDropdown();
+  document.getElementById('profile-modal').classList.remove('hidden');
 
-      const savedProfile = JSON.parse(localStorage.getItem('epc_customer_profile')) || {};
-      if (savedProfile.name) document.getElementById('profile-name').value = savedProfile.name;
-      if (savedProfile.mobile || loggedInUserPhone) {
-        document.getElementById('profile-mobile').value = savedProfile.mobile || loggedInUserPhone;
-      }
-      if (savedProfile.address) document.getElementById('profile-address').value = savedProfile.address;
-      if (savedProfile.geolocation) document.getElementById('profile-geolocation').value = savedProfile.geolocation;
-    }
+  // 📊 Dropdown-la Kanchipuram areas load panrathukku ithu mukkiyam!
+  if (typeof populateCustomerProfileAreaDropdown === 'function') {
+    populateCustomerProfileAreaDropdown();
+  }
+
+  const savedProfile = JSON.parse(localStorage.getItem('epc_customer_profile')) || {};
+  if (savedProfile.name) document.getElementById('profile-name').value = savedProfile.name;
+  if (savedProfile.mobile || loggedInUserPhone) {
+    document.getElementById('profile-mobile').value = savedProfile.mobile || loggedInUserPhone;
+  }
+  if (savedProfile.address) document.getElementById('profile-address').value = savedProfile.address;
+  if (savedProfile.geolocation) document.getElementById('profile-geolocation').value = savedProfile.geolocation;
+  
+}
 
     function closeProfileModal() {
       document.getElementById('profile-modal').classList.add('hidden');
@@ -1153,6 +1262,94 @@
         }, 3000);
       }
     }
+
+    function populateKanchipuramAreasDropdown() {
+  const selectEl = document.getElementById('input-district-area');
+  if (!selectEl) return;
+
+  // Pehle existing content clear panren
+  selectEl.innerHTML = '<option value="">-- Select District Area --</option>';
+
+  if (typeof KANCHIPURAM_DISTRICT_AREAS !== 'undefined' && KANCHIPURAM_DISTRICT_AREAS.length > 0) {
+    KANCHIPURAM_DISTRICT_AREAS.forEach(loc => {
+      selectEl.innerHTML += `<option value="${loc.area}" data-pin="${loc.pincode}" data-lat="${loc.center[0]}" data-lng="${loc.center[1]}">${loc.area} (${loc.pincode})</option>`;
+    });
+  } else {
+    console.error("KANCHIPURAM_DISTRICT_AREAS array found aagala, file path check pannu bro!");
+  }
+}
+
+function autoFillPincodeAndCoords() {
+  const selectEl = document.getElementById('input-district-area');
+  const selectedOption = selectEl.options[selectEl.selectedIndex];
+  if (!selectedOption.value) return;
+
+  const pin = selectedOption.getAttribute('data-pin');
+  const lat = selectedOption.getAttribute('data-lat');
+  const lng = selectedOption.getAttribute('data-lng');
+
+  document.getElementById('input-pincode').value = pin;
+  // Save selected coordinates to booking object
+  window.selectedCustomerCoords = { lat: parseFloat(lat), lng: parseFloat(lng) };
+}
+
+// 1. Profile modal open aagum podhu dropdown load panra function
+function openCustomerProfileModal() {
+  const modal = document.getElementById('customer-profile-modal'); // ungaloda modal id aadharichu maathikonga
+  if (modal) modal.classList.remove('hidden');
+  
+  populateCustomerProfileAreaDropdown();
+  loadExistingProfileData();
+}
+
+function populateCustomerProfileAreaDropdown() {
+  const selectEl = document.getElementById('profile-input-area');
+  if (!selectEl) return;
+  selectEl.innerHTML = '<option value="">-- Select District Area --</option>';
+
+  if (typeof KANCHIPURAM_DISTRICT_AREAS !== 'undefined') {
+    KANCHIPURAM_DISTRICT_AREAS.forEach(loc => {
+      selectEl.innerHTML += `<option value="${loc.area}" data-pin="${loc.pincode}" data-lat="${loc.center[0]}" data-lng="${loc.center[1]}">${loc.area} (${loc.pincode})</option>`;
+    });
+  }
+}
+
+// 2. Profile save panra podhu exact Pincode & Area save panra logic
+function saveCustomerProfileDetails(e) {
+  if (e) e.preventDefault();
+
+  const name = document.getElementById('profile-input-name') ? document.getElementById('profile-input-name').value.trim() : "Abdul Rahman";
+  const mobile = document.getElementById('profile-input-mobile') ? document.getElementById('profile-input-mobile').value.trim() : "6381796419";
+  
+  const areaSelect = document.getElementById('profile-input-area');
+  const selectedArea = areaSelect.value;
+  const selectedOption = areaSelect.options[areaSelect.selectedIndex];
+  
+  const pincode = selectedOption ? selectedOption.getAttribute('data-pin') : "631501";
+  const lat = selectedOption ? selectedOption.getAttribute('data-lat') : 12.8342;
+  const lng = selectedOption ? selectedOption.getAttribute('data-lng') : 79.7036;
+
+  if (!selectedArea) {
+    alert("Please select your Kanchipuram area / pincode.");
+    return;
+  }
+
+  const customerProfile = {
+    name: name,
+    mobile: mobile,
+    address: `${selectedArea}, Tamil Nadu`,
+    pincode: pincode, // 👈 Exact Pincode Profile-la save aagum!
+    lat: parseFloat(lat),
+    lng: parseFloat(lng)
+  };
+
+  localStorage.setItem('epc_customer_profile', JSON.stringify(customerProfile));
+  alert(`🎉 Profile Updated Successfully!\nArea: ${selectedArea} (${pincode})`);
+  
+  // Close modal logic
+  const modal = document.getElementById('customer-profile-modal');
+  if (modal) modal.classList.add('hidden');
+}
   </script>
 </body>
 </html>
