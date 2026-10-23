@@ -127,6 +127,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('create-booking', (bookingData) => {
+    // Broadcast notification to specific Kanchipuram / district room partners
     io.to(bookingData.district).emit('new-booking-alert', bookingData);
   });
 

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Details - EPC Partner</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; padding-bottom: 110px; }
+  </style>
+</head>
+<body class="max-w-md mx-auto min-h-screen flex flex-col justify-between text-slate-900 bg-slate-50 relative">
+
+  <!-- Top Header Bar -->
+  <header class="sticky top-0 bg-white z-40 px-5 py-4 flex justify-between items-center border-b border-slate-100 shadow-sm">
+    <button onclick="history.back()" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-800 cursor-pointer hover:bg-slate-200 transition">
+      <i class="fa-solid fa-arrow-left text-sm"></i>
+    </button>
+    <div class="flex items-center gap-2">
+      <button class="flex items-center gap-1.5 text-xs font-bold text-red-600 border border-red-200 bg-red-50 px-3.5 py-1.5 rounded-full shadow-sm hover:bg-red-100 transition">
+        Emergency <i class="fa-solid fa-bell text-xs"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="p-5 space-y-5 flex-1">
+    
+    <!-- Time & Schedule Slot Card -->
+    <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm space-y-1">
+      <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Scheduled Time</span>
+      <h1 id="job-time-slot" class="text-xl font-black text-slate-900 tracking-tight">Tomorrow, 10:00 AM</h1>
+    </div>
+
+    <!-- Customer Info & Address Card -->
+    <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm space-y-3">
+      <div class="flex justify-between items-start">
+        <div class="space-y-1">
+          <span id="cust-name" class="font-black text-base text-slate-900 block">Archana S</span>
+          <p id="cust-address" class="text-xs text-slate-500 leading-relaxed font-medium">
+            Gerugambakkam Chennai 600128, 2421, Boomadevi Nagar Main Rd...
+          </p>
+        </div>
+        <span class="bg-emerald-50 text-emerald-700 text-[9px] font-black px-2.5 py-1 rounded-lg border border-emerald-200 uppercase shrink-0">
+          ✓ REGULAR
+        </span>
+      </div>
+      <a href="#" class="text-xs font-bold text-indigo-600 hover:underline inline-block pt-1">Translate Address</a>
+    </div>
+
+    <!-- Live Hub Map Section -->
+    <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm space-y-3">
+      <h3 class="font-black text-xs text-slate-400 uppercase tracking-wider">Inside your hub</h3>
+      <div class="w-full h-44 rounded-2xl overflow-hidden border border-slate-100 relative bg-slate-100 shadow-inner">
+        <iframe 
+          id="map-iframe"
+          class="w-full h-full border-0"
+          loading="lazy"
+          allowfullscreen
+          src="https://maps.google.com/maps?q=12.9977,80.0972&z=15&output=embed">
+        </iframe>
+      </div>
+    </div>
+
+    <!-- Job Details & Billing Breakdown Card -->
+    <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm space-y-4">
+      <h3 class="font-black text-sm text-slate-900 border-b border-slate-100 pb-3">Job details</h3>
+      
+      <div class="flex justify-between items-start text-xs border-b border-slate-100 pb-4">
+        <div>
+          <h4 id="job-service-name" class="font-black text-sm text-slate-900">Door lock replace/install</h4>
+          <p id="job-duration-sub" class="text-[11px] text-slate-400 font-medium mt-0.5">Duration: 15 mins</p>
+          <p id="job-sub-details" class="text-xs text-slate-500 font-semibold mt-1">• Lockable latch</p>
+        </div>
+        <span id="job-base-price" class="font-black text-slate-900 text-sm bg-slate-50 px-2.5 py-1 rounded-xl">₹149</span>
+      </div>
+
+      <!-- Bill Breakdown List -->
+      <div class="space-y-2.5 text-xs font-medium text-slate-600 pt-1">
+        <div class="flex justify-between">
+          <span>Item total</span>
+          <span id="bill-item-total" class="font-black text-slate-900">₹149</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Taxes and Fee</span>
+          <span id="bill-taxes" class="font-black text-slate-900">₹17</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Visitation Fee</span>
+          <span id="bill-visitation" class="font-black text-slate-900">₹99</span>
+        </div>
+        <div class="flex justify-between border-b border-slate-100 pb-3">
+          <span>Pay Later Convenience Fee</span>
+          <span id="bill-convenience" class="font-black text-slate-900">₹9</span>
+        </div>
+        <div class="flex justify-between pt-1 font-black text-sm text-slate-900">
+          <span>Total amount</span>
+          <span id="bill-total-amount" class="text-indigo-600">₹274</span>
+        </div>
+        <div class="flex justify-between font-black text-sm text-slate-900">
+          <span>Payment to collect</span>
+          <span id="bill-collect-amount" class="text-emerald-600">₹274</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Bottom Navigation Quick Action Buttons -->
+  <footer class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-100 p-4 space-y-3 z-40 shadow-2xl rounded-t-3xl">
+    <div class="grid grid-cols-2 gap-3 text-center text-slate-700 text-xs font-bold">
+      <button onclick="callCustomer()" class="flex items-center justify-center gap-2 py-3 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-2xl transition cursor-pointer font-black text-xs">
+        <i class="fa-solid fa-phone text-indigo-600"></i>
+        <span>Contact</span>
+      </button>
+
+      <button onclick="cancelJob()" class="flex items-center justify-center gap-2 py-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-2xl transition cursor-pointer font-black text-xs">
+        <i class="fa-solid fa-circle-xmark"></i>
+        <span>Cancel Job</span>
+      </button>
+    </div>
+  </footer>
+
+  <script>
+    let currentJobId = null;
+    let customerPhone = "6381796419";
+    let customerLat = 12.9977;
+    let customerLng = 80.0972;
+
+    window.onload = function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      currentJobId = urlParams.get('id');
+      loadJobDetailsData(currentJobId);
+    };
+
+    function loadJobDetailsData(jobId) {
+      let cust = JSON.parse(localStorage.getItem('customerBookings')) || [];
+      let epc = JSON.parse(localStorage.getItem('epc_bookings')) || [];
+      let all = [...epc, ...cust];
+      let job = all.find(b => String(b.id || b.bookingId) === String(jobId));
+
+      if (job) {
+        document.getElementById('job-time-slot').innerText = job.slot || job.date || 'Tomorrow, 10:00 AM';
+        document.getElementById('cust-name').innerText = job.customerName || 'Archana S';
+        document.getElementById('cust-address').innerText = job.address || 'Gerugambakkam Chennai 600128, Tamil Nadu';
+        
+        customerPhone = job.customerPhone || "6381796419";
+        if (job.lat && job.lng) {
+          customerLat = job.lat;
+          customerLng = job.lng;
+          document.getElementById('map-iframe').src = `https://maps.google.com/maps?q=${customerLat},${customerLng}&z=15&output=embed`;
+        }
+
+        document.getElementById('job-service-name').innerText = job.serviceName || 'Door lock replace/install';
+        
+        // --- 🎯 FIX HERE: Correct Breakdown Logic ---
+        let grandTotal = job.reenteredAmount || job.amount || 312;
+        
+        // Visitiation (99), Taxes (14/17), Convenience Fee calculate panni base item price edukkirom
+        let visitationFee = 99;
+        let taxes = 14; 
+        let convenienceFee = 0; // Convenience Fee irundha mattum podalam
+
+        // Base Item Total = Total Amount - Fees
+        let itemAmt = job.itemBasePrice || (grandTotal - visitationFee - taxes - convenienceFee);
+        if (itemAmt < 0) itemAmt = 199;
+
+        // UI-la exact Breakdown values-ah set panrom
+        document.getElementById('job-base-price').innerText = `₹${itemAmt}`;
+        document.getElementById('bill-item-total').innerText = `₹${itemAmt}`;
+        document.getElementById('bill-taxes').innerText = `₹${taxes}`;
+        document.getElementById('bill-visitation').innerText = `₹${visitationFee}`;
+        
+        // Convenience fee element irundha update pannanum
+        const convEl = document.getElementById('bill-convenience');
+        if (convEl) {
+          if (convenienceFee > 0) {
+            convEl.innerText = `₹${convenienceFee}`;
+            convEl.parentElement.style.display = 'flex';
+          } else {
+            convEl.parentElement.style.display = 'none'; // Extra fee illana hide pannidum
+          }
+        }
+
+        document.getElementById('bill-total-amount').innerText = `₹${grandTotal}`;
+        document.getElementById('bill-collect-amount').innerText = `₹${grandTotal}`;
+      }
+    }
+
+    function callCustomer() {
+      window.location.href = `tel:${customerPhone}`;
+    }
+
+    function openNavigationMap() {
+      window.open(`https://www.google.com/maps?q=${customerLat},${customerLng}`, '_blank');
+    }
+
+    function cancelJob() {
+      if (confirm("Are you sure you want to cancel this job?")) {
+        alert("Job cancellation requested.");
+      }
+    }
+  </script>
+</body>
+</html>

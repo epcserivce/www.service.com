@@ -25,7 +25,6 @@
       50% { transform: scale(1.15); opacity: 0.4; }
       100% { transform: scale(0.95); opacity: 0.8; }
     }
-
     .blink-dot {
       width: 10px;
       height: 10px;
@@ -35,141 +34,196 @@
       animation: pulse-ring 1.2s infinite ease-in-out;
       box-shadow: 0 0 8px #10b981;
     }
-
     .leaflet-routing-container { display: none !important; }
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col justify-between font-sans">
 
   <!-- Navbar -->
-  <header class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-40 px-6 py-4 flex justify-between items-center">
+  <header class="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-40 px-6 py-4 flex justify-between items-center">
     <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='index.html'">
-      <div class="bg-black text-white font-black text-base px-2.5 py-1 rounded-xl shadow">EPC</div>
-      <span class="font-extrabold text-gray-900 tracking-tight text-lg">My Bookings</span>
+      <div class="bg-black text-white font-black text-sm px-2.5 py-1.5 rounded-xl shadow">EPC</div>
+      <span class="font-black text-gray-900 tracking-tight text-base">My Bookings</span>
     </div>
-    <a href="index.html" class="text-xs font-bold text-ucPurple hover:bg-purple-50 px-3 py-2 rounded-xl transition flex items-center gap-1.5">
-      <i class="fa-solid fa-arrow-left"></i> Back to Home
+    <a href="index.html" class="text-xs font-bold text-ucPurple bg-purple-50 hover:bg-purple-100 px-3.5 py-2 rounded-xl transition flex items-center gap-1.5">
+      <i class="fa-solid fa-arrow-left"></i> Home
     </a>
   </header>
 
   <!-- Bookings Content -->
-  <main class="max-w-3xl mx-auto p-4 sm:p-6 space-y-4 w-full flex-1">
-    <h1 class="text-xl font-black text-gray-900 tracking-tight">Your Service Bookings</h1>
-
-    <div id="bookings-list" class="space-y-4">
-      <!-- Dynamic cards will load here -->
+  <main class="max-w-3xl mx-auto p-4 sm:p-6 space-y-5 w-full flex-1">
+    <div class="flex justify-between items-center">
+      <h1 class="text-xl font-black text-gray-900 tracking-tight">Your Service Bookings</h1>
     </div>
+
+    <!-- 3 CATEGORY TABS FOR FILTERING -->
+    <div class="bg-white rounded-2xl p-1.5 border border-slate-200 flex justify-between gap-1 shadow-sm">
+      <button onclick="switchBookingTab('progress')" id="tab-btn-progress" class="flex-1 py-2.5 text-xs font-black rounded-xl bg-ucPurple text-white transition cursor-pointer flex items-center justify-center gap-1.5">
+        <i class="fa-solid fa-spinner"></i>
+        <span>In Progress</span>
+      </button>
+      <button onclick="switchBookingTab('completed')" id="tab-btn-completed" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:bg-slate-100 transition cursor-pointer flex items-center justify-center gap-1.5">
+        <i class="fa-solid fa-circle-check"></i>
+        <span>Completed</span>
+      </button>
+      <button onclick="switchBookingTab('cancelled')" id="tab-btn-cancelled" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:bg-slate-100 transition cursor-pointer flex items-center justify-center gap-1.5">
+        <i class="fa-solid fa-circle-xmark"></i>
+        <span>Cancelled</span>
+      </button>
+    </div>
+
+    <div id="bookings-list" class="space-y-4"></div>
   </main>
 
   <!-- BOOKING DETAILS MODAL -->
   <div id="booking-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl relative p-6 space-y-5 max-h-[90vh] overflow-y-auto">
+    <div class="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl relative p-6 space-y-5 max-h-[90vh] overflow-y-auto">
       
-      <button onclick="closeBookingDetailsModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 hover:bg-gray-200 cursor-pointer transition z-10">
+      <button onclick="closeBookingDetailsModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 hover:bg-slate-200 cursor-pointer transition z-10">
         <i class="fa-solid fa-xmark"></i>
       </button>
 
-      <div>
-        <span id="modal-status-badge" class="bg-emerald-100 text-emerald-700 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">SUCCESSFUL</span>
-        <h2 class="font-black text-xl text-gray-900 mt-2">Booking Details</h2>
-        <p id="modal-booking-id" class="text-xs text-gray-400 font-medium">Booking ID: #EPC84920</p>
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div>
+          <span id="modal-booking-id" class="text-[11px] font-extrabold text-slate-400">Booking ID: #EPC94821</span>
+          <h2 class="text-base font-black text-slate-900">Booking Details & Workflow</h2>
+        </div>
+        <span id="modal-status-badge" class="bg-purple-100 text-ucPurple text-[10px] font-black px-3 py-1 rounded-full uppercase">CONFIRMED</span>
       </div>
 
       <!-- 📍 LIVE ROUTE TRACKING MAP INSIDE MODAL -->
-      <div id="modal-map-container" class="hidden space-y-2 border-t pt-3">
-        <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-2xl border border-slate-100">
+      <div id="modal-map-container" class="hidden space-y-2 bg-slate-50 p-4 rounded-3xl border border-slate-100 shadow-sm">
+        <div class="flex justify-between items-center">
           <div>
             <h4 id="modal-map-status-title" class="text-xs font-black text-slate-900 flex items-center gap-1.5">
               <span class="blink-dot"></span>
-              <span>வந்து கொண்டிருக்கிறது (Arriving)</span>
+              <span>Partner Arriving to Location</span>
             </h4>
-            <p id="modal-map-status-sub" class="text-[10px] text-slate-500 font-medium">Calculating ETA...</p>
+            <p id="modal-map-status-sub" class="text-[10px] text-slate-500 font-medium">Live route tracking active...</p>
           </div>
           <a id="modal-partner-call-btn" href="tel:6381796419" class="w-8 h-8 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center text-xs shadow-sm">
             <i class="fa-solid fa-phone"></i>
           </a>
         </div>
-
-        <div id="modal-live-map" class="w-full h-48 rounded-2xl bg-slate-100 border border-slate-200 shadow-inner"></div>
+        <div id="modal-live-map" class="w-full h-44 rounded-2xl bg-slate-200 shadow-inner"></div>
       </div>
 
-      <div class="border-t border-b border-gray-100 py-4 space-y-3 text-xs text-gray-700">
-        <div class="flex justify-between font-medium">
-          <span class="text-gray-400">Service Name:</span>
-          <span id="modal-service-name" class="font-bold text-gray-900 text-right">Door repair</span>
+      <!-- 1. PARTNER ARRIVAL & 30-50M PHOTO OPTION -->
+      
+      <div id="modal-arrival-section" class="hidden bg-blue-50 border border-blue-200 p-4 rounded-3xl space-y-2">
+         <p class="text-xs font-bold text-blue-900"><i class="fa-solid fa-camera mr-1"></i> Partner Arrival & Photo Upload (Within 1km):</p>
+      <div id="modal-arrival-status-msg" class="text-xs text-slate-700">Checking partner distance...</div>
+          <input type="file" id="modal-arrival-file" accept="image/*" capture="camera" onchange="customerUploadArrivalPhoto(event)" class="text-xs text-slate-600 w-full hidden" />
+      </div>
+
+      <!-- 2. JOB START OTP INPUT / DISPLAY -->
+      <div id="modal-start-otp-section" class="hidden bg-purple-50 border border-purple-200 p-5 rounded-3xl space-y-2 text-center shadow-sm">
+        <p class="text-xs font-black text-purple-800 uppercase tracking-wide">🔑 Job Start Verification OTP</p>
+        <p id="modal-start-otp-display" class="text-3xl font-black text-ucPurple tracking-widest">------</p>
+        <p class="text-[11px] text-slate-500 font-medium">Share this OTP with partner to start work.</p>
+      </div>
+
+      <!-- 3. RECONFIRMATION & 5 MINS TIMER -->
+      <div id="modal-reconfirmation-box" class="hidden bg-amber-50 border border-amber-200 p-5 rounded-3xl space-y-3 shadow-sm">
+        <div class="flex items-center justify-between text-amber-900 font-black text-xs">
+          <span><i class="fa-solid fa-triangle-exclamation mr-1"></i> Partner Estimate & Reconfirmation</span>
+          <span id="modal-timer-countdown" class="text-red-600 font-black text-sm bg-white px-2.5 py-1 rounded-xl shadow-sm">05:00</span>
         </div>
-        <div class="flex justify-between font-medium">
-          <span class="text-gray-400">Scheduled Slot:</span>
-          <span id="modal-service-slot" class="font-bold text-gray-900">Today, Oct 16 - 05:00 PM</span>
+        
+        <div class="text-xs text-slate-700 space-y-2 bg-white p-4 rounded-2xl border border-amber-100 shadow-sm">
+          <p class="font-bold text-slate-800">Job Details:</p>
+          <p id="modal-reconf-desc" class="text-slate-600 font-medium">-</p>
+          
+          <!-- CLEAN BILL BREAKDOWN SUMMARY BOX -->
+          <div class="bg-slate-900 text-white p-4 rounded-2xl space-y-2 text-xs mt-3 shadow-inner">
+            <div class="flex justify-between text-slate-300">
+              <span>Item Subtotal</span>
+              <span id="customer-bill-item-total" class="font-bold text-white">₹0</span>
+            </div>
+            <div class="flex justify-between text-slate-300">
+              <span>Taxes & Fees</span>
+              <span id="customer-bill-taxes" class="font-bold text-white">₹17</span>
+            </div>
+            <div class="flex justify-between text-slate-300">
+              <span>Visitation Fee</span>
+              <span class="font-bold text-white">₹99</span>
+            </div>
+            <div class="flex justify-between text-slate-300">
+              <span>Convenience Fee</span>
+              <span class="font-bold text-white">₹9</span>
+            </div>
+            <div class="border-t border-slate-700 pt-2 flex justify-between items-center text-sm">
+              <span class="font-black text-white">Total Payable Amount</span>
+              <span id="modal-reconf-amount" class="text-base font-black text-emerald-400">₹0</span>
+            </div>
+          </div>
         </div>
-        <div class="flex justify-between font-medium">
-          <span class="text-gray-400">Assigned Partner:</span>
-          <span id="modal-partner-name" class="font-bold text-gray-900">Gudluck</span>
-        </div>
-        <div class="flex justify-between font-medium">
-          <span class="text-gray-400">Service Address:</span>
-          <span id="modal-service-address" class="font-bold text-gray-900 text-right">35, Kanchipuram 631502</span>
-        </div>
-        <div class="flex justify-between font-medium">
-          <span class="text-gray-400">Payment Status:</span>
-          <span id="modal-payment-status" class="font-bold text-emerald-600">Paid Online / COD</span>
+
+        <div class="flex gap-2.5 pt-1">
+          <button onclick="confirmCustomerReentry()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-2xl text-xs font-black transition shadow cursor-pointer">
+            ✓ Accept & Confirm
+          </button>
+          <button onclick="rejectCustomerReentry()" class="bg-red-100 hover:bg-red-200 text-red-600 px-4 py-3.5 rounded-2xl text-xs font-bold transition cursor-pointer">
+            Reject
+          </button>
         </div>
       </div>
 
-      <!-- Reconfirmation Box -->
-      <div id="modal-reconfirmation-box" class="hidden bg-amber-50 border border-amber-200 p-3.5 rounded-2xl space-y-2">
-        <p class="text-xs font-bold text-amber-800">🛡️ Partner Work Reconfirmation Details:</p>
-        <p id="modal-reentered-desc" class="text-xs text-gray-700"></p>
-        <p class="text-xs font-bold text-gray-900">Revised Total: <span id="modal-reentered-amount" class="text-ucPurple font-black"></span></p>
-        <button id="modal-confirm-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-xs font-bold transition shadow-sm cursor-pointer">
-          ✓ Confirm Details & Disconnect Map
+      <!-- 4. CUSTOMER NOT LOCATION / ONLINE & COD PAYMENT / QR -->
+      <div id="modal-payment-workflow-box" class="hidden bg-emerald-50 border border-emerald-200 p-4 rounded-2xl space-y-3 text-center">
+        <p class="text-xs font-bold text-emerald-800">💳 Payment & Job Completion Workflow:</p>
+        <div id="modal-payment-mode-display" class="text-xs font-bold text-slate-700">Mode: Online / COD</div>
+        <div id="modal-qr-container" class="hidden p-2 bg-white rounded-xl border inline-block">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=upi://pay?pa=epcservices@upi&pn=EPC%20Services" class="w-32 h-32 mx-auto rounded" alt="QR">
+          <p class="text-[10px] text-slate-500 mt-1">Scan & Pay Cash in Hand / UPI</p>
+        </div>
+        <button onclick="customerConfirmEndJob()" class="w-full bg-ucPurple text-white py-2.5 rounded-xl text-xs font-black shadow cursor-pointer">
+          Confirm & End Job Close
         </button>
       </div>
 
-      <!-- JOB START OTP BOX -->
-      <div id="modal-otp-box" class="hidden bg-purple-50 border border-purple-200 p-3.5 rounded-2xl text-center space-y-1">
-        <p class="text-[11px] font-bold text-purple-700">🔑 Your Job Start OTP (Share with Partner):</p>
-        <p id="modal-otp-val" class="text-2xl font-black text-ucPurple tracking-widest">------</p>
-      </div>
-
-      <!-- JOB COMPLETION OTP BOX -->
-      <div id="modal-completion-otp-box" class="hidden bg-emerald-50 border border-emerald-200 p-3.5 rounded-2xl text-center space-y-1">
-        <p class="text-[11px] font-bold text-emerald-700">🔒 Job Completion OTP (Share after work done):</p>
-        <p id="modal-completion-otp-val" class="text-2xl font-black text-emerald-600 tracking-widest">------</p>
-      </div>
-
-      <!-- CUSTOMER ONLINE PAYMENT BOX -->
-      <div id="modal-payment-box" class="hidden bg-blue-50 border border-blue-200 p-4 rounded-2xl text-center space-y-3">
-        <div class="flex items-center justify-center gap-2 text-blue-800 font-extrabold text-xs">
-          <i class="fa-solid fa-credit-card text-base"></i> Partner Requested Payment
+      <div class="bg-slate-50 p-4 rounded-3xl border border-slate-100 space-y-2 text-xs text-slate-700">
+        <div class="flex justify-between font-medium">
+          <span class="text-slate-400">Service Name:</span>
+          <span id="modal-service-name" class="font-bold text-slate-900 text-right">Door repair</span>
         </div>
-        <p class="text-xs text-gray-600">Please pay the finalized amount via UPI / Online Wallet.</p>
-        <p id="modal-pay-amount-display" class="text-2xl font-black text-gray-900">₹0</p>
-        <button id="modal-pay-now-btn" onclick="processCustomerDirectPayment()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl text-xs font-extrabold transition shadow-md cursor-pointer">
-          💳 Pay Now via UPI / QR
+        <div class="flex justify-between font-medium">
+          <span class="text-slate-400">Scheduled Slot:</span>
+          <span id="modal-service-slot" class="font-bold text-slate-900">Today - 05:00 PM</span>
+        </div>
+        <div class="flex justify-between font-medium">
+          <span class="text-slate-400">Assigned Partner:</span>
+          <span id="modal-partner-name" class="font-bold text-slate-900">Gudluck</span>
+        </div>
+        <div class="flex justify-between font-medium">
+          <span class="text-slate-400">Service Address:</span>
+          <span id="modal-service-address" class="font-bold text-slate-900 text-right">35, Kanchipuram</span>
+        </div>
+      </div>
+
+      <!-- CANCEL BOOKING BUTTON INSIDE MODAL (For Active Jobs) -->
+      <div id="modal-cancel-action-box" class="hidden">
+        <button onclick="cancelBookingDirectly()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 py-3 rounded-2xl font-black text-xs transition cursor-pointer flex items-center justify-center gap-2">
+          <i class="fa-solid fa-circle-xmark"></i>
+          <span>Cancel This Booking</span>
         </button>
       </div>
 
       <!-- Rating & Comment Section -->
-      <div id="modal-rating-box" class="hidden bg-slate-50 border border-slate-200 p-3 rounded-2xl space-y-2">
-        <p class="text-xs font-bold text-gray-800">⭐ Rate Your Service Experience:</p>
-        <div class="flex gap-1 text-lg text-amber-400 cursor-pointer" id="star-rating-container">
+      <div id="modal-rating-box" class="hidden bg-amber-50/60 border border-amber-200 p-4 rounded-3xl space-y-3 shadow-sm">
+        <p class="text-xs font-black text-amber-900">⭐ Rate Your Service Experience:</p>
+        <div class="flex gap-1.5 text-xl text-amber-400 cursor-pointer justify-center bg-white p-3 rounded-2xl border border-amber-100 shadow-sm" id="star-rating-container">
           <i class="fa-solid fa-star" onclick="setRatingScore(1)"></i>
           <i class="fa-solid fa-star" onclick="setRatingScore(2)"></i>
           <i class="fa-solid fa-star" onclick="setRatingScore(3)"></i>
           <i class="fa-solid fa-star" onclick="setRatingScore(4)"></i>
           <i class="fa-solid fa-star" onclick="setRatingScore(5)"></i>
         </div>
-        <input type="text" id="modal-comment-input" placeholder="Leave a comment about the service..." class="w-full text-xs border rounded-xl p-2" />
-        <button onclick="submitCustomerRating()" class="w-full bg-ucPurple text-white py-2 rounded-xl text-xs font-bold hover:bg-purple-700 transition">Submit Rating & Review</button>
+        <input type="text" id="modal-comment-input" placeholder="Leave a review comment..." class="w-full text-xs font-medium border rounded-2xl p-3 bg-white shadow-sm" />
+        <button onclick="submitCustomerRating()" class="w-full bg-ucPurple hover:bg-purple-700 text-white py-3 rounded-2xl text-xs font-black transition shadow">Submit Rating</button>
       </div>
 
-      <div class="flex justify-between items-center font-extrabold text-sm text-gray-900 px-1">
-        <span>Grand Total</span>
-        <span id="modal-service-amount" class="text-lg text-ucPurple">₹212</span>
-      </div>
-
-      <button onclick="closeBookingDetailsModal()" class="w-full bg-black text-white py-3.5 rounded-2xl font-extrabold text-xs hover:bg-gray-800 transition cursor-pointer shadow-md">
+      <button onclick="closeBookingDetailsModal()" class="w-full bg-slate-900 hover:bg-black text-white py-3.5 rounded-2xl font-black text-xs shadow-md transition cursor-pointer">
         Close Details
       </button>
 
@@ -181,114 +235,143 @@
     let currentActiveBooking = null;
     let modalMapInstance = null;
     let modalRoutingControl = null;
+    let customerModalTimerInterval = null;
+    let activeBookingTab = 'progress'; // Default tab: progress
 
     window.onload = function() {
       loadCustomerBookings();
-      setInterval(loadCustomerBookings, 2500); // Dynamic live sync every 2.5s
+      setInterval(loadCustomerBookings, 2000);
     };
 
-    function loadCustomerBookings() {
-      const container = document.getElementById('bookings-list');
-      
+    function switchBookingTab(tab) {
+      activeBookingTab = tab;
+      ['progress', 'completed', 'cancelled'].forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (t === tab) {
+          btn.className = "flex-1 py-2.5 text-xs font-black rounded-xl bg-ucPurple text-white transition cursor-pointer flex items-center justify-center gap-1.5";
+        } else {
+          btn.className = "flex-1 py-2.5 text-xs font-bold rounded-xl text-slate-600 hover:bg-slate-100 transition cursor-pointer flex items-center justify-center gap-1.5";
+        }
+      });
+      loadCustomerBookings();
+    }
+
+    function updateBookingStorage(bookingId, updatedData) {
       let custBookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
       let epcBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
 
-      let allBookingsMap = {};
+      custBookings = custBookings.map(b => (b.id === bookingId || b.bookingId === bookingId) ? Object.assign({}, b, updatedData) : b);
+      epcBookings = epcBookings.map(b => (b.id === bookingId || b.bookingId === bookingId) ? Object.assign({}, b, updatedData) : b);
+
+      localStorage.setItem('customerBookings', JSON.stringify(custBookings));
+      localStorage.setItem('epc_bookings', JSON.stringify(epcBookings));
+    }
+
+    function calculateDistanceInMeters(lat1, lon1, lat2, lon2) {
+      const R = 6371e3;
+      const φ1 = (lat1 * Math.PI) / 180;
+      const φ2 = (lat2 * Math.PI) / 180;
+      const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+      const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+      const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    function loadCustomerBookings() {
+      const container = document.getElementById('bookings-list');
+      let custBookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
+      let epcBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
+
+      let allMap = {};
       [...epcBookings, ...custBookings].forEach(b => {
         if (b && (b.id || b.bookingId)) {
           let bId = b.id || b.bookingId;
-          allBookingsMap[bId] = Object.assign({}, allBookingsMap[bId] || {}, b);
+          allMap[bId] = Object.assign({}, allMap[bId] || {}, b);
         }
       });
+      let bookings = Object.values(allMap);
 
-      let bookings = Object.values(allBookingsMap);
+      // Category Filtering Logic
+      let filteredBookings = bookings.filter(b => {
+        const isCancelled = b.status === 'CANCELLED';
+        const isCompleted = b.status === 'COMPLETED' || b.isCompleted;
 
-      if (bookings.length === 0) {
+        if (activeBookingTab === 'progress') {
+          return !isCancelled && !isCompleted;
+        } else if (activeBookingTab === 'completed') {
+          return isCompleted && !isCancelled;
+        } else if (activeBookingTab === 'cancelled') {
+          return isCancelled;
+        }
+        return false;
+      });
+
+      if (filteredBookings.length === 0) {
         container.innerHTML = `
-          <div class="bg-white p-10 rounded-3xl border border-gray-200 text-center space-y-3 shadow-sm">
-            <div class="w-16 h-16 bg-purple-50 text-ucPurple rounded-full flex items-center justify-center mx-auto text-2xl">
-              <i class="fa-solid fa-calendar-xmark"></i>
-            </div>
-            <p class="text-sm font-bold text-gray-800">No bookings found!</p>
-            <p class="text-xs text-gray-400">You haven't placed any service bookings yet from your dashboard.</p>
+          <div class="bg-white p-10 rounded-3xl border border-gray-100 text-center space-y-2 shadow-sm">
+            <i class="fa-solid fa-box-open text-3xl text-slate-300 mb-1 block"></i>
+            <p class="text-sm font-bold text-gray-800">No ${activeBookingTab.toUpperCase()} bookings found!</p>
           </div>
         `;
         return;
       }
 
       container.innerHTML = '';
-
-      bookings.reverse().forEach((booking) => {
+      filteredBookings.reverse().forEach((booking) => {
         const isCancelled = booking.status === 'CANCELLED';
         const isCompleted = booking.status === 'COMPLETED' || booking.isCompleted;
         const bId = booking.id || booking.bookingId;
-        
-        let statusBadge = '<span class="bg-purple-100 text-ucPurple text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">CONFIRMED</span>';
-        if (booking.isStarted && !isCompleted) {
-          statusBadge = '<span class="bg-blue-100 text-blue-700 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">WORK IN PROGRESS</span>';
+
+        if (booking.isPhotoUploaded && !booking.startOTP) {
+          booking.startOTP = Math.floor(100000 + Math.random() * 900000);
+          updateBookingStorage(bId, { startOTP: booking.startOTP });
         }
-        if (isCancelled) statusBadge = '<span class="bg-red-100 text-red-600 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">CANCELLED</span>';
-        if (isCompleted) statusBadge = '<span class="bg-emerald-100 text-emerald-700 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">COMPLETED</span>';
 
-        let actionButtons = `
-          <button onclick='openBookingDetailsModalData(${JSON.stringify(booking).replace(/'/g, "&apos;")})' class="px-4 py-2 bg-ucPurple hover:bg-purple-700 text-white rounded-xl text-xs font-extrabold transition cursor-pointer shadow-md shadow-purple-500/20">View Details</button>
-        `;
+        let statusBadge = '<span class="bg-purple-100 text-ucPurple text-[10px] font-black px-2.5 py-1 rounded-md uppercase">CONFIRMED</span>';
+        if (booking.isStarted && !isCompleted) statusBadge = '<span class="bg-blue-100 text-blue-700 text-[10px] font-black px-2.5 py-1 rounded-md uppercase">IN PROGRESS</span>';
+        if (isCancelled) statusBadge = '<span class="bg-red-100 text-red-600 text-[10px] font-black px-2.5 py-1 rounded-md uppercase">CANCELLED</span>';
+        if (isCompleted) statusBadge = '<span class="bg-emerald-100 text-emerald-700 text-[10px] font-black px-2.5 py-1 rounded-md uppercase">COMPLETED</span>';
 
+        // Outer Card Quick Cancel Option for Progress Orders
+        let cancelCardBtn = '';
         if (!isCancelled && !isCompleted) {
-          actionButtons += `
-            <button onclick="cancelBooking('${bId}')" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl text-xs font-bold transition cursor-pointer">
-              Cancel
+          cancelCardBtn = `
+            <button onclick="cancelBookingById('${bId}')" class="mt-2 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl text-[11px] font-bold transition cursor-pointer border border-red-100 block w-full text-center">
+              Cancel Order
             </button>
           `;
         }
 
-        // 🛡️ Reconfirmation Banner
-        let reconfirmationHtml = '';
-        if (booking.partnerReentered && !booking.customerConfirmed && !isCancelled && !isCompleted) {
-          reconfirmationHtml = `
-            <div class="bg-amber-50 border border-amber-200 p-3.5 rounded-2xl space-y-2 mt-3 w-full">
-              <p class="text-xs font-bold text-amber-800"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Partner Work Reconfirmation Required:</p>
-              <p class="text-xs text-gray-700">${booking.reenteredWork || 'Updated bill details provided by partner.'}</p>
-              <p class="text-xs font-bold text-gray-900">Revised Total: <span class="text-ucPurple">₹${booking.reenteredAmount}</span></p>
-              <button onclick="confirmPartnerReentry('${bId}')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl text-xs font-bold transition shadow-sm cursor-pointer">
-                ✓ Confirm Details & Generate Start OTP
-              </button>
-            </div>
-          `;
-        }
-
         const card = document.createElement('div');
-        card.className = "bg-white p-6 rounded-3xl border border-gray-200 shadow-sm hover:shadow-md transition flex flex-col justify-between items-start gap-4";
+        card.className = "bg-white p-6 rounded-3xl border border-gray-100 shadow-sm flex flex-col justify-between gap-4";
         card.innerHTML = `
-          <div class="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div class="flex justify-between items-start gap-4">
             <div class="space-y-1.5">
               <div class="flex items-center gap-2">
                 ${statusBadge}
-                <span class="text-xs text-gray-400 font-semibold">Booking ID: #${booking.bookingId || booking.id || 'EPC94821'}</span>
+                <span class="text-xs text-gray-400 font-semibold">ID: #${bId}</span>
               </div>
-              <h3 class="font-extrabold text-base text-gray-900">${booking.serviceName || booking.reenteredWork || 'Home Service Booking'}</h3>
-              <p class="text-xs text-gray-500 font-medium"><i class="fa-regular fa-clock text-ucPurple mr-1"></i> ${booking.slot || 'Scheduled Slot'}</p>
-              <p class="text-xs text-gray-500 font-medium"><i class="fa-solid fa-location-dot text-ucPurple mr-1"></i> ${booking.address || booking.reenteredAddress || 'Tamil Nadu'}</p>
-              ${booking.assignedPartner ? `<p class="text-xs font-bold text-emerald-700">👤 Partner: ${booking.assignedPartner}</p>` : '<p class="text-xs font-semibold text-amber-600">⏳ Waiting for Partner Assignment...</p>'}
+              <h3 class="font-black text-base text-gray-900">${booking.serviceName || 'Home Service'}</h3>
+              <p class="text-xs text-gray-500 font-medium"><i class="regular fa-clock text-ucPurple mr-1"></i> ${booking.slot || 'Scheduled'}</p>
+              <p class="text-xs text-gray-500 font-medium"><i class="solid fa-location-dot text-ucPurple mr-1"></i> ${booking.address || 'Tamil Nadu'}</p>
+              ${booking.assignedPartner ? `<p class="text-xs font-bold text-emerald-700">👤 Partner: ${booking.assignedPartner}</p>` : ''}
+              ${isCancelled && booking.cancelReason ? `<p class="text-xs font-semibold text-red-500 italic">Reason: ${booking.cancelReason}</p>` : ''}
             </div>
-            <div class="text-right w-full sm:w-auto flex sm:flex-col justify-between items-center sm:items-end border-t sm:border-t-0 pt-3 sm:pt-0 border-gray-100 gap-2">
-              <div>
-                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Total Amount</p>
-                <p class="text-lg font-black text-gray-900">₹${booking.reenteredAmount || booking.totalAmount || booking.amount || 212}</p>
-              </div>
-              <div class="flex items-center gap-2 flex-wrap justify-end">
-                ${actionButtons}
-              </div>
+            <div class="text-right">
+              <p class="text-[10px] text-gray-400 font-black uppercase">Total</p>
+              <p class="text-lg font-black text-gray-900">₹${booking.reenteredAmount || booking.amount || 212}</p>
+              <button onclick='openBookingDetailsModalData(${JSON.stringify(booking).replace(/'/g, "&apos;")})' class="mt-3 px-4 py-2.5 bg-ucPurple hover:bg-purple-700 text-white rounded-2xl text-xs font-black shadow transition cursor-pointer">View Details</button>
+              ${cancelCardBtn}
             </div>
           </div>
-          ${reconfirmationHtml}
         `;
         container.appendChild(card);
       });
 
       if (currentActiveBooking) {
-        let freshBooking = bookings.find(b => (b.id || b.bookingId) === (currentActiveBooking.id || currentActiveBooking.bookingId));
-        if (freshBooking) updateModalUI(freshBooking);
+        let fresh = bookings.find(b => (b.id || b.bookingId) === (currentActiveBooking.id || currentActiveBooking.bookingId));
+        if (fresh) updateModalUI(fresh);
       }
     }
 
@@ -300,140 +383,82 @@
 
     function updateModalUI(booking) {
       document.getElementById('modal-booking-id').innerText = `Booking ID: #${booking.bookingId || booking.id}`;
-      document.getElementById('modal-service-name').innerText = booking.serviceName || booking.reenteredWork || 'Home Service Booking';
-      document.getElementById('modal-service-slot').innerText = booking.slot || 'Scheduled Slot';
-      document.getElementById('modal-service-address').innerText = booking.address || booking.reenteredAddress || 'Tamil Nadu';
+      document.getElementById('modal-service-name').innerText = booking.serviceName || 'Home Service';
+      document.getElementById('modal-service-slot').innerText = booking.slot || 'Scheduled';
+      
+      let cleanAddress = booking.address || 'Kanchipuram, Tamil Nadu';
+      if (cleanAddress.includes("Conversation with Gemini") || cleanAddress.length > 120) {
+        cleanAddress = 'Kanchipuram, Tamil Nadu';
+      }
+      document.getElementById('modal-service-address').innerText = cleanAddress;
       document.getElementById('modal-partner-name').innerText = booking.assignedPartner || 'Not Assigned Yet';
-      document.getElementById('modal-service-amount').innerText = `₹${booking.reenteredAmount || booking.totalAmount || booking.amount || 212}`;
 
       const isCancelled = booking.status === 'CANCELLED';
       const isCompleted = booking.status === 'COMPLETED' || booking.isCompleted;
-      const statusBadge = document.getElementById('modal-status-badge');
-      
-      if (booking.isPaid || isCompleted) {
-        statusBadge.className = "bg-emerald-100 text-emerald-700 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider";
-        statusBadge.innerText = "COMPLETED & PAID";
-      } else if (booking.isCompletionOtpVerified) {
-        statusBadge.className = "bg-amber-100 text-amber-700 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider";
-        statusBadge.innerText = "WORK COMPLETED - WAITING FOR PAYMENT";
-      } else if (booking.isStarted) {
-        statusBadge.className = "bg-blue-100 text-blue-700 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider";
-        statusBadge.innerText = "WORK IN PROGRESS";
+
+      // Modal Cancel Button Visibility
+      const cancelActionBox = document.getElementById('modal-cancel-action-box');
+      if (!isCancelled && !isCompleted) {
+        cancelActionBox.classList.remove('hidden');
       } else {
-        statusBadge.className = "bg-purple-100 text-ucPurple text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider";
-        statusBadge.innerText = "CONFIRMED";
+        cancelActionBox.classList.add('hidden');
       }
 
-      // 📍 LIVE MAP DISCONNECT CONDITION: Disconnect Map if Customer Confirmed Reconfirmation or Job Started
       const mapContainer = document.getElementById('modal-map-container');
-      const shouldHideMap = booking.customerConfirmed || booking.isStarted || isCancelled || isCompleted;
-
-      if (booking.assignedPartner && !shouldHideMap) {
+      if (booking.assignedPartner && !booking.isPhotoUploaded && !isCompleted && !isCancelled) {
         mapContainer.classList.remove('hidden');
-
-        if (booking.isArrived) {
-          document.getElementById('modal-map-status-title').innerHTML = `
-            <span class="blink-dot" style="background-color: #3b82f6; box-shadow: 0 0 8px #3b82f6;"></span> 
-            <span class="text-blue-600 font-black">Partner Arrived at Your Location 🏠</span>`;
-          document.getElementById('modal-map-status-sub').innerText = "Partner reaches your doorstep.";
-        } else {
-          document.getElementById('modal-map-status-title').innerHTML = `
-            <span class="blink-dot"></span> 
-            <span>வந்து கொண்டிருக்கிறது (Arriving)</span>`;
-        }
-
-        document.getElementById('modal-partner-call-btn').href = `tel:${booking.partnerMobile || '6381796419'}`;
-
         setTimeout(() => {
-          let custLat = booking.lat || 12.8342;
-          let custLng = booking.lng || 79.7036;
-          let partnerLat = booking.liveLat || (custLat - 0.006);
-          let partnerLng = booking.liveLng || (custLng - 0.006);
-
+          let cLat = booking.lat || 12.8342, cLng = booking.lng || 79.7036;
+          let pLat = booking.liveLat || (cLat - 0.005), pLng = booking.liveLng || (cLng - 0.005);
           if (!modalMapInstance) {
-            modalMapInstance = L.map('modal-live-map', { zoomControl: false, attributionControl: false }).setView([partnerLat, partnerLng], 14);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(modalMapInstance);
-
+            modalMapInstance = L.map('modal-live-map', { zoomControl: false, attributionControl: false }).setView([pLat, pLng], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(modalMapInstance);
             modalRoutingControl = L.Routing.control({
-              waypoints: [L.latLng(partnerLat, partnerLng), L.latLng(custLat, custLng)],
-              routeWhileDragging: false, addWaypoints: false, draggableWaypoints: false,
-              fitSelectedRoutes: true, show: false,
-              createMarker: function(i, wp) {
-                if (i === 0) {
-                  return L.marker(wp.latLng, {
-                    icon: L.divIcon({ html: `<div style="background:#e11d48; color:#fff; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.3); font-size:11px;"><i class="fa-solid fa-motorcycle"></i></div>`, className:'', iconSize:[28,28], iconAnchor:[14,14] })
-                  });
-                } else {
-                  return L.marker(wp.latLng, {
-                    icon: L.divIcon({ html: `<div style="background:#0f172a; color:#fff; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.3); font-size:11px;"><i class="fa-solid fa-house"></i></div>`, className:'', iconSize:[28,28], iconAnchor:[14,14] })
-                  });
-                }
-              }
+              waypoints: [L.latLng(pLat, pLng), L.latLng(cLat, cLng)],
+              createMarker: () => null, show: false
             }).addTo(modalMapInstance);
-
-            modalRoutingControl.on('routesfound', function(e) {
-              const routes = e.routes;
-              if (routes && routes.length > 0 && !booking.isArrived) {
-                const summary = routes[0].summary;
-                const distKm = (summary.totalDistance / 1000).toFixed(1);
-                const timeMins = Math.ceil(summary.totalTime / 60);
-                document.getElementById('modal-map-status-sub').innerText = `⏱️ ETA: ~${timeMins} mins (${distKm} km away)`;
-              }
-            });
           } else {
             modalMapInstance.invalidateSize();
-            modalRoutingControl.setWaypoints([L.latLng(partnerLat, partnerLng), L.latLng(custLat, custLng)]);
+            modalRoutingControl.setWaypoints([L.latLng(pLat, pLng), L.latLng(cLat, cLng)]);
           }
         }, 200);
-
       } else {
         mapContainer.classList.add('hidden');
       }
 
-      const reconfBox = document.getElementById('modal-reconfirmation-box');
-      const startOtpBox = document.getElementById('modal-otp-box');
-      const completionOtpBox = document.getElementById('modal-completion-otp-box');
-      const paymentBox = document.getElementById('modal-payment-box');
-      const ratingBox = document.getElementById('modal-rating-box');
+      const startOtpSec = document.getElementById('modal-start-otp-section');
+      if (booking.isPhotoUploaded && !booking.isStarted && !isCompleted && !isCancelled) {
+        startOtpSec.classList.remove('hidden');
+        document.getElementById('modal-start-otp-display').innerText = booking.startOTP || '123456';
+      } else {
+        startOtpSec.classList.add('hidden');
+      }
 
-      // 🛡️ Reconfirmation Box inside Modal
-      if (booking.partnerReentered && !booking.customerConfirmed) {
+      const reconfBox = document.getElementById('modal-reconfirmation-box');
+      if (booking.partnerReentered && !booking.customerConfirmed && !isCompleted && !isCancelled) {
         reconfBox.classList.remove('hidden');
-        document.getElementById('modal-reentered-desc').innerText = booking.reenteredWork || 'Updated bill details provided by partner.';
-        document.getElementById('modal-reentered-amount').innerText = `₹${booking.reenteredAmount}`;
-        document.getElementById('modal-confirm-btn').setAttribute('onclick', `confirmPartnerReentry('${booking.id || booking.bookingId}')`);
+        
+        let workText = booking.reenteredWork || 'Latch repair/install work done';
+        if (workText.includes("Conversation with Gemini") || workText.length > 150) {
+          workText = 'Latch repair/install - Lockable latch replacement work done';
+        }
+        document.getElementById('modal-reconf-desc').innerText = workText;
+
+        const totalAmt = booking.reenteredAmount || 437;
+        const itemSubtotal = totalAmt - 17 - 99 - 9;
+
+        const itemTotalEl = document.getElementById('customer-bill-item-total');
+        if (itemTotalEl) itemTotalEl.innerText = `₹${itemSubtotal > 0 ? itemSubtotal : 312}`;
+
+        const grandAmtEl = document.getElementById('modal-reconf-amount');
+        if (grandAmtEl) grandAmtEl.innerText = `₹${totalAmt}`;
+
+        startCustomerModalTimer(booking.id || booking.bookingId);
       } else {
         reconfBox.classList.add('hidden');
       }
 
-      // 🔑 JOB START OTP BOX (Shows when customer confirms reconfirmation)
-      if (booking.customerConfirmed && booking.assignedPartner && booking.startOTP && !booking.isStarted && !isCancelled) {
-        startOtpBox.classList.remove('hidden');
-        document.getElementById('modal-otp-val').innerText = booking.startOTP;
-      } else {
-        startOtpBox.classList.add('hidden');
-      }
-
-      // 🔒 Completion OTP Box
-      if (booking.isStarted && booking.completionOTP && !booking.isCompletionOtpVerified && !isCompleted) {
-        completionOtpBox.classList.remove('hidden');
-        document.getElementById('modal-completion-otp-val').innerText = booking.completionOTP;
-      } else {
-        completionOtpBox.classList.add('hidden');
-      }
-
-      // 💳 CUSTOMER PAYMENT PUSH BOX
-      if (booking.paymentRequested && !booking.isPaid) {
-        paymentBox.classList.remove('hidden');
-        document.getElementById('modal-pay-amount-display').innerText = `₹${booking.reenteredAmount || booking.amount}`;
-      } else {
-        paymentBox.classList.add('hidden');
-      }
-
-      if (booking.isPaid) {
-        document.getElementById('modal-payment-status').innerText = "Paid Online (Completed)";
-      }
-
+      const ratingBox = document.getElementById('modal-rating-box');
       if (isCompleted && !booking.isRated) {
         ratingBox.classList.remove('hidden');
       } else {
@@ -441,142 +466,88 @@
       }
     }
 
-    function confirmPartnerReentry(bookingId) {
-      let custBookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
-      let partnerBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
-
-      let otpCode = Math.floor(100000 + Math.random() * 900000);
-
-      custBookings = custBookings.map(b => {
-        if (b.id === bookingId || b.bookingId === bookingId) {
-          b.customerConfirmed = true;
-          b.startOTP = otpCode;
-          b.workStatus = 'Customer Confirmed - OTP Generated';
-        }
-        return b;
-      });
-
-      partnerBookings = partnerBookings.map(b => {
-        if (b.id === bookingId || b.bookingId === bookingId) {
-          b.customerConfirmed = true;
-          b.startOTP = otpCode;
-          b.workStatus = 'Customer Confirmed - OTP Generated';
-        }
-        return b;
-      });
-
-      localStorage.setItem('customerBookings', JSON.stringify(custBookings));
-      localStorage.setItem('epc_bookings', JSON.stringify(partnerBookings));
-
-      alert(`✓ Details Confirmed!\nMap Disconnected and Job Start OTP Generated: ${otpCode}`);
-      loadCustomerBookings();
+    function cancelBookingById(bookingId) {
+      let reason = prompt("Dhayavu seidhu order cancel panradhukaana reason-ah enter pannunga:", "Mind changed / Plans changed");
+      if (reason !== null) {
+        updateBookingStorage(bookingId, { status: 'CANCELLED', cancelReason: reason || 'Cancelled by customer' });
+        alert("✓ Your booking has been cancelled successfully.");
+        loadCustomerBookings();
+      }
     }
 
-    function processCustomerDirectPayment() {
+    function cancelBookingDirectly() {
       if (!currentActiveBooking) return;
       let bId = currentActiveBooking.id || currentActiveBooking.bookingId;
+      cancelBookingById(bId);
+      closeBookingDetailsModal();
+    }
 
-      let custBookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
-      let partnerBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
-
-      custBookings = custBookings.map(b => {
-        if (b.id === bId || b.bookingId === bId) {
-          b.isPaid = true;
-          b.payMethod = 'Razorpay/UPI Online';
-        }
-        return b;
-      });
-
-      partnerBookings = partnerBookings.map(b => {
-        if (b.id === bId || b.bookingId === bId) {
-          b.isPaid = true;
-          b.payMethod = 'Razorpay/UPI Online';
-        }
-        return b;
-      });
-
-      localStorage.setItem('customerBookings', JSON.stringify(custBookings));
-      localStorage.setItem('epc_bookings', JSON.stringify(partnerBookings));
-
-      alert("🎉 Payment Successful via UPI! Partner notified.");
+    function customerUploadArrivalPhoto(event) {
+      if (!currentActiveBooking) return;
+      let bId = currentActiveBooking.id || currentActiveBooking.bookingId;
+      updateBookingStorage(bId, { isPhotoUploaded: true });
+      alert("✓ Arrival photo uploaded successfully!");
       loadCustomerBookings();
     }
 
-    function cancelBooking(bookingId) {
-      if (!confirm("Are you sure you want to cancel this booking?")) return;
-
-      let custBookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
-      let partnerBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
-
-      custBookings = custBookings.map(b => {
-        if (b.id === bookingId || b.bookingId === bookingId) {
-          b.status = 'CANCELLED';
+    function startCustomerModalTimer(bookingId) {
+      if (customerModalTimerInterval) clearInterval(customerModalTimerInterval);
+      let duration = 300;
+      customerModalTimerInterval = setInterval(() => {
+        let m = Math.floor(duration / 60), s = duration % 60;
+        let display = document.getElementById('modal-timer-countdown');
+        if (display) display.innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+        if (--duration < 0) {
+          clearInterval(customerModalTimerInterval);
+          updateBookingStorage(bookingId, { isTimeOut: true, customerNotLocated: true });
+          alert("⚠️ 5 minutes timer expired! Customer Not Location / No Response recorded.");
+          loadCustomerBookings();
         }
-        return b;
-      });
+      }, 1000);
+    }
 
-      partnerBookings = partnerBookings.map(b => {
-        if (b.id === bookingId || b.bookingId === bookingId) {
-          b.status = 'CANCELLED';
-        }
-        return b;
-      });
+    function confirmCustomerReentry() {
+      if (!currentActiveBooking) return;
+      let bId = currentActiveBooking.id || currentActiveBooking.bookingId;
+      updateBookingStorage(bId, { customerConfirmed: true, isStarted: true });
+      alert("✓ Reconfirmation details accepted successfully!");
+      loadCustomerBookings();
+    }
 
-      localStorage.setItem('customerBookings', JSON.stringify(custBookings));
-      localStorage.setItem('epc_bookings', JSON.stringify(partnerBookings));
+    function rejectCustomerReentry() {
+      if (!currentActiveBooking) return;
+      let bId = currentActiveBooking.id || currentActiveBooking.bookingId;
+      updateBookingStorage(bId, { status: 'CANCELLED', cancelReason: 'Rejected partner reconfirmation' });
+      alert("Job cancelled successfully.");
+      closeBookingDetailsModal();
+      loadCustomerBookings();
+    }
 
-      alert("Booking cancelled successfully.");
+    function customerConfirmEndJob() {
+      if (!currentActiveBooking) return;
+      let bId = currentActiveBooking.id || currentActiveBooking.bookingId;
+      updateBookingStorage(bId, { isCompleted: true, status: 'COMPLETED' });
+      alert("🎉 Job closed successfully!");
       loadCustomerBookings();
     }
 
     function setRatingScore(score) {
       selectedRatingScore = score;
-      const stars = document.querySelectorAll('#star-rating-container i');
-      stars.forEach((star, index) => {
-        if (index < score) {
-          star.className = "fa-solid fa-star text-amber-400";
-        } else {
-          star.className = "fa-regular fa-star text-amber-400";
-        }
-      });
     }
 
     function submitCustomerRating() {
-      const comment = document.getElementById('modal-comment-input').value;
       if (!currentActiveBooking) return;
       let bId = currentActiveBooking.id || currentActiveBooking.bookingId;
-
-      let custBookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
-      let partnerBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
-      let ratings = JSON.parse(localStorage.getItem('epc_partner_ratings')) || {};
-
-      let targetBooking = custBookings.find(b => b.id === bId || b.bookingId === bId);
-      if (targetBooking && targetBooking.assignedPartner) {
-        targetBooking.isRated = true;
-        targetBooking.userRating = selectedRatingScore;
-        targetBooking.userComment = comment;
-
-        let pName = targetBooking.assignedPartner;
-        if (!ratings[pName]) ratings[pName] = { totalRatings: 0, ratingSum: 0 };
-        ratings[pName].totalRatings += 1;
-        ratings[pName].ratingSum += selectedRatingScore;
-
-        localStorage.setItem('epc_partner_ratings', JSON.stringify(ratings));
-      }
-
-      custBookings = custBookings.map(b => (b.id === bId || b.bookingId === bId) ? targetBooking : b);
-      partnerBookings = partnerBookings.map(b => (b.id === bId || b.bookingId === bId) ? targetBooking : b);
-
-      localStorage.setItem('customerBookings', JSON.stringify(custBookings));
-      localStorage.setItem('epc_bookings', JSON.stringify(partnerBookings));
-
-      alert("✓ Thank you! Your rating and comment have been submitted successfully.");
+      let comment = document.getElementById('modal-comment-input').value;
+      updateBookingStorage(bId, { isRated: true, userRating: selectedRatingScore, userComment: comment });
+      alert("✓ Rating submitted successfully!");
       closeBookingDetailsModal();
       loadCustomerBookings();
     }
 
     function closeBookingDetailsModal() {
       currentActiveBooking = null;
+      if (customerModalTimerInterval) clearInterval(customerModalTimerInterval);
       document.getElementById('booking-modal').classList.add('hidden');
     }
   </script>
