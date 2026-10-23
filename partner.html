@@ -213,67 +213,62 @@
     </button>
   </nav>
 
-  <!-- STEP 1: ESTIMATE SUMMARY MODAL -->
   <div id="uc-estimate-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <div class="bg-black text-white font-black text-xs px-2.5 py-1 rounded-lg">EPC PARTNER</div>
-        <button onclick="closeUcEstimateModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 cursor-pointer">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <div class="space-y-3 text-xs text-slate-700">
-        <h3 class="font-black text-lg text-slate-900">Estimate summary</h3>
-        
-        <div class="space-y-2 pt-1 font-medium">
-          <div class="flex justify-between">
-            <span>Item total</span>
-            <span id="uc-est-item-total" class="font-bold text-slate-900">₹149</span>
-          </div>
-          <div class="flex justify-between">
-            <span>Visitation Fee</span>
-            <span class="font-bold text-slate-900">₹99</span>
-          </div>
-          <div class="flex justify-between">
-            <span>Pay Later Convenience Fee</span>
-            <span class="font-bold text-slate-900">₹9</span>
-          </div>
-          <div class="border-t border-slate-100 pt-2 flex justify-between font-black text-slate-900">
-            <span>Job value</span>
-            <span id="uc-est-job-value">₹257</span>
-          </div>
-          <div class="flex justify-between">
-            <span>Taxes and Fee</span>
-            <span class="font-bold text-slate-900">₹17</span>
-          </div>
-          <div class="border-t border-slate-100 pt-3 flex justify-between text-base font-black text-slate-900">
-            <span>Payment to collect</span>
-            <span id="uc-est-payment-collect" class="text-emerald-600">₹274</span>
-          </div>
-        </div>
-
-        <div class="bg-emerald-50 border border-emerald-100 p-3.5 rounded-2xl space-y-1 mt-2">
-          <p class="font-black text-emerald-800 flex items-center gap-1">
-            <i class="fa-solid fa-shield-halved text-emerald-600"></i> EPC COVER
-          </p>
-          <p class="font-bold text-slate-800 text-[11px]">Work done on this job will be under warranty till 21 Nov, 2026</p>
-        </div>
-
-        <div class="pt-2">
-          <p class="font-black text-sm text-slate-900 mb-1">Work to be done</p>
-          <div class="flex justify-between text-xs font-bold text-slate-800 bg-slate-50 p-3 rounded-2xl border border-slate-100">
-            <span id="uc-est-work-name">Door lock replace/install</span>
-            <span id="uc-est-work-price">₹149</span>
-          </div>
-        </div>
-      </div>
-
-      <button onclick="openUcCollectQrScreen()" class="w-full bg-ucPurple hover:bg-purple-700 text-white py-3.5 rounded-2xl font-black text-sm transition shadow-lg shadow-purple-500/20 cursor-pointer">
-        Confirm work completed
+  <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+    <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+      <div class="bg-black text-white font-black text-xs px-2.5 py-1 rounded-lg">EPC PARTNER</div>
+      <button onclick="closeUcEstimateModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 cursor-pointer">
+        <i class="fa-solid fa-xmark"></i>
       </button>
     </div>
+
+    <div class="space-y-3 text-xs text-slate-700">
+      <h3 class="font-black text-lg text-slate-900">Estimate summary</h3>
+      
+      <div class="space-y-2 pt-1 font-medium">
+        <div class="flex justify-between">
+          <span>Item total</span>
+          <span id="uc-est-item-total" class="font-bold text-slate-900">₹129</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Visitation Fee</span>
+          <span class="font-bold text-slate-900">₹99</span>
+        </div>
+        <div class="border-t border-slate-100 pt-2 flex justify-between font-black text-slate-900">
+          <span>Job value</span>
+          <span id="uc-est-job-value">₹228</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Taxes and Fee</span>
+          <span class="font-bold text-slate-900">₹14</span>
+        </div>
+        <div class="border-t border-slate-100 pt-3 flex justify-between text-base font-black text-slate-900">
+          <span>Payment to collect</span>
+          <span id="uc-est-payment-collect" class="text-emerald-600">₹242</span>
+        </div>
+      </div>
+
+      <div class="bg-emerald-50 border border-emerald-100 p-3.5 rounded-2xl space-y-1 mt-2">
+        <p class="font-black text-emerald-800 flex items-center gap-1">
+          <i class="fa-solid fa-shield-halved text-emerald-600"></i> EPC COVER
+        </p>
+        <p class="font-bold text-slate-800 text-[11px]">Work done on this job will be under warranty till 21 Nov, 2026</p>
+      </div>
+
+      <div class="pt-2">
+        <p class="font-black text-sm text-slate-900 mb-1">Work to be done</p>
+        <div class="flex justify-between text-xs font-bold text-slate-800 bg-slate-50 p-3 rounded-2xl border border-slate-100">
+          <span id="uc-est-work-name">Chain Latch Repair</span>
+          <span id="uc-est-work-price">₹129</span>
+        </div>
+      </div>
+    </div>
+
+    <button onclick="openUcCollectQrScreen()" class="w-full bg-ucPurple hover:bg-purple-700 text-white py-3.5 rounded-2xl font-black text-sm transition shadow-lg shadow-purple-500/20 cursor-pointer">
+      Confirm work completed
+    </button>
   </div>
+</div>
 
   <!-- STEP 2: COLLECT QR CODE & PAYMENT OPTIONS SCREEN -->
   <div id="uc-collect-qr-modal" class="hidden fixed inset-0 z-50 bg-white flex flex-col justify-between p-6 max-w-md mx-auto">
@@ -809,27 +804,27 @@
         let custLng = b.lng || 79.6984;
 
         let distanceMeters = calculateDistanceInMeters(partnerLat, partnerLng, custLat, custLng);
-        // 1000 meters = 1 Kilometer
-let isWithinRange = (distanceMeters >= 0 && distanceMeters <= 1000); 
+        let isWithinRange = (distanceMeters >= 0 && distanceMeters <= 1000);
+        let actionWorkflowHtml = '';
 
-if (!b.isPhotoUploaded) {
-  if (isWithinRange) {
-    actionWorkflowHtml = `
-      <div class="bg-blue-50 border border-blue-200 p-4 rounded-3xl space-y-2 mt-3 shadow-sm">
-        <p class="text-xs font-bold text-blue-900">📸 You are within ${Math.round(distanceMeters)}m (Within 1km range). Please Take / Upload Arrival Photo:</p>
-        <input type="file" accept="image/*" capture="camera" onchange="uploadArrivalPhoto('${orderId}', event)" class="text-xs text-slate-500 w-full" />
-      </div>
-    `;
-  } else {
-    let distanceKm = (distanceMeters / 1000).toFixed(2);
-    actionWorkflowHtml = `
-      <div class="bg-amber-50 border border-amber-200 p-4 rounded-3xl text-center mt-3 shadow-sm">
-        <p class="text-xs font-bold text-amber-800">📍 Move closer to Customer Location! Current distance: ${distanceKm} km. (Must be within 1km range).</p>
-        <button onclick="loadOngoingJobs()" class="mt-2.5 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition shadow">Refresh GPS</button>
-      </div>
-    `;
-  }
-} 
+        if (!b.isPhotoUploaded) {
+          if (isWithinRange) {
+            actionWorkflowHtml = `
+              <div class="bg-blue-50 border border-blue-200 p-4 rounded-3xl space-y-2 mt-3 shadow-sm">
+                <p class="text-xs font-bold text-blue-900">📸 You are within ${Math.round(distanceMeters)}m (Within 1km range). Please Take / Upload Arrival Photo:</p>
+                <input type="file" accept="image/*" capture="camera" onchange="uploadArrivalPhoto('${orderId}', event)" class="text-xs text-slate-500 w-full" />
+              </div>
+            `;
+          } else {
+            let distanceKm = (distanceMeters / 1000).toFixed(2);
+            actionWorkflowHtml = `
+              <div class="bg-amber-50 border border-amber-200 p-4 rounded-3xl text-center mt-3 shadow-sm">
+                <p class="text-xs font-bold text-amber-800">📍 Move closer to Customer Location! Current distance: ${distanceKm} km. (Must be within 1km range).</p>
+                <button onclick="loadOngoingJobs()" class="mt-2.5 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition shadow">Refresh GPS</button>
+              </div>
+            `;
+          }
+        } 
         else if (b.isPhotoUploaded && !b.isStarted) {
           actionWorkflowHtml = `
             <div class="bg-purple-50 border border-purple-200 p-4 rounded-3xl space-y-2 mt-3 shadow-sm">
@@ -841,16 +836,33 @@ if (!b.isPhotoUploaded) {
             </div>
           `;
         } 
-        else if (b.isStarted && !b.customerConfirmed && !b.isTimeOut) {
+        // PARTNER OTP VERIFY PANNIYAACHU, BUT RECONFIRMATION ANUPPALA
+        else if (b.isStarted && !b.partnerReentered) {
+          actionWorkflowHtml = `
+            <div class="bg-purple-50 border border-purple-200 p-4 rounded-3xl space-y-3 mt-3 shadow-sm">
+              <h4 class="font-black text-xs text-purple-900">📋 Job Started! Choose Reconfirmation Option:</h4>
+              <p class="text-[11px] text-slate-600 font-medium">Send same job details or modify bill estimate before starting work.</p>
+              <div class="flex flex-col sm:flex-row gap-2">
+                <button onclick="sendDirectReconfirmationToCustomer('${orderId}')" class="flex-1 bg-ucPurple hover:bg-purple-700 text-white py-3 rounded-2xl text-xs font-black cursor-pointer transition shadow">
+                  <i class="fa-solid fa-paper-plane mr-1"></i> Send Reconfirmation
+                </button>
+                <button onclick="openChangeEstimateModal('${orderId}')" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white py-3 rounded-2xl text-xs font-black cursor-pointer transition shadow">
+                  <i class="fa-solid fa-pen-to-square mr-1"></i> Change / Edit Estimate
+                </button>
+              </div>
+            </div>
+          `;
+        }
+        // RECONFIRMATION SENT & WAITING FOR CUSTOMER
+        else if (b.isStarted && b.partnerReentered && !b.customerConfirmed && !b.isTimeOut) {
           actionWorkflowHtml = `
             <div class="bg-slate-50 border border-slate-200 p-4 rounded-3xl space-y-3 mt-3 shadow-sm">
               <h4 class="font-black text-xs text-slate-900">🛡️ Reconfirmation / Estimate Sent to Customer</h4>
               <p class="text-xs text-slate-500 font-medium">Waiting for customer acceptance... (5 mins timer running)</p>
               <div id="timer-display-${orderId}" class="text-xs font-black text-red-600 bg-white px-3 py-2 rounded-xl border inline-block shadow-sm">Time Remaining: 05:00</div>
               
-              <!-- INTHA BUTTON CLICK PANNADHAN "CHANGE / SEND ESTIMATE" PAGE OPEN AAGUM -->
               <button onclick="openChangeEstimateModal('${orderId}')" class="w-full bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 py-2.5 rounded-2xl text-xs font-black transition cursor-pointer flex items-center justify-center gap-1.5">
-                <i class="fa-solid fa-pen-to-square"></i> Change / Send Estimate
+                <i class="fa-solid fa-pen-to-square"></i> Modify Estimate
               </button>
             </div>
           `;
@@ -893,7 +905,7 @@ if (!b.isPhotoUploaded) {
               <span class="text-xs font-bold text-slate-400">ID: #${orderId}</span>
               <h3 class="font-black text-base text-slate-900">${b.serviceName || 'Home Service'}</h3>
             </div>
-            <span class="text-lg font-black text-ucPurple bg-purple-50 px-3 py-1 rounded-2xl">₹${b.reenteredAmount || b.amount || 212}</span>
+            <span class="text-lg font-black text-ucPurple bg-purple-50 px-3 py-1 rounded-2xl">₹${b.reenteredAmount || b.amount || 312}</span>
           </div>
           <div class="text-xs text-slate-600 space-y-1 font-medium">
             <p><i class="fa-solid fa-location-dot text-ucPurple mr-1"></i> Customer Address: ${b.address || 'Tamil Nadu'}</p>
@@ -960,27 +972,41 @@ if (!b.isPhotoUploaded) {
       let target = bookings.find((b) => b.id === orderId || b.bookingId === orderId);
 
       if (target && String(target.startOTP) === String(otpVal)) {
-        // Direct-ah Start Status update panni Customer-ukku Reconfirmation Trigger pannudhu
         bookings = bookings.map((b) => {
           if (b.id === orderId || b.bookingId === orderId) {
             b.isStarted = true;
-            b.partnerReentered = true;
-            b.reenteredWork = `${b.serviceName || 'Home Service'}: ${b.subServiceDetails || 'Regular Service Repair Work'}`;
-            b.reenteredAmount = b.amount || 212;
-            b.customerConfirmed = false;
-            b.isTimeOut = false;
-            b.customerNotLocated = false;
-            b.reconfirmationSentTime = new Date().getTime();
+            b.isOtpVerified = true;
+            b.partnerReentered = false; // Reconfirmation innum anuppala
           }
           return b;
         });
 
         saveSharedBookings(bookings);
-        alert("✓ Job Started! Customer-ukku Job Details Reconfirmation request anuppappattadhu.");
+        alert("✓ Job Start OTP Verified! Next, click 'Send Reconfirmation' to notify customer.");
         loadOngoingJobs();
       } else {
         alert("❌ Invalid OTP. Please check with customer.");
       }
+    }
+
+    function sendDirectReconfirmationToCustomer(orderId) {
+      let bookings = getSharedBookings();
+      bookings = bookings.map((b) => {
+        if (b.id === orderId || b.bookingId === orderId) {
+          b.partnerReentered = true;
+          b.reenteredWork = `${b.serviceName || 'Home Service'}: ${b.subServiceDetails || 'Regular Service Repair Work'}`;
+          b.reenteredAmount = b.amount || 312;
+          b.customerConfirmed = false;
+          b.isTimeOut = false;
+          b.customerNotLocated = false;
+          b.reconfirmationSentTime = Date.now();
+        }
+        return b;
+      });
+
+      saveSharedBookings(bookings);
+      alert("✓ Job Reconfirmation details sent to customer!");
+      loadOngoingJobs();
     }
 
     function openChangeEstimateModal(orderId) {
@@ -1025,19 +1051,18 @@ if (!b.isPhotoUploaded) {
     }
 
     function calculateEstimateTotal() {
-      const extraCost = parseFloat(document.getElementById('reconf-extra-cost').value) || 0;
-      const taxes = 17;
-      const visitationFee = 99;
-      const convenienceFee = 9;
+  const extraCost = parseFloat(document.getElementById('reconf-extra-cost').value) || 0;
+  const taxesAndFees = 14;
+  const visitationFee = 99;
 
-      const grandTotal = currentBaseItemPrice + extraCost + taxes + visitationFee + convenienceFee;
+  const grandTotal = currentBaseItemPrice + extraCost + taxesAndFees + visitationFee;
 
-      document.getElementById('reconf-item-total').innerText = `₹${currentBaseItemPrice}`;
-      document.getElementById('reconf-extra-display').innerText = `₹${extraCost}`;
-      document.getElementById('reconf-taxes').innerText = `₹${taxes}`;
-      document.getElementById('reconf-display-amount').innerText = `₹${grandTotal}`;
-      document.getElementById('reconf-amount').value = grandTotal;
-    }
+  document.getElementById('reconf-item-total').innerText = `₹${currentBaseItemPrice}`;
+  document.getElementById('reconf-extra-display').innerText = `₹${extraCost}`;
+  document.getElementById('reconf-taxes').innerText = `₹${taxesAndFees}`;
+  document.getElementById('reconf-display-amount').innerText = `₹${grandTotal}`;
+  document.getElementById('reconf-amount').value = grandTotal;
+}
 
     function submitPartnerReconfirmation() {
       const category = document.getElementById('reconf-category').value.trim();
@@ -1222,26 +1247,33 @@ if (!b.isPhotoUploaded) {
     let currentUcPayOrderId = null;
 
     function openUcEstimateModal(orderId) {
-      currentUcPayOrderId = orderId;
-      let bookings = getSharedBookings();
-      let target = bookings.find(b => (b.id === orderId || b.bookingId === orderId));
+  currentUcPayOrderId = orderId;
+  let bookings = getSharedBookings();
+  let target = bookings.find(b => (b.id === orderId || b.bookingId === orderId));
 
-      if (target) {
-        const itemAmt = target.amount || 149;
-        const visitationFee = 99;
-        const convenienceFee = 9;
-        const taxes = 17;
-        const totalPayable = target.reenteredAmount || (itemAmt + visitationFee + convenienceFee + taxes);
+  if (target) {
+    // Total Grand Amount (eg. ₹242)
+    let grandTotal = target.reenteredAmount || target.amount || 242;
 
-        document.getElementById('uc-est-item-total').innerText = `₹${itemAmt}`;
-        document.getElementById('uc-est-job-value').innerText = `₹${itemAmt + visitationFee + convenienceFee}`;
-        document.getElementById('uc-est-payment-collect').innerText = `₹${totalPayable}`;
-        document.getElementById('uc-est-work-name').innerText = target.serviceName || 'Drawer lock installation';
-        document.getElementById('uc-est-work-price').innerText = `₹${itemAmt}`;
+    let visitationFee = 99;
+    let taxesAndFees = 14; // Synced with Job Details screen (₹14)
 
-        document.getElementById('uc-estimate-modal').classList.remove('hidden');
-      }
-    }
+    // Base Item Total calculation (₹242 - ₹99 - ₹14 = ₹129)
+    let itemAmt = target.itemBasePrice || (grandTotal - visitationFee - taxesAndFees);
+    if (itemAmt < 0) itemAmt = 129;
+
+    let jobValue = itemAmt + visitationFee;
+
+    // UI Breakdown values set panrom
+    document.getElementById('uc-est-item-total').innerText = `₹${itemAmt}`;
+    document.getElementById('uc-est-job-value').innerText = `₹${jobValue}`;
+    document.getElementById('uc-est-payment-collect').innerText = `₹${grandTotal}`;
+    document.getElementById('uc-est-work-name').innerText = target.serviceName || 'Chain Latch Repair';
+    document.getElementById('uc-est-work-price').innerText = `₹${itemAmt}`;
+
+    document.getElementById('uc-estimate-modal').classList.remove('hidden');
+  }
+}
 
     function closeUcEstimateModal() {
       document.getElementById('uc-estimate-modal').classList.add('hidden');
