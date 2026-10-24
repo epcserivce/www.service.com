@@ -67,10 +67,10 @@
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between relative selection:bg-purple-100 selection:text-ucPurple max-w-5xl mx-auto">
+<body class="min-h-screen flex flex-col justify-between relative selection:bg-purple-100 selection:text-ucPurple max-w-5xl mx-auto bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
 
   <!-- TOP HEADER -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm w-full">
+  <header class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-sm w-full transition-colors duration-300">
     <div class="px-5 py-3.5 flex items-center justify-between">
       <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
         <div class="bg-black text-white font-black text-sm px-2.5 py-1.5 rounded-xl shadow-sm">EPC</div>
@@ -82,6 +82,11 @@
           <p class="text-[10px] text-slate-500 font-semibold"><i class="fa-solid fa-location-dot text-ucPurple mr-0.5"></i> Tamil Nadu Statewide</p>
         </div>
       </div>
+
+                      <!-- 🌙 Dark Mode Theme Toggle Button -->
+        <button onclick="toggleDarkMode()" title="Toggle Theme" class="w-9 h-9 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm">
+          <i id="theme-icon" class="fa-solid fa-moon text-sm text-slate-800 dark:text-amber-400"></i>
+        </button>
 
       <!-- Right Side Menu Container -->
       <div class="flex items-center gap-4">
@@ -151,10 +156,12 @@
           <span class="text-xs font-bold text-slate-800 block">AC & Appliance Repair</span>
         </div>
 
-        <div onclick="openMainCategoryModal()" class="col-span-1 bg-purple-50 p-4 rounded-3xl border border-purple-100 shadow-sm text-center cursor-pointer hover:shadow-md transition">
-          <div class="w-12 h-12 rounded-2xl bg-ucPurple text-white text-xl mx-auto flex items-center justify-center mb-2"><i class="fa-solid fa-wrench"></i></div>
-          <span class="text-xs font-black text-slate-900 block">Electrician, Plumber & Carpenter</span>
+              <!-- Example Card -->
+      <div onclick="openMainCategoryModal()" class="bg-white dark:bg-slate-900 p-4 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm text-center cursor-pointer hover:shadow-md transition">
+        <div class="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-950 text-purple-600 dark:text-purple-300 text-xl mx-auto flex items-center justify-center mb-2">
+          <i class="fa-solid fa-wrench"></i>
         </div>
+        <span class="text-xs font-black text-slate-900 dark:text-slate-100 block">Electrician, Plumber & Carpenter</span>
       </div>
     </section>
 
@@ -935,6 +942,19 @@
       localStorage.setItem('epc_bookings', JSON.stringify(partnerBookings));
     }
 
+    function notifyPartnersNewJob(bookingData) {
+  if (typeof socket !== 'undefined') {
+    socket.emit('create-booking', {
+      id: bookingData.id,
+      serviceName: bookingData.serviceName,
+      address: bookingData.address,
+      district: 'kanchipuram', // Kanchipuram area address
+      amount: bookingData.amount,
+      customerPhone: bookingData.customerPhone
+    });
+  }
+}
+
     let currentCategoryIdx = 0;
 
     function renderCarpenterSubCategoryModal() {
@@ -1516,5 +1536,52 @@ function autoFillPincodeAndCoords() {
       if (modal) modal.classList.add('hidden');
     }
   </script>
+  <script>
+  tailwind.config = {
+    darkMode: 'class', // <--- Indha line dhaan dark mode toggle panradhuku essential machi!
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'sans-serif'] },
+        colors: {
+          ucPurple: '#6e42e5',
+          ucPurpleDark: '#5832be',
+          ucPurpleLight: '#f3f0ff',
+          ucDark: '#0f172a',
+          ucGray: '#f8fafc',
+          ucBorder: '#e2e8f0'
+        }
+      }
+    }
+  }
+
+  function toggleDarkMode() {
+  const htmlEl = document.documentElement;
+  const themeIcon = document.getElementById('theme-icon');
+  
+  if (htmlEl.classList.contains('dark')) {
+    htmlEl.classList.remove('dark');
+    localStorage.setItem('epc_theme', 'light');
+    if (themeIcon) themeIcon.className = "fa-solid fa-moon text-sm text-slate-800";
+  } else {
+    htmlEl.classList.add('dark');
+    localStorage.setItem('epc_theme', 'dark');
+    if (themeIcon) themeIcon.className = "fa-solid fa-sun text-sm text-amber-400";
+  }
+}
+
+// Page load aagumpodhu automatic-ah saved theme-ah apply panna
+window.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('epc_theme');
+  const themeIcon = document.getElementById('theme-icon');
+  
+  if (savedTheme === 'dark') {
+    document.documentElement.classList.add('dark');
+    if (themeIcon) themeIcon.className = "fa-solid fa-sun text-sm text-amber-400";
+  } else {
+    document.documentElement.classList.remove('dark');
+    if (themeIcon) themeIcon.className = "fa-solid fa-moon text-sm text-slate-800";
+  }
+});
+</script>
 </body>
 </html>

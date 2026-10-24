@@ -117,18 +117,30 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected Successfully"))
   .catch(err => console.log("MongoDB Connection Error:", err));
 
-// Real-time WebSockets logic
+// Real-time WebSockets logic (Updated for robust District / Address routing)
 io.on('connection', (socket) => {
   console.log(`⚡ Client Connected: ${socket.id}`);
 
+  // 1. Partner oru district room-la join aaga (eg: 'kanchipuram')
   socket.on('join-district-room', (district) => {
-    socket.join(district);
-    console.log(`📌 Socket joined District Room: ${district}`);
+    if (district) {
+      const cleanDistrict = district.trim().toLowerCase();
+      socket.join(cleanDistrict);
+      console.log(`📌 Partner joined District Room: ${cleanDistrict}`);
+    }
   });
 
+  // 2. Customer enga irundhu job pottalum, Booking Address District-ku alert poga
   socket.on('create-booking', (bookingData) => {
-    // Broadcast notification to specific Kanchipuram / district room partners
-    io.to(bookingData.district).emit('new-booking-alert', bookingData);
+    let targetDistrict = bookingData.district ? bookingData.district.trim().toLowerCase() : 'kanchipuram'; // Default Target
+    
+    // Address-la 'kanchipuram' irundhaa, 'kanchipuram' room-ku notify pannum
+    if (bookingData.address && bookingData.address.toLowerCase().includes('kanchipuram')) {
+      targetDistrict = 'kanchipuram';
+    }
+
+    console.log(`📢 Broadcasting Job #${bookingData.id || bookingData.bookingId} to district room: ${targetDistrict}`);
+    io.to(targetDistrict).emit('new-booking-alert', bookingData);
   });
 
   socket.on('disconnect', () => {

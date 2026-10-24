@@ -1532,16 +1532,28 @@
     // ==========================================
     const socket = io();
 
-    if (currentPartner && currentPartner.currAddress) {
-      socket.emit('join-district-room', currentPartner.currAddress);
-    }
+// Partner login aana udane Kanchipuram room-la join aaga
+window.addEventListener('load', () => {
+  // Always join Kanchipuram district room for field partners
+  socket.emit('join-district-room', 'kanchipuram');
+  console.log("Joined Kanchipuram Partner Network");
+});
 
-    socket.on('new-booking-alert', (bookingData) => {
-      if (currentPartner && currentPartner.isOnline) {
-        alert(`🚨 New Job Alert in ${bookingData.address}! Service: ${bookingData.serviceName}`);
-        loadPartnerJobs();
-      }
-    });
+// Customer enga irundhu job pottalum Kanchipuram partner-kku alert varum
+socket.on('new-booking-alert', (bookingData) => {
+  showLiveToast("🚨 New Job Alert!", `${bookingData.serviceName} at ${bookingData.address}`);
+  
+  // Audio alert play panna (Optional)
+  try {
+    let alertAudio = new Audio('https://actions.google.com/sounds/v1/notifications/beep_short.ogg');
+    alertAudio.play();
+  } catch(e) {}
+
+  // Partner dashboard list-ah refresh panna
+  if (typeof loadPartnerJobs === 'function') {
+    loadPartnerJobs();
+  }
+});
 
     // Live GPS Tracking & Sync with Customer Location
     function startLiveGPSUpdates() {
