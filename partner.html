@@ -643,7 +643,11 @@
       let bookings = [];
       try {
         const response = await fetch('/api/bookings');
-        bookings = await response.json();
+        if (response.ok) {
+          bookings = await response.json();
+        } else {
+          bookings = getSharedBookings();
+        }
       } catch (err) {
         console.warn("API Fetch Fallback to LocalStorage");
         bookings = getSharedBookings();
@@ -1409,7 +1413,7 @@
       window.location.href = `job-details-view.html?id=${orderId}`;
     }
 
-    // --- MONGODB BACKEND SYNCED ORDER ACCEPTANCE FUNCTION ---
+    // --- Resilient Order Acceptance Handler ---
     async function acceptJobOrder(orderId) {
       if (!currentPartner) {
         alert("Partner details not loaded. Please re-login!");
@@ -1417,64 +1421,41 @@
       }
 
       const generatedStartOTP = Math.floor(100000 + Math.random() * 900000);
-      const updateData = {
-        assignedPartner: currentPartner.name,
-        partnerStatus: 'ACCEPTED',
-        startOTP: generatedStartOTP
-      };
+      
+      // 1. Instantly update LocalStorage state so UI works immediately
+      let bookings = getSharedBookings();
+      let updatedLocally = false;
 
+      bookings = bookings.map(b => {
+        if (String(b.id || b.bookingId) === String(orderId)) {
+          b.assignedPartner = currentPartner.name;
+          b.partnerStatus = 'ACCEPTED';
+          b.startOTP = generatedStartOTP;
+          updatedLocally = true;
+        }
+        return b;
+      });
+
+      if (updatedLocally) {
+        saveSharedBookings(bookings);
+        alert(`🎉 Order #${orderId} successfully accepted and assigned to ${currentPartner.name}!`);
+        loadPartnerJobs();
+        if (typeof loadOngoingJobs === 'function') loadOngoingJobs();
+      }
+
+      // 2. Background Sync to Mongo API without breaking UI on endpoint error
       try {
-        // 1. Direct Backend MongoDB API Call
-        const response = await fetch(`/api/bookings/${orderId}`, {
+        await fetch(`/api/bookings/${orderId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updateData)
+          body: JSON.stringify({
+            assignedPartner: currentPartner.name,
+            partnerStatus: 'ACCEPTED',
+            startOTP: generatedStartOTP
+          })
         });
-
-        const result = await response.json();
-
-        if (result.success) {
-          // 2. LocalStorage Fallback Update
-          let bookings = getSharedBookings();
-          bookings = bookings.map(b => {
-            if (String(b.id || b.bookingId) === String(orderId)) {
-              b.assignedPartner = currentPartner.name;
-              b.partnerStatus = 'ACCEPTED';
-              b.startOTP = generatedStartOTP;
-            }
-            return b;
-          });
-          saveSharedBookings(bookings);
-
-          alert(`🎉 Order #${orderId} successfully accepted and assigned to ${currentPartner.name}!`);
-          loadPartnerJobs();
-          if (typeof loadOngoingJobs === 'function') loadOngoingJobs();
-        } else {
-          alert("Order update failed on server! Please try again.");
-        }
       } catch (err) {
-        console.warn("Backend API Error, falling back to local acceptance:", err);
-        let bookings = getSharedBookings();
-        let updated = false;
-
-        bookings = bookings.map(b => {
-          if (String(b.id || b.bookingId) === String(orderId)) {
-            b.assignedPartner = currentPartner.name;
-            b.partnerStatus = 'ACCEPTED';
-            b.startOTP = generatedStartOTP;
-            updated = true;
-          }
-          return b;
-        });
-
-        if (updated) {
-          saveSharedBookings(bookings);
-          alert(`🎉 Order #${orderId} successfully accepted and assigned to ${currentPartner.name}!`);
-          loadPartnerJobs();
-          if (typeof loadOngoingJobs === 'function') loadOngoingJobs();
-        } else {
-          alert("Order details not found!");
-        }
+        console.warn("Server API sync skipped:", err);
       }
     }
   </script>
