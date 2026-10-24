@@ -1409,32 +1409,72 @@
       window.location.href = `job-details-view.html?id=${orderId}`;
     }
 
-    function acceptJobOrder(orderId) {
+    // --- MONGODB BACKEND SYNCED ORDER ACCEPTANCE FUNCTION ---
+    async function acceptJobOrder(orderId) {
       if (!currentPartner) {
         alert("Partner details not loaded. Please re-login!");
         return;
       }
 
-      let bookings = getSharedBookings();
-      let updated = false;
+      const generatedStartOTP = Math.floor(100000 + Math.random() * 900000);
+      const updateData = {
+        assignedPartner: currentPartner.name,
+        partnerStatus: 'ACCEPTED',
+        startOTP: generatedStartOTP
+      };
 
-      bookings = bookings.map(b => {
-        if (String(b.id || b.bookingId) === String(orderId)) {
-          b.assignedPartner = currentPartner.name;
-          b.partnerStatus = 'ACCEPTED';
-          b.startOTP = Math.floor(100000 + Math.random() * 900000);
-          updated = true;
+      try {
+        // 1. Direct Backend MongoDB API Call
+        const response = await fetch(`/api/bookings/${orderId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updateData)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          // 2. LocalStorage Fallback Update
+          let bookings = getSharedBookings();
+          bookings = bookings.map(b => {
+            if (String(b.id || b.bookingId) === String(orderId)) {
+              b.assignedPartner = currentPartner.name;
+              b.partnerStatus = 'ACCEPTED';
+              b.startOTP = generatedStartOTP;
+            }
+            return b;
+          });
+          saveSharedBookings(bookings);
+
+          alert(`🎉 Order #${orderId} successfully accepted and assigned to ${currentPartner.name}!`);
+          loadPartnerJobs();
+          if (typeof loadOngoingJobs === 'function') loadOngoingJobs();
+        } else {
+          alert("Order update failed on server! Please try again.");
         }
-        return b;
-      });
+      } catch (err) {
+        console.warn("Backend API Error, falling back to local acceptance:", err);
+        let bookings = getSharedBookings();
+        let updated = false;
 
-      if (updated) {
-        saveSharedBookings(bookings);
-        alert(`🎉 Order #${orderId} successfully accepted and assigned to ${currentPartner.name}!`);
-        loadPartnerJobs();
-        if (typeof loadOngoingJobs === 'function') loadOngoingJobs();
-      } else {
-        alert("Order details not found!");
+        bookings = bookings.map(b => {
+          if (String(b.id || b.bookingId) === String(orderId)) {
+            b.assignedPartner = currentPartner.name;
+            b.partnerStatus = 'ACCEPTED';
+            b.startOTP = generatedStartOTP;
+            updated = true;
+          }
+          return b;
+        });
+
+        if (updated) {
+          saveSharedBookings(bookings);
+          alert(`🎉 Order #${orderId} successfully accepted and assigned to ${currentPartner.name}!`);
+          loadPartnerJobs();
+          if (typeof loadOngoingJobs === 'function') loadOngoingJobs();
+        } else {
+          alert("Order details not found!");
+        }
       }
     }
   </script>
