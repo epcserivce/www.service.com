@@ -635,11 +635,20 @@
       localStorage.setItem('customerBookings', JSON.stringify(bookingsList));
     }
 
-    function loadPartnerJobs() {
+    // Database-il irundhu live bookings fetch panra async function
+    async function loadPartnerJobs() {
       const container = document.getElementById('job-subtab-content');
       if (!container || !currentPartner) return;
 
-      const bookings = getSharedBookings();
+      let bookings = [];
+      try {
+        const response = await fetch('/api/bookings');
+        bookings = await response.json();
+      } catch (err) {
+        console.warn("API Fetch Fallback to LocalStorage");
+        bookings = getSharedBookings();
+      }
+
       const partnerDesig = (currentPartner.designation || 'Electrician').toLowerCase();
       
       const now = new Date();

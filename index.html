@@ -12,8 +12,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <!-- Razorpay SDK -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <!-- Socket.io Script Include -->
+  <script src="/socket.io/socket.io.js"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: { sans: ['Inter', 'sans-serif'] },
@@ -75,7 +78,7 @@
       <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
         <div class="bg-black text-white font-black text-sm px-2.5 py-1.5 rounded-xl shadow-sm">EPC</div>
         <div>
-          <div class="font-black text-sm text-slate-900 flex items-center gap-1">
+          <div class="font-black text-sm text-slate-900 dark:text-white flex items-center gap-1">
             <span>EPC Services</span>
             <i class="fa-solid fa-angle-right text-[10px] text-slate-400"></i>
           </div>
@@ -83,33 +86,33 @@
         </div>
       </div>
 
-                      <!-- 🌙 Dark Mode Theme Toggle Button -->
-        <button onclick="toggleDarkMode()" title="Toggle Theme" class="w-9 h-9 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm">
-          <i id="theme-icon" class="fa-solid fa-moon text-sm text-slate-800 dark:text-amber-400"></i>
-        </button>
+      <!-- 🌙 Dark Mode Theme Toggle Button -->
+      <button onclick="toggleDarkMode()" title="Toggle Theme" class="w-9 h-9 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition cursor-pointer shadow-sm">
+        <i id="theme-icon" class="fa-solid fa-moon text-sm text-slate-800 dark:text-amber-400"></i>
+      </button>
 
       <!-- Right Side Menu Container -->
       <div class="flex items-center gap-4">
-        <button onclick="navigateTo('home')" class="text-xs font-extrabold text-slate-700 hover:text-ucPurple transition">Home</button>
-        <button onclick="openMainCategoryModal()" class="text-xs font-extrabold text-slate-700 hover:text-ucPurple transition">Services</button>
+        <button onclick="navigateTo('home')" class="text-xs font-extrabold text-slate-700 dark:text-slate-300 hover:text-ucPurple transition">Home</button>
+        <button onclick="openMainCategoryModal()" class="text-xs font-extrabold text-slate-700 dark:text-slate-300 hover:text-ucPurple transition">Services</button>
 
         <!-- My Account Dropdown Menu (After Login) -->
         <div id="logged-in-menu" style="position: relative;">
-            <button class="profile-btn flex items-center gap-1.5 text-xs font-black text-slate-800 bg-slate-100 px-3.5 py-2 rounded-2xl hover:bg-slate-200 transition cursor-pointer" onclick="toggleDropdown()">
+            <button class="profile-btn flex items-center gap-1.5 text-xs font-black text-slate-800 dark:text-white bg-slate-100 dark:bg-slate-800 px-3.5 py-2 rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition cursor-pointer" onclick="toggleDropdown()">
               <span>My Account</span> <i class="fa-solid fa-angle-down text-[10px]"></i>
             </button>
-            <div id="dropdown-content" class="dropdown-box" style="display: none;">
-              <button onclick="openProfileModal()" style="text-align: left;"><i class="fa-solid fa-user mr-2 text-ucPurple"></i> My Profile</button>
-              <a href="my-bookings.html"><i class="fa-solid fa-calendar-check mr-2 text-ucPurple"></i> My Bookings</a>
-              <a href="help-centre.html"><i class="fa-solid fa-headset mr-2 text-ucPurple"></i> Help Centre</a>
-              <button onclick="logout()" class="logout-btn text-red-600 border-t border-slate-100"><i class="fa-solid fa-right-from-bracket mr-2"></i> Logout</button>
+            <div id="dropdown-content" class="dropdown-box dark:bg-slate-900 dark:border-slate-800" style="display: none;">
+              <button onclick="openProfileModal()" style="text-align: left;" class="dark:text-slate-200"><i class="fa-solid fa-user mr-2 text-ucPurple"></i> My Profile</button>
+              <a href="my-bookings.html" class="dark:text-slate-200"><i class="fa-solid fa-calendar-check mr-2 text-ucPurple"></i> My Bookings</a>
+              <a href="help-centre.html" class="dark:text-slate-200"><i class="fa-solid fa-headset mr-2 text-ucPurple"></i> Help Centre</a>
+              <button onclick="logout()" class="logout-btn text-red-600 border-t border-slate-100 dark:border-slate-800"><i class="fa-solid fa-right-from-bracket mr-2"></i> Logout</button>
             </div>
         </div>
 
         <!-- Cart Bag Icon -->
-        <div class="relative cursor-pointer w-9 h-9 rounded-2xl bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition" onclick="openCartModal()">
-          <i class="fa-solid fa-bag-shopping text-sm text-slate-800"></i>
-          <span id="header-cart-count" class="hidden absolute -top-1.5 -right-1.5 bg-ucPurple text-white text-[10px] font-black rounded-full w-5 h-5 flex items-center justify-center border-2 border-white shadow">0</span>
+        <div class="relative cursor-pointer w-9 h-9 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition" onclick="openCartModal()">
+          <i class="fa-solid fa-bag-shopping text-sm text-slate-800 dark:text-slate-200"></i>
+          <span id="header-cart-count" class="hidden absolute -top-1.5 -right-1.5 bg-ucPurple text-white text-[10px] font-black rounded-full w-5 h-5 flex items-center justify-center border-2 border-white dark:border-slate-900 shadow">0</span>
         </div>
       </div>
     </div>
@@ -128,49 +131,49 @@
         </div>
       </div>
 
-      <h2 class="text-base font-black text-slate-900">What are you looking for?</h2>
+      <h2 class="text-base font-black text-slate-900 dark:text-white">What are you looking for?</h2>
 
       <div class="grid grid-cols-3 gap-3 sm:gap-4">
-        <div onclick="showToast('Opening Women\'s Salon...')" class="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm text-center cursor-pointer hover:shadow-md transition">
-          <div class="w-12 h-12 rounded-2xl bg-pink-50 text-pink-500 text-xl mx-auto flex items-center justify-center mb-2"><i class="fa-solid fa-spa"></i></div>
-          <span class="text-xs font-bold text-slate-800 block">Women's Salon & Spa</span>
+        <div onclick="showToast('Opening Women\'s Salon...')" class="bg-white dark:bg-slate-900 p-4 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm text-center cursor-pointer hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-2xl bg-pink-50 dark:bg-pink-950 text-pink-500 text-xl mx-auto flex items-center justify-center mb-2"><i class="fa-solid fa-spa"></i></div>
+          <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">Women's Salon & Spa</span>
         </div>
 
-        <div onclick="showToast('Opening Men\'s Salon...')" class="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm text-center cursor-pointer hover:shadow-md transition">
-          <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 text-xl mx-auto flex items-center justify-center mb-2"><i class="fa-solid fa-scissors"></i></div>
-          <span class="text-xs font-bold text-slate-800 block">Men's Salon & Massage</span>
+        <div onclick="showToast('Opening Men\'s Salon...')" class="bg-white dark:bg-slate-900 p-4 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm text-center cursor-pointer hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950 text-blue-600 text-xl mx-auto flex items-center justify-center mb-2"><i class="fa-solid fa-scissors"></i></div>
+          <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">Men's Salon & Massage</span>
         </div>
 
-        <div onclick="showToast('Opening Cleaning...')" class="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm text-center cursor-pointer hover:shadow-md transition">
-          <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 text-xl mx-auto flex items-center justify-center mb-2"><i class="fa-solid fa-broom"></i></div>
-          <span class="text-xs font-bold text-slate-800 block">Cleaning & Pest Control</span>
+        <div onclick="showToast('Opening Cleaning...')" class="bg-white dark:bg-slate-900 p-4 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm text-center cursor-pointer hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 text-xl mx-auto flex items-center justify-center mb-2"><i class="fa-solid fa-broom"></i></div>
+          <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">Cleaning & Pest Control</span>
         </div>
 
-        <div onclick="showToast('Opening Painting...')" class="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm text-center cursor-pointer hover:shadow-md transition">
-          <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 text-xl mx-auto flex items-center justify-center mb-2"><i class="fa-solid fa-paint-roller"></i></div>
-          <span class="text-xs font-bold text-slate-800 block">Painting & Waterproofing</span>
+        <div onclick="showToast('Opening Painting...')" class="bg-white dark:bg-slate-900 p-4 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm text-center cursor-pointer hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-950 text-purple-600 text-xl mx-auto flex items-center justify-center mb-2"><i class="fa-solid fa-paint-roller"></i></div>
+          <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">Painting & Waterproofing</span>
         </div>
 
-        <div onclick="showToast('Opening AC Repair...')" class="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm text-center cursor-pointer hover:shadow-md transition">
-          <div class="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 text-xl mx-auto flex items-center justify-center mb-2"><i class="fa-solid fa-snowflake"></i></div>
-          <span class="text-xs font-bold text-slate-800 block">AC & Appliance Repair</span>
+        <div onclick="showToast('Opening AC Repair...')" class="bg-white dark:bg-slate-900 p-4 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm text-center cursor-pointer hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-2xl bg-sky-50 dark:bg-sky-950 text-sky-600 text-xl mx-auto flex items-center justify-center mb-2"><i class="fa-solid fa-snowflake"></i></div>
+          <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">AC & Appliance Repair</span>
         </div>
 
-              <!-- Example Card -->
-      <div onclick="openMainCategoryModal()" class="bg-white dark:bg-slate-900 p-4 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm text-center cursor-pointer hover:shadow-md transition">
-        <div class="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-950 text-purple-600 dark:text-purple-300 text-xl mx-auto flex items-center justify-center mb-2">
-          <i class="fa-solid fa-wrench"></i>
+        <div onclick="openMainCategoryModal()" class="bg-white dark:bg-slate-900 p-4 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm text-center cursor-pointer hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-950 text-purple-600 dark:text-purple-300 text-xl mx-auto flex items-center justify-center mb-2">
+            <i class="fa-solid fa-wrench"></i>
+          </div>
+          <span class="text-xs font-black text-slate-900 dark:text-slate-100 block">Electrician, Plumber & Carpenter</span>
         </div>
-        <span class="text-xs font-black text-slate-900 dark:text-slate-100 block">Electrician, Plumber & Carpenter</span>
       </div>
     </section>
 
     <!-- CARPENTER CATEGORIES SLIDE VIEW -->
     <section id="view-service-selector" class="hidden p-4 sm:p-6 space-y-6 animate-fadeIn">
-      <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
-        <button onclick="navigateTo('home')" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-800 hover:bg-slate-200 transition"><i class="fa-solid fa-arrow-left text-xs"></i></button>
+      <div class="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+        <button onclick="navigateTo('home')" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-800 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition"><i class="fa-solid fa-arrow-left text-xs"></i></button>
         <div>
-          <h1 class="text-lg font-black text-slate-900">Carpenter</h1>
+          <h1 class="text-lg font-black text-slate-900 dark:text-white">Carpenter</h1>
           <p class="text-xs text-slate-400 font-semibold">⭐ 4.78 (3.1M bookings across TN)</p>
         </div>
       </div>
@@ -179,11 +182,11 @@
 
     <!-- SERVICE DETAILS LIST VIEW -->
     <section id="view-service-detail-list" class="hidden p-4 sm:p-6 space-y-6 animate-fadeIn">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
         <div class="flex items-center gap-3">
-          <button onclick="navigateTo('services-menu')" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-800 hover:bg-slate-200 transition"><i class="fa-solid fa-arrow-left text-xs"></i></button>
+          <button onclick="navigateTo('services-menu')" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-800 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition"><i class="fa-solid fa-arrow-left text-xs"></i></button>
           <div>
-            <h1 id="selected-subcategory-title" class="text-lg font-black text-slate-900">Wooden door</h1>
+            <h1 id="selected-subcategory-title" class="text-lg font-black text-slate-900 dark:text-white">Wooden door</h1>
             <p id="selected-subcategory-subtitle" class="text-xs text-slate-400 font-medium">Select services to book</p>
           </div>
         </div>
@@ -193,9 +196,9 @@
 
     <!-- CHECKOUT PAGE -->
     <section id="view-checkout" class="hidden p-4 sm:p-6 animate-fadeIn space-y-5">
-      <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
-        <button onclick="navigateTo('service-details')" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-800 hover:bg-slate-200 transition"><i class="fa-solid fa-arrow-left text-xs"></i></button>
-        <h1 class="text-xl font-black text-slate-900 flex items-center gap-2">
+      <div class="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+        <button onclick="navigateTo('service-details')" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-800 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition"><i class="fa-solid fa-arrow-left text-xs"></i></button>
+        <h1 class="text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
           <span class="bg-black text-white px-2.5 py-1 rounded-xl text-xs font-black">EPC</span> Checkout
         </h1>
       </div>
@@ -203,38 +206,38 @@
       <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
         <div class="md:col-span-7 space-y-4">
           
-          <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm space-y-4">
+          <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm space-y-4">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-600 shrink-0"><i class="fa-solid fa-house text-sm"></i></div>
+                <div class="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 shrink-0"><i class="fa-solid fa-house text-sm"></i></div>
                 <div>
                   <p class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Service Address</p>
-                  <p id="checkout-address-display" class="font-bold text-xs text-slate-900">Select address to proceed</p>
+                  <p id="checkout-address-display" class="font-bold text-xs text-slate-900 dark:text-white">Select address to proceed</p>
                 </div>
               </div>
               <button onclick="openAddressModal()" id="address-action-btn" class="px-3.5 py-2 bg-ucPurple text-white rounded-xl text-xs font-black hover:bg-purple-700 transition">Change Address</button>
             </div>
 
-            <div class="flex items-center justify-between border-t border-slate-100 pt-4">
+            <div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-600 shrink-0"><i class="fa-regular fa-clock text-sm"></i></div>
+                <div class="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 shrink-0"><i class="fa-regular fa-clock text-sm"></i></div>
                 <div>
                   <p class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Slot</p>
                   <p id="checkout-slot-display" class="font-bold text-xs text-slate-400">Select time & date</p>
                 </div>
               </div>
-              <button onclick="openSlotModal()" id="slot-action-btn" class="px-3.5 py-2 border border-slate-200 text-slate-700 rounded-xl text-xs font-extrabold hover:bg-slate-50 transition hidden">Edit</button>
+              <button onclick="openSlotModal()" id="slot-action-btn" class="px-3.5 py-2 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-extrabold hover:bg-slate-50 dark:hover:bg-slate-800 transition hidden">Edit</button>
             </div>
 
             <!-- Payment Method Dropdown Section -->
-            <div class="border-t border-slate-100 pt-4 space-y-2" id="payment-method-container">
+            <div class="border-t border-slate-100 dark:border-slate-800 pt-4 space-y-2" id="payment-method-container">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-600 shrink-0">
+                <div class="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 shrink-0">
                   <i class="fa-regular fa-credit-card text-sm"></i>
                 </div>
                 <div class="w-full">
                   <p class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Payment Method</p>
-                  <select id="payment-mode-select" onchange="handlePaymentModeChange()" class="w-full mt-1 border border-slate-200 rounded-2xl p-3 text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-ucPurple bg-white">
+                  <select id="payment-mode-select" onchange="handlePaymentModeChange()" class="w-full mt-1 border border-slate-200 dark:border-slate-700 rounded-2xl p-3 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-ucPurple bg-white dark:bg-slate-800">
                     <option value="" disabled selected>Select payment mode</option>
                     <option value="online">Online Payment (Razorpay)</option>
                     <option value="cash">Cash on Order (COD)</option>
@@ -243,27 +246,27 @@
               </div>
             </div>
 
-            <button id="btn-proceed-pay" onclick="handleCheckoutAction()" disabled class="w-full bg-slate-200 text-slate-400 py-3.5 rounded-2xl font-black text-xs cursor-not-allowed transition">
+            <button id="btn-proceed-pay" onclick="handleCheckoutAction()" disabled class="w-full bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 py-3.5 rounded-2xl font-black text-xs cursor-not-allowed transition">
               Proceed to pay
             </button>
           </div>
 
-          <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm space-y-1">
-            <h3 class="font-black text-xs text-slate-900">Cancellation policy</h3>
+          <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm space-y-1">
+            <h3 class="font-black text-xs text-slate-900 dark:text-white">Cancellation policy</h3>
             <p class="text-[11px] text-slate-500 font-medium">Free cancellations if done more than 12 hrs before the service. A fee will be charged otherwise.</p>
             <a href="#" class="text-[11px] font-bold text-ucPurple underline block pt-1">Read full policy</a>
           </div>
         </div>
 
         <div class="md:col-span-5 space-y-4">
-          <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm space-y-4">
-            <h2 class="font-black text-sm text-slate-900 border-b border-slate-100 pb-3">Service Booking Summary</h2>
+          <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm space-y-4">
+            <h2 class="font-black text-sm text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">Service Booking Summary</h2>
             
             <!-- Selected Items List -->
             <div id="checkout-cart-items-list" class="space-y-2.5"></div>
 
             <!-- DYNAMIC BILL BREAKDOWN BOX -->
-            <div class="bg-slate-900 text-white p-5 rounded-3xl space-y-2.5 text-xs shadow-md">
+            <div class="bg-slate-900 dark:bg-slate-950 text-white p-5 rounded-3xl space-y-2.5 text-xs shadow-md border border-slate-800">
               <div class="flex justify-between text-slate-300 font-medium">
                 <span>Est. Job Duration</span>
                 <span id="checkout-duration" class="font-bold text-white">30 - 45 Mins</span>
@@ -288,14 +291,14 @@
 
             <div class="flex items-center gap-2 pt-1">
               <input type="checkbox" id="avoid-call" class="rounded text-ucPurple focus:ring-ucPurple" checked />
-              <label for="avoid-call" class="text-xs text-slate-700 font-medium">Avoid calling before reaching the location</label>
+              <label for="avoid-call" class="text-xs text-slate-700 dark:text-slate-300 font-medium">Avoid calling before reaching the location</label>
             </div>
           </div>
 
-          <div class="bg-white rounded-3xl p-4 border border-slate-100 shadow-sm flex justify-between items-center cursor-pointer hover:border-ucPurple transition">
+          <div class="bg-white dark:bg-slate-900 rounded-3xl p-4 border border-slate-100 dark:border-slate-800 shadow-sm flex justify-between items-center cursor-pointer hover:border-ucPurple transition">
             <div class="flex items-center gap-3">
               <i class="fa-solid fa-percent text-emerald-600 text-base"></i>
-              <span class="font-bold text-xs text-slate-900">Coupons and offers</span>
+              <span class="font-bold text-xs text-slate-900 dark:text-white">Coupons and offers</span>
             </div>
             <span class="text-xs font-black text-ucPurple">8 offers &gt;</span>
           </div>
@@ -306,12 +309,12 @@
   </main>
 
   <!-- FLOATING CART BAR -->
-  <div id="floating-cart-bar" class="hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-slate-100 shadow-2xl p-4 animate-fadeIn max-w-5xl mx-auto rounded-t-3xl">
+  <div id="floating-cart-bar" class="hidden fixed bottom-0 left-0 right-0 z-30 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 shadow-2xl p-4 animate-fadeIn max-w-5xl mx-auto rounded-t-3xl">
     <div class="flex items-center justify-between">
       <div>
-        <span id="float-item-count" class="font-black text-slate-900 text-xs">0 ITEMS</span>
+        <span id="float-item-count" class="font-black text-slate-900 dark:text-white text-xs">0 ITEMS</span>
         <span class="text-slate-300 mx-2">|</span>
-        <span id="float-total-price" class="font-black text-slate-900 text-sm">₹0</span>
+        <span id="float-total-price" class="font-black text-slate-900 dark:text-white text-sm">₹0</span>
       </div>
       <button onclick="navigateTo('checkout')" class="bg-ucPurple hover:bg-purple-700 text-white font-black px-6 py-2.5 rounded-2xl transition text-xs shadow-md">
         Done
@@ -321,27 +324,27 @@
 
   <!-- POPUP 3: MAIN CATEGORY MODAL -->
   <div id="main-category-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl animate-fadeIn">
-      <div class="p-5 border-b border-slate-100 flex justify-between items-center">
-        <h2 class="font-black text-sm text-slate-900">Electrician, Plumber & Carpenter</h2>
-        <button onclick="closeMainCategoryModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-xmark text-xs"></i></button>
+    <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl animate-fadeIn">
+      <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+        <h2 class="font-black text-sm text-slate-900 dark:text-white">Electrician, Plumber & Carpenter</h2>
+        <button onclick="closeMainCategoryModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700"><i class="fa-solid fa-xmark text-xs"></i></button>
       </div>
 
       <div class="p-6 space-y-5 max-h-[75vh] overflow-y-auto custom-scrollbar">
         <div>
           <h3 class="font-black text-[10px] text-slate-400 uppercase tracking-wider mb-3">Home repairs</h3>
           <div class="grid grid-cols-3 gap-3">
-            <div onclick="openCarpenterSubCategoryModal()" class="p-3.5 border border-purple-100 rounded-2xl cursor-pointer text-center hover:border-ucPurple bg-purple-50/50 shadow-sm transition">
+            <div onclick="openCarpenterSubCategoryModal()" class="p-3.5 border border-purple-100 dark:border-purple-950 rounded-2xl cursor-pointer text-center hover:border-ucPurple bg-purple-50/50 dark:bg-purple-950/40 shadow-sm transition">
               <i class="fa-solid fa-hammer text-xl text-ucPurple mb-1 block"></i>
-              <span class="text-xs font-bold text-slate-900 block">Carpenter</span>
+              <span class="text-xs font-bold text-slate-900 dark:text-slate-200 block">Carpenter</span>
             </div>
-            <div onclick="openElectricianSubCategoryModal()" class="p-3.5 border border-amber-100 rounded-2xl cursor-pointer text-center hover:border-ucPurple bg-amber-50/50 shadow-sm transition">
+            <div onclick="openElectricianSubCategoryModal()" class="p-3.5 border border-amber-100 dark:border-amber-950 rounded-2xl cursor-pointer text-center hover:border-ucPurple bg-amber-50/50 dark:bg-amber-950/40 shadow-sm transition">
               <i class="fa-solid fa-plug text-xl text-amber-500 mb-1 block"></i>
-              <span class="text-xs font-bold text-slate-900 block">Electrician</span>
+              <span class="text-xs font-bold text-slate-900 dark:text-slate-200 block">Electrician</span>
             </div>
-            <div onclick="showToast('Plumber options')" class="p-3.5 border border-blue-100 rounded-2xl cursor-pointer text-center hover:border-ucPurple bg-blue-50/50 shadow-sm transition">
+            <div onclick="showToast('Plumber options')" class="p-3.5 border border-blue-100 dark:border-blue-950 rounded-2xl cursor-pointer text-center hover:border-ucPurple bg-blue-50/50 dark:bg-blue-950/40 shadow-sm transition">
               <i class="fa-solid fa-faucet-drip text-xl text-blue-500 mb-1 block"></i>
-              <span class="text-xs font-bold text-slate-900 block">Plumber</span>
+              <span class="text-xs font-bold text-slate-900 dark:text-slate-200 block">Plumber</span>
             </div>
           </div>
         </div>
@@ -351,13 +354,13 @@
 
   <!-- POPUP 4: CARPENTER SUB CATEGORIES MODAL -->
   <div id="carpenter-subcategory-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl animate-fadeIn">
-      <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl animate-fadeIn">
+      <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
         <div>
-          <h2 class="font-black text-base text-slate-900">Carpenter Sub Categories</h2>
+          <h2 class="font-black text-base text-slate-900 dark:text-white">Carpenter Sub Categories</h2>
           <p class="text-xs text-slate-400 font-medium">Select a category to view sub services</p>
         </div>
-        <button onclick="closeCarpenterSubCategoryModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-xmark text-xs"></i></button>
+        <button onclick="closeCarpenterSubCategoryModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700"><i class="fa-solid fa-xmark text-xs"></i></button>
       </div>
 
       <div id="carpenter-subcat-list" class="p-6 space-y-3 max-h-[70vh] overflow-y-auto custom-scrollbar"></div>
@@ -366,13 +369,13 @@
 
   <!-- POPUP 4B: ELECTRICIAN SUB CATEGORIES MODAL -->
   <div id="electrician-subcategory-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl animate-fadeIn">
-      <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl animate-fadeIn">
+      <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
         <div>
-          <h2 class="font-black text-base text-slate-900">Electrician Sub Categories</h2>
+          <h2 class="font-black text-base text-slate-900 dark:text-white">Electrician Sub Categories</h2>
           <p class="text-xs text-slate-400 font-medium">Select a category to view sub services</p>
         </div>
-        <button onclick="closeElectricianSubCategoryModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-xmark text-xs"></i></button>
+        <button onclick="closeElectricianSubCategoryModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700"><i class="fa-solid fa-xmark text-xs"></i></button>
       </div>
 
       <div id="electrician-subcat-list" class="p-6 space-y-3 max-h-[70vh] overflow-y-auto custom-scrollbar"></div>
@@ -381,20 +384,20 @@
 
   <!-- POPUP 5: SUB SERVICES POPUP MODAL -->
   <div id="subservices-popup-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl animate-fadeIn relative">
-      <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl animate-fadeIn relative">
+      <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
         <div>
-          <h2 id="popup-service-title" class="font-black text-base text-slate-900">Service Title</h2>
+          <h2 id="popup-service-title" class="font-black text-base text-slate-900 dark:text-white">Service Title</h2>
           <p id="popup-service-rating" class="text-xs text-slate-500 font-semibold mt-0.5 flex items-center gap-1"></p>
         </div>
-        <button onclick="closeSubServicesPopupModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 hover:bg-slate-200 transition">
+        <button onclick="closeSubServicesPopupModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
           <i class="fa-solid fa-xmark text-xs"></i>
         </button>
       </div>
 
       <div id="popup-subservices-container" class="p-6 flex gap-4 overflow-x-auto custom-scrollbar"></div>
       
-      <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
+      <div class="p-4 bg-slate-50 dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
         <span class="text-xs text-slate-500 font-medium">Select required sub-services & add to booking</span>
         <button onclick="closeSubServicesPopupModal()" class="px-5 py-2.5 bg-ucPurple text-white rounded-2xl font-black text-xs hover:bg-purple-700 transition shadow-sm">Done</button>
       </div>
@@ -403,34 +406,34 @@
 
   <!-- POPUP 6: ADD / CHANGE ADDRESS MODAL -->
   <div id="address-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl animate-fadeIn">
-      <div class="p-5 border-b border-slate-100 flex justify-between items-center">
-        <h2 class="font-black text-base text-slate-900">Change Service Address</h2>
-        <button onclick="closeAddressModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 hover:bg-slate-200"><i class="fa-solid fa-xmark text-xs"></i></button>
+    <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl overflow-hidden shadow-2xl animate-fadeIn">
+      <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+        <h2 class="font-black text-base text-slate-900 dark:text-white">Change Service Address</h2>
+        <button onclick="closeAddressModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700"><i class="fa-solid fa-xmark text-xs"></i></button>
       </div>
 
       <div class="p-6 space-y-4">
         <div>
-          <label class="text-xs font-bold text-slate-700 block mb-1">House / Flat No, Building Name *</label>
-          <input type="text" id="input-house-no" placeholder="eg. Door No 45, Royal Enclave" class="w-full border rounded-2xl px-3.5 py-3 text-xs font-medium focus:ring-2 focus:ring-ucPurple" />
+          <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">House / Flat No, Building Name *</label>
+          <input type="text" id="input-house-no" placeholder="eg. Door No 45, Royal Enclave" class="w-full border dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-2xl px-3.5 py-3 text-xs font-medium focus:ring-2 focus:ring-ucPurple" />
         </div>
         <div>
-          <label class="text-xs font-bold text-slate-700 block mb-1">Street, Landmark *</label>
-          <input type="text" id="input-street" placeholder="eg. Gandhi Road, Near Bus Stand" class="w-full border rounded-2xl px-3.5 py-3 text-xs font-medium focus:ring-2 focus:ring-ucPurple" />
+          <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Street, Landmark *</label>
+          <input type="text" id="input-street" placeholder="eg. Gandhi Road, Near Bus Stand" class="w-full border dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-2xl px-3.5 py-3 text-xs font-medium focus:ring-2 focus:ring-ucPurple" />
         </div>
         <div>
-          <label class="text-xs font-bold text-slate-700 block mb-1">Select Area / Taluk *</label>
-          <select id="input-district-area" onchange="autoFillPincodeAndCoords()" class="w-full border rounded-2xl px-3.5 py-3 text-xs font-bold focus:ring-2 focus:ring-ucPurple bg-white">
+          <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Select Area / Taluk *</label>
+          <select id="input-district-area" onchange="autoFillPincodeAndCoords()" class="w-full border dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-2xl px-3.5 py-3 text-xs font-bold focus:ring-2 focus:ring-ucPurple bg-white">
             <option value="">-- Select District Area --</option>
           </select>
         </div>
         <div>
-          <label class="text-xs font-bold text-slate-700 block mb-1">Pincode *</label>
-          <input type="text" id="input-pincode" placeholder="600089" class="w-full border rounded-2xl px-3.5 py-3 text-xs font-medium focus:ring-2 focus:ring-ucPurple" />
+          <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Pincode *</label>
+          <input type="text" id="input-pincode" placeholder="600089" class="w-full border dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-2xl px-3.5 py-3 text-xs font-medium focus:ring-2 focus:ring-ucPurple" />
         </div>
         <div>
-          <label class="text-xs font-bold text-slate-700 block mb-1">Mobile Number *</label>
-          <input type="tel" id="input-mobile" placeholder="6381796419" class="w-full border rounded-2xl px-3.5 py-3 text-xs font-medium focus:ring-2 focus:ring-ucPurple" />
+          <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Mobile Number *</label>
+          <input type="tel" id="input-mobile" placeholder="6381796419" class="w-full border dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-2xl px-3.5 py-3 text-xs font-medium focus:ring-2 focus:ring-ucPurple" />
         </div>
 
         <button onclick="saveAddressDetails()" class="w-full bg-ucPurple text-white py-3.5 rounded-2xl font-black text-xs hover:bg-purple-700 transition shadow-md">
@@ -442,25 +445,25 @@
 
   <!-- POPUP 7: SLOT BOOKING MODAL -->
   <div id="slot-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl animate-fadeIn relative">
-      <button onclick="closeSlotModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 hover:bg-slate-200 z-10">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl overflow-hidden shadow-2xl animate-fadeIn relative">
+      <button onclick="closeSlotModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 z-10">
         <i class="fa-solid fa-xmark text-xs"></i>
       </button>
 
       <div class="p-6 space-y-4 max-h-[80vh] overflow-y-auto custom-scrollbar">
-        <div class="border border-slate-100 rounded-2xl p-3 bg-slate-50 flex items-center justify-between opacity-60">
+        <div class="border border-slate-100 dark:border-slate-800 rounded-2xl p-3 bg-slate-50 dark:bg-slate-800 flex items-center justify-between opacity-60">
           <div>
             <span class="text-[9px] font-black text-slate-400 uppercase flex items-center gap-1"><i class="fa-solid fa-bolt"></i> Instant</span>
-            <p class="font-black text-xs text-slate-800">In 30 mins</p>
+            <p class="font-black text-xs text-slate-800 dark:text-white">In 30 mins</p>
             <p class="text-[10px] text-amber-600 font-bold">Unavailable at the moment</p>
           </div>
           <input type="radio" disabled />
         </div>
 
-        <div class="border border-purple-100 rounded-3xl p-4 bg-white space-y-4 shadow-sm">
+        <div class="border border-purple-100 dark:border-purple-950 rounded-3xl p-4 bg-white dark:bg-slate-900 space-y-4 shadow-sm">
           <div class="flex items-center justify-between">
             <div>
-              <p class="font-black text-xs text-slate-900">Schedule for later</p>
+              <p class="font-black text-xs text-slate-900 dark:text-white">Schedule for later</p>
               <p class="text-[10px] text-slate-400 font-medium">Select your preferred day & time</p>
             </div>
             <input type="radio" checked class="text-ucPurple focus:ring-ucPurple" />
@@ -468,14 +471,14 @@
 
           <div id="dates-row" class="flex gap-2 overflow-x-auto pb-1 custom-scrollbar"></div>
 
-          <p class="font-black text-xs text-slate-900 pt-2">Select start time of service</p>
+          <p class="font-black text-xs text-slate-900 dark:text-white pt-2">Select start time of service</p>
 
           <div id="time-slots-grid" class="grid grid-cols-3 gap-2"></div>
         </div>
       </div>
 
-      <div class="p-4 bg-slate-50 border-t border-slate-100">
-        <button id="btn-slot-confirm" onclick="confirmSlotBooking()" disabled class="w-full bg-slate-200 text-slate-400 py-3.5 rounded-2xl font-black text-xs cursor-not-allowed transition">
+      <div class="p-4 bg-slate-50 dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800">
+        <button id="btn-slot-confirm" onclick="confirmSlotBooking()" disabled class="w-full bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 py-3.5 rounded-2xl font-black text-xs cursor-not-allowed transition">
           Proceed to checkout
         </button>
       </div>
@@ -484,39 +487,39 @@
 
   <!-- POPUP: CUSTOMER PROFILE MODAL -->
   <div id="profile-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl animate-fadeIn relative">
-      <button onclick="closeProfileModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 hover:bg-slate-200">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl overflow-hidden shadow-2xl animate-fadeIn relative">
+      <button onclick="closeProfileModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700">
         <i class="fa-solid fa-xmark text-xs"></i>
       </button>
 
       <div class="p-6 space-y-4">
-        <h2 class="font-black text-lg text-slate-900">My Profile</h2>
+        <h2 class="font-black text-lg text-slate-900 dark:text-white">My Profile</h2>
         <p class="text-xs text-slate-400 font-medium">Manage your personal details & location</p>
 
         <div class="space-y-3">
           <div>
-            <label class="text-xs font-bold text-slate-700 block mb-1">Customer Name *</label>
-            <input type="text" id="profile-name" placeholder="Enter your full name" class="w-full border rounded-2xl px-3.5 py-3 text-xs font-medium focus:ring-2 focus:ring-ucPurple" />
+            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Customer Name *</label>
+            <input type="text" id="profile-name" placeholder="Enter your full name" class="w-full border dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-2xl px-3.5 py-3 text-xs font-medium focus:ring-2 focus:ring-ucPurple" />
           </div>
           <div>
-            <label class="text-xs font-bold text-slate-700 block mb-1">Mobile Number *</label>
-            <input type="tel" id="profile-mobile" placeholder="10-digit mobile number" maxlength="10" class="w-full border rounded-2xl px-3.5 py-3 text-xs font-medium focus:ring-2 focus:ring-ucPurple" />
+            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Mobile Number *</label>
+            <input type="tel" id="profile-mobile" placeholder="10-digit mobile number" maxlength="10" class="w-full border dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-2xl px-3.5 py-3 text-xs font-medium focus:ring-2 focus:ring-ucPurple" />
           </div>
           <div>
-            <label class="text-xs font-bold text-slate-700 block mb-1">Address *</label>
-            <textarea id="profile-address" rows="2" placeholder="Door No, Street, City" class="w-full border rounded-2xl px-3.5 py-3 text-xs font-medium focus:ring-2 focus:ring-ucPurple"></textarea>
+            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Address *</label>
+            <textarea id="profile-address" rows="2" placeholder="Door No, Street, City" class="w-full border dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-2xl px-3.5 py-3 text-xs font-medium focus:ring-2 focus:ring-ucPurple"></textarea>
           </div>
           <div class="space-y-1">
-            <label class="text-xs font-bold text-slate-700 block">Select Kanchipuram Area / Pincode *</label>
-            <select id="profile-input-area" class="w-full px-3.5 py-3 text-xs font-bold border rounded-2xl focus:outline-none focus:ring-2 focus:ring-ucPurple bg-white">
+            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block">Select Kanchipuram Area / Pincode *</label>
+            <select id="profile-input-area" class="w-full px-3.5 py-3 text-xs font-bold border dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-2xl focus:outline-none focus:ring-2 focus:ring-ucPurple bg-white">
               <option value="">-- Select District Area --</option>
             </select>
           </div>
           <div>
-            <label class="text-xs font-bold text-slate-700 block mb-1">Geo Location (Lat, Lng)</label>
+            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Geo Location (Lat, Lng)</label>
             <div class="flex gap-2">
-              <input type="text" id="profile-geolocation" placeholder="Latitude, Longitude" readonly class="w-full border bg-slate-50 rounded-2xl px-3.5 py-2.5 text-xs font-medium text-slate-500" />
-              <button onclick="captureCustomerLocation()" class="bg-purple-50 text-ucPurple border border-purple-200 hover:bg-purple-100 px-3.5 py-2.5 rounded-2xl text-xs font-bold shrink-0 transition">
+              <input type="text" id="profile-geolocation" placeholder="Latitude, Longitude" readonly class="w-full border dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white rounded-2xl px-3.5 py-2.5 text-xs font-medium text-slate-500" />
+              <button onclick="captureCustomerLocation()" class="bg-purple-50 dark:bg-purple-950 text-ucPurple dark:text-purple-300 border border-purple-200 dark:border-purple-800 hover:bg-purple-100 px-3.5 py-2.5 rounded-2xl text-xs font-bold shrink-0 transition">
                 <i class="fa-solid fa-location-crosshairs mr-1"></i> Get GPS
               </button>
             </div>
@@ -547,6 +550,9 @@
     let selectedSlotTime = null;
     let loggedInUserPhone = null;
 
+    // Global Socket Initialization
+    const socket = (typeof io !== 'undefined') ? io() : null;
+
     window.onload = function () {
       const isLoggedIn = localStorage.getItem("customerLoggedIn");
       if (isLoggedIn !== "true") {
@@ -565,15 +571,8 @@
           const btn = document.getElementById('address-action-btn');
           if (btn) {
             btn.innerText = 'Edit';
-            btn.className = 'px-3.5 py-2 border border-slate-200 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-50 transition';
+            btn.className = 'px-3.5 py-2 border border-slate-200 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition';
           }
-        }
-      }
-
-      if (savedProfile.mobile) {
-        const phoneDisplay = document.getElementById('checkout-phone-display');
-        if (phoneDisplay) {
-          phoneDisplay.innerText = `+91 ${savedProfile.mobile}`;
         }
       }
 
@@ -602,7 +601,6 @@
       const fullAddress = `${house}, ${street}, ${selectedArea ? selectedArea + ', ' : ''}Pincode: ${pincode}`;
       selectedAddress = fullAddress;
 
-      // Permanent Storage
       const customerProfile = JSON.parse(localStorage.getItem('epc_customer_profile') || '{}');
       customerProfile.address = fullAddress;
       customerProfile.mobile = mobile;
@@ -622,7 +620,7 @@
       const btn = document.getElementById('address-action-btn');
       if (btn) {
         btn.innerText = 'Edit';
-        btn.className = 'px-3.5 py-2 border border-slate-200 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-50 transition';
+        btn.className = 'px-3.5 py-2 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition';
       }
 
       closeAddressModal();
@@ -704,10 +702,10 @@
         const dateNum = d.getDate();
 
         const card = document.createElement('div');
-        card.className = `min-w-[64px] py-2 px-3 border rounded-2xl text-center cursor-pointer transition ${i === 1 ? 'border-ucPurple bg-purple-50 text-ucPurple font-bold' : 'border-slate-200 text-slate-700'}`;
+        card.className = `min-w-[64px] py-2 px-3 border rounded-2xl text-center cursor-pointer transition ${i === 1 ? 'border-ucPurple bg-purple-50 dark:bg-purple-950 text-ucPurple dark:text-purple-300 font-bold' : 'border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'}`;
         card.onclick = (e) => {
-          document.querySelectorAll('#dates-row > div').forEach(el => el.className = 'min-w-[64px] py-2 px-3 border border-slate-200 rounded-2xl text-center cursor-pointer transition text-slate-700');
-          card.className = 'min-w-[64px] py-2 px-3 border-2 border-ucPurple bg-purple-50 text-ucPurple font-bold rounded-2xl text-center cursor-pointer transition';
+          document.querySelectorAll('#dates-row > div').forEach(el => el.className = 'min-w-[64px] py-2 px-3 border border-slate-200 dark:border-slate-700 rounded-2xl text-center cursor-pointer transition text-slate-700 dark:text-slate-300');
+          card.className = 'min-w-[64px] py-2 px-3 border-2 border-ucPurple bg-purple-50 dark:bg-purple-950 text-ucPurple dark:text-purple-300 font-bold rounded-2xl text-center cursor-pointer transition';
           selectedSlotDate = `${dayName}, Oct ${dateNum}`;
           checkSlotValidity();
         };
@@ -723,7 +721,7 @@
 
       times.forEach((t, index) => {
         const btn = document.createElement('button');
-        btn.className = 'py-2.5 px-2 border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 hover:border-ucPurple transition relative';
+        btn.className = 'py-2.5 px-2 border border-slate-200 dark:border-slate-700 rounded-2xl text-xs font-bold text-slate-700 dark:text-slate-300 hover:border-ucPurple transition relative';
         if (index === 0) {
           btn.innerHTML = `${t} <span class="absolute -top-2 right-1 bg-amber-100 text-amber-800 text-[8px] px-1 font-black rounded">+ ₹100</span>`;
         } else {
@@ -752,7 +750,7 @@
       const slotText = `${selectedSlotDate} - ${selectedSlotTime}`;
       document.getElementById('checkout-slot-display').innerText = slotText;
       document.getElementById('checkout-slot-display').classList.remove('text-slate-400');
-      document.getElementById('checkout-slot-display').classList.add('text-slate-900');
+      document.getElementById('checkout-slot-display').classList.add('text-slate-900', 'dark:text-white');
 
       closeSlotModal();
 
@@ -831,101 +829,97 @@
       rzp1.open();
     }
 
-    // index.html - Global Socket Initialization
-const socket = (typeof io !== 'undefined') ? io() : null;
+    // --- MONGODB BACKEND PUSH & SOCKET BROADCAST FUNCTION ---
+    async function saveBookingToStorage(serviceName, totalAmount, payMethod) {
+      const bookingId = 'EPC' + Math.floor(100000 + Math.random() * 900000);
+      
+      let finalCalculatedAmount = 0;
+      if (cart && cart.length > 0) {
+        let itemTotal = 0;
+        cart.forEach(c => { itemTotal += (c.item.price * c.quantity); });
+        finalCalculatedAmount = itemTotal + 99 + 8 + 6;
+      } else {
+        finalCalculatedAmount = totalAmount || 312;
+      }
 
-function saveBookingToStorage(serviceName, totalAmount, payMethod) {
-  const bookingId = 'EPC' + Math.floor(100000 + Math.random() * 900000);
-  
-  let finalCalculatedAmount = 0;
-  if (cart && cart.length > 0) {
-    let itemTotal = 0;
-    cart.forEach(c => { itemTotal += (c.item.price * c.quantity); });
-    finalCalculatedAmount = itemTotal + 99 + 8 + 6;
-  } else {
-    finalCalculatedAmount = totalAmount || 212;
-  }
+      let assignedDesig = 'Electrician'; 
+      const sName = (serviceName || "").toLowerCase();
 
-  let assignedDesig = 'Electrician'; 
-  const sName = (serviceName || "").toLowerCase();
+      if (
+        sName.includes('carpenter') || sName.includes('door') || sName.includes('latch') || 
+        sName.includes('bolt') || sName.includes('cupboard') || sName.includes('shelf') || 
+        sName.includes('hinge') || sName.includes('table') || sName.includes('bed') || 
+        sName.includes('sofa') || sName.includes('wardrobe') || sName.includes('cabinet') || 
+        sName.includes('decor') || sName.includes('mirror') || sName.includes('hook') ||
+        sName.includes('drawer') || sName.includes('channel') || sName.includes('curtain') ||
+        sName.includes('mosquito net') || sName.includes('blinds') || sName.includes('chair') ||
+        sName.includes('assembly') || sName.includes('mandir') || sName.includes('shoe rack') ||
+        sName.includes('utensil') || sName.includes('soap holder') || sName.includes('clothes hanger')
+      ) {
+        assignedDesig = 'Carpenter';
+      } else if (
+        sName.includes('plumber') || sName.includes('faucet') || sName.includes('tap') || 
+        sName.includes('pipe') || sName.includes('basin') || sName.includes('sink')
+      ) {
+        assignedDesig = 'Plumber';
+      } else if (
+        sName.includes('ac') || sName.includes('air conditioner') || sName.includes('cooling')
+      ) {
+        assignedDesig = 'AC Technician';
+      }
 
-  if (
-    sName.includes('carpenter') || sName.includes('door') || sName.includes('latch') || 
-    sName.includes('bolt') || sName.includes('cupboard') || sName.includes('shelf') || 
-    sName.includes('hinge') || sName.includes('table') || sName.includes('bed') || 
-    sName.includes('sofa') || sName.includes('wardrobe') || sName.includes('cabinet') || 
-    sName.includes('decor') || sName.includes('mirror') || sName.includes('hook') ||
-    sName.includes('drawer') || sName.includes('channel') || sName.includes('curtain') ||
-    sName.includes('mosquito net') || sName.includes('blinds') || sName.includes('chair') ||
-    sName.includes('assembly') || sName.includes('mandir') || sName.includes('shoe rack') ||
-    sName.includes('utensil') || sName.includes('soap holder') || sName.includes('clothes hanger')
-  ) {
-    assignedDesig = 'Carpenter';
-  } else if (
-    sName.includes('plumber') || sName.includes('faucet') || sName.includes('tap') || 
-    sName.includes('pipe') || sName.includes('basin') || sName.includes('sink')
-  ) {
-    assignedDesig = 'Plumber';
-  } else if (
-    sName.includes('ac') || sName.includes('air conditioner') || sName.includes('cooling')
-  ) {
-    assignedDesig = 'AC Technician';
-  }
+      const savedProfile = JSON.parse(localStorage.getItem('epc_customer_profile') || '{}');
+      const dynamicAddress = savedProfile.address || document.getElementById('checkout-address-display')?.innerText || '27/58,Upperi Kulam Street,Kanchipuram';
+      const customerPhone = savedProfile.mobile || localStorage.getItem('customerPhone') || '6381796419';
+      const customerName = savedProfile.name || 'Customer';
+      const dynamicSlot = document.getElementById('checkout-slot-display') ? document.getElementById('checkout-slot-display').innerText : 'Today, Oct 24 - 05:30 PM';
 
-  const savedProfile = JSON.parse(localStorage.getItem('epc_customer_profile') || '{}');
-  const dynamicAddress = savedProfile.address || document.getElementById('checkout-address-display')?.innerText || 'Kanchipuram, Tamil Nadu';
-  const customerPhone = savedProfile.mobile || localStorage.getItem('customerPhone') || '6381796419';
-  const customerName = savedProfile.name || 'Customer';
-  const dynamicSlot = document.getElementById('checkout-slot-display') ? document.getElementById('checkout-slot-display').innerText : 'Today, 03:00 PM';
+      const bookingData = {
+        bookingId: bookingId,
+        id: bookingId,
+        customerName: customerName,
+        customerPhone: customerPhone,
+        serviceName: serviceName || 'Latch repair /install',
+        address: dynamicAddress,
+        pincode: savedProfile.pincode || '631501',
+        lat: savedProfile.lat || 12.8342,
+        lng: savedProfile.lng || 79.7036,
+        slot: dynamicSlot,
+        date: new Date().toISOString().split('T')[0],
+        amount: finalCalculatedAmount,
+        requiredDesignation: assignedDesig,
+        assignedPartner: null,
+        partnerStatus: 'PENDING',
+        district: 'kanchipuram',
+        isCompleted: false
+      };
 
-  const bookingData = {
-    id: bookingId,
-    bookingId: bookingId,
-    customerName: customerName,
-    customerPhone: customerPhone,
-    serviceName: serviceName,
-    address: dynamicAddress,
-    pincode: savedProfile.pincode || '631501',
-    lat: savedProfile.lat || 12.8342,
-    lng: savedProfile.lng || 79.7036,
-    slot: dynamicSlot,
-    date: new Date().toISOString().split('T')[0],
-    amount: finalCalculatedAmount,
-    requiredDesignation: assignedDesig,
-    assignedPartner: null,
-    partnerStatus: 'PENDING',
-    district: 'kanchipuram',
-    isCompleted: false
-  };
+      // 1. LocalStorage Sync
+      const customerBookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
+      customerBookings.push(bookingData);
+      localStorage.setItem('customerBookings', JSON.stringify(customerBookings));
 
-  // 1. LocalStorage Sync
-  const customerBookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
-  customerBookings.push(bookingData);
-  localStorage.setItem('customerBookings', JSON.stringify(customerBookings));
+      const partnerBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
+      partnerBookings.push(bookingData);
+      localStorage.setItem('epc_bookings', JSON.stringify(partnerBookings));
 
-  const partnerBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
-  partnerBookings.push(bookingData);
-  localStorage.setItem('epc_bookings', JSON.stringify(partnerBookings));
+      // 2. DIRECT MONGODB BACKEND PUSH API
+      try {
+        await fetch('/api/bookings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(bookingData)
+        });
+        console.log("🚀 Booking successfully saved to MongoDB & Broadcasted!");
+      } catch (err) {
+        console.error("MongoDB Save Error:", err);
+      }
 
-  // 2. REAL-TIME SOCKET BROADCAST TO ALL PARTNERS
-  if (socket) {
-    socket.emit('create-booking', bookingData);
-    console.log("🚀 Booking broadcasted via Socket to Partners:", bookingData);
-  }
-}
-
-    function notifyPartnersNewJob(bookingData) {
-  if (typeof socket !== 'undefined') {
-    socket.emit('create-booking', {
-      id: bookingData.id,
-      serviceName: bookingData.serviceName,
-      address: bookingData.address,
-      district: 'kanchipuram', // Kanchipuram area address
-      amount: bookingData.amount,
-      customerPhone: bookingData.customerPhone
-    });
-  }
-}
+      // 3. REAL-TIME SOCKET BROADCAST
+      if (socket) {
+        socket.emit('create-booking', bookingData);
+      }
+    }
 
     let currentCategoryIdx = 0;
 
@@ -936,7 +930,7 @@ function saveBookingToStorage(serviceName, totalAmount, payMethod) {
       
       carpenterCategories.forEach((cat, index) => {
         const item = document.createElement('div');
-        item.className = "p-3.5 border border-slate-100 rounded-2xl hover:border-ucPurple hover:bg-purple-50/40 cursor-pointer flex items-center justify-between transition bg-white shadow-sm";
+        item.className = "p-3.5 border border-slate-100 dark:border-slate-800 rounded-2xl hover:border-ucPurple hover:bg-purple-50/40 dark:hover:bg-purple-950/30 cursor-pointer flex items-center justify-between transition bg-white dark:bg-slate-900 shadow-sm";
         
         item.onclick = function() {
           closeCarpenterSubCategoryModal();
@@ -948,11 +942,11 @@ function saveBookingToStorage(serviceName, totalAmount, payMethod) {
         
         item.innerHTML = `
           <div class="flex items-center gap-3.5">
-            <div class="w-12 h-12 rounded-2xl overflow-hidden bg-slate-100 shrink-0 shadow-sm">
+            <div class="w-12 h-12 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 shadow-sm">
               <img src="${cat.image}" onerror="this.src='https://placehold.co/100x100/e2e8f0/0f172a?text=Service'" class="w-full h-full object-cover" />
             </div>
             <div>
-              <h4 class="font-bold text-xs text-slate-900">${cat.title}</h4>
+              <h4 class="font-bold text-xs text-slate-900 dark:text-white">${cat.title}</h4>
               <p class="text-[10px] text-slate-400 font-medium">${cat.subtitle}</p>
             </div>
           </div>
@@ -969,7 +963,7 @@ function saveBookingToStorage(serviceName, totalAmount, payMethod) {
       
       electricianCategories.forEach((cat, index) => {
         const item = document.createElement('div');
-        item.className = "p-3.5 border border-slate-100 rounded-2xl hover:border-ucPurple hover:bg-purple-50/40 cursor-pointer flex items-center justify-between transition bg-white shadow-sm";
+        item.className = "p-3.5 border border-slate-100 dark:border-slate-800 rounded-2xl hover:border-ucPurple hover:bg-purple-50/40 dark:hover:bg-purple-950/30 cursor-pointer flex items-center justify-between transition bg-white dark:bg-slate-900 shadow-sm";
         
         item.onclick = function() {
           closeElectricianSubCategoryModal();
@@ -981,11 +975,11 @@ function saveBookingToStorage(serviceName, totalAmount, payMethod) {
         
         item.innerHTML = `
           <div class="flex items-center gap-3.5">
-            <div class="w-12 h-12 rounded-2xl overflow-hidden bg-slate-100 shrink-0 shadow-sm">
+            <div class="w-12 h-12 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 shadow-sm">
               <img src="${cat.image}" onerror="this.src='https://placehold.co/100x100/e2e8f0/0f172a?text=Service'" class="w-full h-full object-cover" />
             </div>
             <div>
-              <h4 class="font-bold text-xs text-slate-900">${cat.title}</h4>
+              <h4 class="font-bold text-xs text-slate-900 dark:text-white">${cat.title}</h4>
               <p class="text-[10px] text-slate-400 font-medium">${cat.subtitle}</p>
             </div>
           </div>
@@ -1002,7 +996,7 @@ function saveBookingToStorage(serviceName, totalAmount, payMethod) {
       
       activeCategories.forEach((cat, idx) => {
         const card = document.createElement('div');
-        card.className = "bg-white p-4 rounded-3xl border border-slate-100 hover:border-ucPurple hover:shadow-md cursor-pointer transition flex flex-col justify-between shadow-sm";
+        card.className = "bg-white dark:bg-slate-900 p-4 rounded-3xl border border-slate-100 dark:border-slate-800 hover:border-ucPurple hover:shadow-md cursor-pointer transition flex flex-col justify-between shadow-sm";
         card.onclick = function() {
           currentCategoryIdx = idx;
           renderServiceDetailsList();
@@ -1010,11 +1004,11 @@ function saveBookingToStorage(serviceName, totalAmount, payMethod) {
         };
         card.innerHTML = `
           <div class="space-y-3">
-            <div class="w-14 h-14 rounded-2xl overflow-hidden bg-slate-100 shadow-sm">
+            <div class="w-14 h-14 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 shadow-sm">
               <img src="${cat.image}" onerror="this.src='https://placehold.co/100x100/e2e8f0/0f172a?text=Service'" class="w-full h-full object-cover" />
             </div>
             <div>
-              <h3 class="font-black text-xs text-slate-900">${cat.title}</h3>
+              <h3 class="font-black text-xs text-slate-900 dark:text-white">${cat.title}</h3>
               <p class="text-[10px] text-slate-400 font-medium mt-0.5">${cat.subtitle}</p>
             </div>
           </div>
@@ -1040,22 +1034,22 @@ function saveBookingToStorage(serviceName, totalAmount, payMethod) {
 
       currentCat.mainServices.forEach((ms, mIdx) => {
         const card = document.createElement('div');
-        card.className = "bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex justify-between items-center cursor-pointer hover:border-ucPurple transition";
+        card.className = "bg-white dark:bg-slate-900 p-4 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm flex justify-between items-center cursor-pointer hover:border-ucPurple transition";
         
         card.onclick = function() { openSubServicesPopupModal(currentCategoryIdx, mIdx); };
         
         card.innerHTML = `
           <div class="flex items-center gap-4">
-            <div class="w-14 h-14 rounded-2xl overflow-hidden bg-slate-100 shrink-0 shadow-sm">
+            <div class="w-14 h-14 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 shadow-sm">
               <img src="${ms.img || './images/service default.jpeg'}" onerror="this.src='https://placehold.co/100x100/e2e8f0/0f172a?text=Service'" class="w-full h-full object-cover" />
             </div>
             <div class="space-y-1">
-              <h3 class="font-black text-sm text-slate-900">${ms.title}</h3>
+              <h3 class="font-black text-sm text-slate-900 dark:text-white">${ms.title}</h3>
               <p class="text-xs text-emerald-600 font-black"><i class="fa-solid fa-star text-amber-400"></i> ${ms.rating}</p>
               <p class="text-[10px] text-slate-400 font-medium">Includes ${ms.subServices ? ms.subServices.length : 0} sub-services options</p>
             </div>
           </div>
-          <button type="button" class="view-btn px-3.5 py-2 border border-purple-200 text-ucPurple bg-purple-50 hover:bg-ucPurple hover:text-white transition text-xs font-black rounded-2xl shrink-0">View Services &rarr;</button>
+          <button type="button" class="view-btn px-3.5 py-2 border border-purple-200 dark:border-purple-900 text-ucPurple dark:text-purple-300 bg-purple-50 dark:bg-purple-950 hover:bg-ucPurple hover:text-white transition text-xs font-black rounded-2xl shrink-0">View Services &rarr;</button>
         `;
 
         const viewBtn = card.querySelector('.view-btn');
@@ -1093,17 +1087,17 @@ function saveBookingToStorage(serviceName, totalAmount, payMethod) {
         const qty = inCart ? inCart.quantity : 0;
 
         const card = document.createElement('div');
-        card.className = "min-w-[190px] max-w-[200px] border border-slate-100 rounded-3xl p-3.5 bg-white shadow-sm flex flex-col justify-between shrink-0";
+        card.className = "min-w-[190px] max-w-[200px] border border-slate-100 dark:border-slate-800 rounded-3xl p-3.5 bg-white dark:bg-slate-900 shadow-sm flex flex-col justify-between shrink-0";
         card.innerHTML = `
           <div>
-            <div class="w-full h-28 rounded-2xl overflow-hidden bg-slate-100 mb-2.5 shadow-inner">
+            <div class="w-full h-28 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 mb-2.5 shadow-inner">
               <img src="${sub.img}" onerror="this.src='https://placehold.co/200x200/e2e8f0/0f172a?text=Service'" class="w-full h-full object-cover" />
             </div>
-            <h4 class="font-bold text-xs text-slate-900 leading-tight mb-1">${sub.name}</h4>
+            <h4 class="font-bold text-xs text-slate-900 dark:text-white leading-tight mb-1">${sub.name}</h4>
             <p class="text-[10px] text-slate-400 font-semibold mb-2"><i class="fa-solid fa-star text-amber-400"></i> ${sub.rating}</p>
           </div>
           <div>
-            <div class="font-black text-sm text-slate-900 mb-2">₹${sub.price}</div>
+            <div class="font-black text-sm text-slate-900 dark:text-white mb-2">₹${sub.price}</div>
             <div id="popup-btn-${sub.id}"></div>
           </div>
         `;
@@ -1123,7 +1117,7 @@ function saveBookingToStorage(serviceName, totalAmount, payMethod) {
       const wrap = document.createElement('div');
       if (qty === 0) {
         const btn = document.createElement('button');
-        btn.className = "w-full py-2 border border-purple-200 text-ucPurple bg-purple-50 hover:bg-ucPurple hover:text-white transition font-black text-xs rounded-2xl shadow-sm cursor-pointer";
+        btn.className = "w-full py-2 border border-purple-200 dark:border-purple-900 text-ucPurple dark:text-purple-300 bg-purple-50 dark:bg-purple-950 hover:bg-ucPurple hover:text-white transition font-black text-xs rounded-2xl shadow-sm cursor-pointer";
         btn.innerText = "Add";
         btn.onclick = function() {
           updateCartFromPopup(sub.id, 1, catIdx, mainSrvIdx);
@@ -1244,13 +1238,13 @@ function saveBookingToStorage(serviceName, totalAmount, payMethod) {
         totalItemsCount += c.quantity;
 
         const div = document.createElement('div');
-        div.className = "flex justify-between items-center text-xs py-1.5 border-b border-slate-100 last:border-b-0";
+        div.className = "flex justify-between items-center text-xs py-1.5 border-b border-slate-100 dark:border-slate-800 last:border-b-0";
         div.innerHTML = `
           <div>
-            <p class="font-bold text-slate-900">${c.item.name}</p>
+            <p class="font-bold text-slate-900 dark:text-white">${c.item.name}</p>
             <p class="text-[10px] text-slate-400 font-medium">Qty: ${c.quantity} × ₹${c.item.price}</p>
           </div>
-          <span class="font-black text-slate-900">₹${itemTotal}</span>
+          <span class="font-black text-slate-900 dark:text-white">₹${itemTotal}</span>
         `;
         container.appendChild(div);
       });
@@ -1308,52 +1302,50 @@ function saveBookingToStorage(serviceName, totalAmount, payMethod) {
     }
 
     function captureCustomerLocation() {
-  if (!navigator.geolocation) {
-    alert("Geolocation is not supported by your browser.");
-    return;
-  }
+      if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser.");
+        return;
+      }
 
-  showToast("Fetching current GPS location...");
-  
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const lat = position.coords.latitude.toFixed(6);
-      const lng = position.coords.longitude.toFixed(6);
-      document.getElementById('profile-geolocation').value = `${lat}, ${lng}`;
+      showToast("Fetching current GPS location...");
       
-      // Save coords to profile storage
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude.toFixed(6);
+          const lng = position.coords.longitude.toFixed(6);
+          document.getElementById('profile-geolocation').value = `${lat}, ${lng}`;
+          
+          let profile = JSON.parse(localStorage.getItem('epc_customer_profile') || '{}');
+          profile.lat = parseFloat(lat);
+          profile.lng = parseFloat(lng);
+          localStorage.setItem('epc_customer_profile', JSON.stringify(profile));
+
+          showToast("✓ GPS Location synced successfully!");
+        }, 
+        (error) => {
+          alert("Unable to retrieve location. Please grant location permissions.");
+        }, 
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    }
+
+    function autoFillPincodeAndCoords() {
+      const selectEl = document.getElementById('input-district-area');
+      const selectedOption = selectEl.options[selectEl.selectedIndex];
+      if (!selectedOption.value) return;
+
+      const pin = selectedOption.getAttribute('data-pin');
+      const lat = selectedOption.getAttribute('data-lat');
+      const lng = selectedOption.getAttribute('data-lng');
+
+      document.getElementById('input-pincode').value = pin;
+      
       let profile = JSON.parse(localStorage.getItem('epc_customer_profile') || '{}');
       profile.lat = parseFloat(lat);
       profile.lng = parseFloat(lng);
+      profile.pincode = pin;
       localStorage.setItem('epc_customer_profile', JSON.stringify(profile));
-
-      showToast("✓ GPS Location synced successfully!");
-    }, 
-    (error) => {
-      alert("Unable to retrieve location. Please grant location permissions.");
-    }, 
-    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-  );
-}
-
-function autoFillPincodeAndCoords() {
-  const selectEl = document.getElementById('input-district-area');
-  const selectedOption = selectEl.options[selectEl.selectedIndex];
-  if (!selectedOption.value) return;
-
-  const pin = selectedOption.getAttribute('data-pin');
-  const lat = selectedOption.getAttribute('data-lat');
-  const lng = selectedOption.getAttribute('data-lng');
-
-  document.getElementById('input-pincode').value = pin;
-  
-  // Sync coordinates to profile
-  let profile = JSON.parse(localStorage.getItem('epc_customer_profile') || '{}');
-  profile.lat = parseFloat(lat);
-  profile.lng = parseFloat(lng);
-  profile.pincode = pin;
-  localStorage.setItem('epc_customer_profile', JSON.stringify(profile));
-}
+    }
 
     function saveCustomerProfile() {
       const name = document.getElementById('profile-name').value.trim();
@@ -1383,33 +1375,6 @@ function autoFillPincodeAndCoords() {
       localStorage.setItem('epc_customer_profile', JSON.stringify(customerProfile));
       localStorage.setItem('customerPhone', mobile);
 
-      let custBookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
-      let epcBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
-
-      custBookings = custBookings.map(b => {
-        if (!b.isCompleted) {
-          b.customerName = name;
-          b.customerPhone = mobile;
-          b.address = address;
-        }
-        return b;
-      });
-
-      epcBookings = epcBookings.map(b => {
-        if (!b.isCompleted) {
-          b.customerName = name;
-          b.customerPhone = mobile;
-          b.address = address;
-        }
-        return b;
-      });
-
-      localStorage.setItem('customerBookings', JSON.stringify(custBookings));
-      localStorage.setItem('epc_bookings', JSON.stringify(epcBookings));
-
-      const addrDisplay = document.getElementById('checkout-address-display');
-      if (addrDisplay) addrDisplay.innerText = address;
-
       showToast("🎉 Profile & Name updated successfully!");
       closeProfileModal();
     }
@@ -1436,29 +1401,7 @@ function autoFillPincodeAndCoords() {
         KANCHIPURAM_DISTRICT_AREAS.forEach(loc => {
           selectEl.innerHTML += `<option value="${loc.area}" data-pin="${loc.pincode}" data-lat="${loc.center[0]}" data-lng="${loc.center[1]}">${loc.area} (${loc.pincode})</option>`;
         });
-      } else {
-        console.error("KANCHIPURAM_DISTRICT_AREAS array found aagala, file path check pannu bro!");
       }
-    }
-
-    function autoFillPincodeAndCoords() {
-      const selectEl = document.getElementById('input-district-area');
-      const selectedOption = selectEl.options[selectEl.selectedIndex];
-      if (!selectedOption.value) return;
-
-      const pin = selectedOption.getAttribute('data-pin');
-      const lat = selectedOption.getAttribute('data-lat');
-      const lng = selectedOption.getAttribute('data-lng');
-
-      document.getElementById('input-pincode').value = pin;
-      window.selectedCustomerCoords = { lat: parseFloat(lat), lng: parseFloat(lng) };
-    }
-
-    function openCustomerProfileModal() {
-      const modal = document.getElementById('customer-profile-modal');
-      if (modal) modal.classList.remove('hidden');
-      
-      populateCustomerProfileAreaDropdown();
     }
 
     function populateCustomerProfileAreaDropdown() {
@@ -1473,87 +1416,33 @@ function autoFillPincodeAndCoords() {
       }
     }
 
-    function saveCustomerProfileDetails(e) {
-      if (e) e.preventDefault();
-
-      const name = document.getElementById('profile-input-name') ? document.getElementById('profile-input-name').value.trim() : "Abdul Rahman";
-      const mobile = document.getElementById('profile-input-mobile') ? document.getElementById('profile-input-mobile').value.trim() : "6381796419";
+    function toggleDarkMode() {
+      const htmlEl = document.documentElement;
+      const themeIcon = document.getElementById('theme-icon');
       
-      const areaSelect = document.getElementById('profile-input-area');
-      const selectedArea = areaSelect.value;
-      const selectedOption = areaSelect.options[areaSelect.selectedIndex];
-      
-      const pincode = selectedOption ? selectedOption.getAttribute('data-pin') : "631501";
-      const lat = selectedOption ? selectedOption.getAttribute('data-lat') : 12.8342;
-      const lng = selectedOption ? selectedOption.getAttribute('data-lng') : 79.7036;
-
-      if (!selectedArea) {
-        alert("Please select your Kanchipuram area / pincode.");
-        return;
+      if (htmlEl.classList.contains('dark')) {
+        htmlEl.classList.remove('dark');
+        localStorage.setItem('epc_theme', 'light');
+        if (themeIcon) themeIcon.className = "fa-solid fa-moon text-sm text-slate-800";
+      } else {
+        htmlEl.classList.add('dark');
+        localStorage.setItem('epc_theme', 'dark');
+        if (themeIcon) themeIcon.className = "fa-solid fa-sun text-sm text-amber-400";
       }
-
-      const customerProfile = {
-        name: name,
-        mobile: mobile,
-        address: `${selectedArea}, Tamil Nadu`,
-        pincode: pincode,
-        lat: parseFloat(lat),
-        lng: parseFloat(lng)
-      };
-
-      localStorage.setItem('epc_customer_profile', JSON.stringify(customerProfile));
-      alert(`🎉 Profile Updated Successfully!\nArea: ${selectedArea} (${pincode})`);
-      
-      const modal = document.getElementById('customer-profile-modal');
-      if (modal) modal.classList.add('hidden');
     }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('epc_theme');
+      const themeIcon = document.getElementById('theme-icon');
+      
+      if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+        if (themeIcon) themeIcon.className = "fa-solid fa-sun text-sm text-amber-400";
+      } else {
+        document.documentElement.classList.remove('dark');
+        if (themeIcon) themeIcon.className = "fa-solid fa-moon text-sm text-slate-800";
+      }
+    });
   </script>
-  <script>
-  tailwind.config = {
-    darkMode: 'class', // <--- Indha line dhaan dark mode toggle panradhuku essential machi!
-    theme: {
-      extend: {
-        fontFamily: { sans: ['Inter', 'sans-serif'] },
-        colors: {
-          ucPurple: '#6e42e5',
-          ucPurpleDark: '#5832be',
-          ucPurpleLight: '#f3f0ff',
-          ucDark: '#0f172a',
-          ucGray: '#f8fafc',
-          ucBorder: '#e2e8f0'
-        }
-      }
-    }
-  }
-
-  function toggleDarkMode() {
-  const htmlEl = document.documentElement;
-  const themeIcon = document.getElementById('theme-icon');
-  
-  if (htmlEl.classList.contains('dark')) {
-    htmlEl.classList.remove('dark');
-    localStorage.setItem('epc_theme', 'light');
-    if (themeIcon) themeIcon.className = "fa-solid fa-moon text-sm text-slate-800";
-  } else {
-    htmlEl.classList.add('dark');
-    localStorage.setItem('epc_theme', 'dark');
-    if (themeIcon) themeIcon.className = "fa-solid fa-sun text-sm text-amber-400";
-  }
-}
-
-// Page load aagumpodhu automatic-ah saved theme-ah apply panna
-window.addEventListener('DOMContentLoaded', () => {
-  const savedTheme = localStorage.getItem('epc_theme');
-  const themeIcon = document.getElementById('theme-icon');
-  
-  if (savedTheme === 'dark') {
-    document.documentElement.classList.add('dark');
-    if (themeIcon) themeIcon.className = "fa-solid fa-sun text-sm text-amber-400";
-  } else {
-    document.documentElement.classList.remove('dark');
-    if (themeIcon) themeIcon.className = "fa-solid fa-moon text-sm text-slate-800";
-  }
-});
-</script>
 </body>
 </html>

@@ -14,7 +14,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: '*',
-    methods: ['GET', 'POST']
+    methods: ['GET', 'POST', 'PUT']
   }
 });
 
@@ -48,7 +48,6 @@ app.post('/api/send-otp', async (req, res) => {
         res.json({ success: true, message: "OTP sent successfully via Twilio!" });
     } catch (error) {
         console.warn("Twilio trial exhausted/failed, switching to Mock OTP mode:", error.message);
-        // Twilio error vanthalum testing-kkaga bypass panni OTP sent nu sollidum
         res.json({ 
             success: true, 
             message: "OTP sent (Development Mode: Use test OTP 123456)" 
@@ -60,7 +59,6 @@ app.post('/api/send-otp', async (req, res) => {
 app.post('/api/verify-otp', async (req, res) => {
     const { phone, code } = req.body;
     try {
-        // Testing-kku '123456' vanthal direct-ah success
         if (code === "123456") {
             return res.json({ success: true, message: "Mock OTP Verified Successfully!" });
         }
@@ -76,12 +74,88 @@ app.post('/api/verify-otp', async (req, res) => {
         }
     } catch (error) {
         console.warn("Twilio verify error fallback to Mock OTP logic:", error.message);
-        // Fallback for testing when Twilio account is balance exhausted
         if (code === "123456") {
             return res.json({ success: true, message: "Mock OTP Verified Successfully!" });
         }
         res.status(500).json({ success: false, message: error.message });
     }
+});
+
+// --- MONGODB BOOKING SCHEMA & REST API ENDPOINTS ---
+const bookingSchema = new mongoose.Schema({
+  bookingId: { type: String, required: true, unique: true },
+  customerName: String,
+  customerPhone: String,
+  serviceName: String,
+  address: String,
+  pincode: String,
+  slot: String,
+  date: String,
+  amount: Number,
+  requiredDesignation: String,
+  assignedPartner: String,
+  partnerStatus: { type: String, default: 'PENDING' },
+  district: { type: String, default: 'kanchipuram' },
+  isCompleted: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Booking = mongoose.model('Booking', bookingSchema);
+
+// 1. POST: Save New Booking to Database & Broadcast via Socket
+app.post('/api/bookings', async (req, res) => {
+  try {
+    const bookingData = req.body;
+    // Check if booking already exists by bookingId
+    let existing = await Booking.findOne({ bookingId: bookingData.bookingId || bookingData.id });
+    if (existing) {
+      existing = await Booking.findOneAndUpdate(
+        { bookingId: bookingData.bookingId || bookingData.id },
+        bookingData,
+        { new: true }
+      );
+      io.to('kanchipuram').emit('new-booking-alert', existing);
+      return res.json({ success: true, booking: existing });
+    }
+
+    const newBooking = new Booking(bookingData);
+    await newBooking.save();
+
+    // Broadcast Realtime Socket Alert to Kanchipuram Room & Universal Fallback
+    io.to('kanchipuram').emit('new-booking-alert', newBooking);
+    io.emit('new-booking-alert', newBooking);
+
+    res.json({ success: true, booking: newBooking });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 2. GET: Retrieve All Bookings for Partner App / Cross-Device Sync
+app.get('/api/bookings', async (req, res) => {
+  try {
+    const bookings = await Booking.find().sort({ createdAt: -1 });
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 3. PUT: Update Booking Status (Accept Order / Complete)
+app.put('/api/bookings/:id', async (req, res) => {
+  try {
+    const updated = await Booking.findOneAndUpdate(
+      { $or: [{ bookingId: req.params.id }, { _id: req.params.id }, { id: req.params.id }] },
+      req.body,
+      { new: true }
+    );
+    if (updated) {
+      io.to('kanchipuram').emit('new-booking-alert', updated);
+    }
+    res.json({ success: true, booking: updated });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
 });
 
 // --- DIRECT ROOT PATH FIX ---
@@ -117,20 +191,18 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected Successfully"))
   .catch(err => console.log("MongoDB Connection Error:", err));
 
-// Real-time WebSockets logic (Updated for robust District / Address routing)
+// Real-time WebSockets logic
 io.on('connection', (socket) => {
   console.log(`⚡ Client Connected: ${socket.id}`);
 
   socket.on('join-district-room', (district) => {
-    socket.join('kanchipuram'); // Kanchipuram room fixed
+    socket.join('kanchipuram');
     console.log(`📌 Partner ${socket.id} joined Kanchipuram Room`);
   });
 
   socket.on('create-booking', (bookingData) => {
-    console.log(`📢 Broadcasting Job #${bookingData.id} to Kanchipuram partners`);
-    // Send to ALL partners connected in kanchipuram room
+    console.log(`📢 Broadcasting Job #${bookingData.bookingId || bookingData.id} to Kanchipuram partners`);
     io.to('kanchipuram').emit('new-booking-alert', bookingData);
-    // Fallback broadcast to all connected sockets
     socket.broadcast.emit('new-booking-alert', bookingData);
   });
 
