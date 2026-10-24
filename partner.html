@@ -15,6 +15,9 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
   <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 
+  <!-- Socket.io Script Include -->
+  <script src="/socket.io/socket.io.js"></script>
+
   <script>
     tailwind.config = {
       theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { ucPurple: '#6e42e5' } } }
@@ -214,61 +217,61 @@
   </nav>
 
   <div id="uc-estimate-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
-  <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
-    <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-      <div class="bg-black text-white font-black text-xs px-2.5 py-1 rounded-lg">EPC PARTNER</div>
-      <button onclick="closeUcEstimateModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 cursor-pointer">
-        <i class="fa-solid fa-xmark"></i>
+    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div class="bg-black text-white font-black text-xs px-2.5 py-1 rounded-lg">EPC PARTNER</div>
+        <button onclick="closeUcEstimateModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs text-slate-700">
+        <h3 class="font-black text-lg text-slate-900">Estimate summary</h3>
+        
+        <div class="space-y-2 pt-1 font-medium">
+          <div class="flex justify-between">
+            <span>Item total</span>
+            <span id="uc-est-item-total" class="font-bold text-slate-900">₹129</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Visitation Fee</span>
+            <span class="font-bold text-slate-900">₹99</span>
+          </div>
+          <div class="border-t border-slate-100 pt-2 flex justify-between font-black text-slate-900">
+            <span>Job value</span>
+            <span id="uc-est-job-value">₹228</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Taxes and Fee</span>
+            <span class="font-bold text-slate-900">₹14</span>
+          </div>
+          <div class="border-t border-slate-100 pt-3 flex justify-between text-base font-black text-slate-900">
+            <span>Payment to collect</span>
+            <span id="uc-est-payment-collect" class="text-emerald-600">₹242</span>
+          </div>
+        </div>
+
+        <div class="bg-emerald-50 border border-emerald-100 p-3.5 rounded-2xl space-y-1 mt-2">
+          <p class="font-black text-emerald-800 flex items-center gap-1">
+            <i class="fa-solid fa-shield-halved text-emerald-600"></i> EPC COVER
+          </p>
+          <p class="font-bold text-slate-800 text-[11px]">Work done on this job will be under warranty till 21 Nov, 2026</p>
+        </div>
+
+        <div class="pt-2">
+          <p class="font-black text-sm text-slate-900 mb-1">Work to be done</p>
+          <div class="flex justify-between text-xs font-bold text-slate-800 bg-slate-50 p-3 rounded-2xl border border-slate-100">
+            <span id="uc-est-work-name">Chain Latch Repair</span>
+            <span id="uc-est-work-price">₹129</span>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="openUcCollectQrScreen()" class="w-full bg-ucPurple hover:bg-purple-700 text-white py-3.5 rounded-2xl font-black text-sm transition shadow-lg shadow-purple-500/20 cursor-pointer">
+        Confirm work completed
       </button>
     </div>
-
-    <div class="space-y-3 text-xs text-slate-700">
-      <h3 class="font-black text-lg text-slate-900">Estimate summary</h3>
-      
-      <div class="space-y-2 pt-1 font-medium">
-        <div class="flex justify-between">
-          <span>Item total</span>
-          <span id="uc-est-item-total" class="font-bold text-slate-900">₹129</span>
-        </div>
-        <div class="flex justify-between">
-          <span>Visitation Fee</span>
-          <span class="font-bold text-slate-900">₹99</span>
-        </div>
-        <div class="border-t border-slate-100 pt-2 flex justify-between font-black text-slate-900">
-          <span>Job value</span>
-          <span id="uc-est-job-value">₹228</span>
-        </div>
-        <div class="flex justify-between">
-          <span>Taxes and Fee</span>
-          <span class="font-bold text-slate-900">₹14</span>
-        </div>
-        <div class="border-t border-slate-100 pt-3 flex justify-between text-base font-black text-slate-900">
-          <span>Payment to collect</span>
-          <span id="uc-est-payment-collect" class="text-emerald-600">₹242</span>
-        </div>
-      </div>
-
-      <div class="bg-emerald-50 border border-emerald-100 p-3.5 rounded-2xl space-y-1 mt-2">
-        <p class="font-black text-emerald-800 flex items-center gap-1">
-          <i class="fa-solid fa-shield-halved text-emerald-600"></i> EPC COVER
-        </p>
-        <p class="font-bold text-slate-800 text-[11px]">Work done on this job will be under warranty till 21 Nov, 2026</p>
-      </div>
-
-      <div class="pt-2">
-        <p class="font-black text-sm text-slate-900 mb-1">Work to be done</p>
-        <div class="flex justify-between text-xs font-bold text-slate-800 bg-slate-50 p-3 rounded-2xl border border-slate-100">
-          <span id="uc-est-work-name">Chain Latch Repair</span>
-          <span id="uc-est-work-price">₹129</span>
-        </div>
-      </div>
-    </div>
-
-    <button onclick="openUcCollectQrScreen()" class="w-full bg-ucPurple hover:bg-purple-700 text-white py-3.5 rounded-2xl font-black text-sm transition shadow-lg shadow-purple-500/20 cursor-pointer">
-      Confirm work completed
-    </button>
   </div>
-</div>
 
   <!-- STEP 2: COLLECT QR CODE & PAYMENT OPTIONS SCREEN -->
   <div id="uc-collect-qr-modal" class="hidden fixed inset-0 z-50 bg-white flex flex-col justify-between p-6 max-w-md mx-auto">
@@ -441,9 +444,13 @@
   </div>
 
   <script src="categories.js"></script>
+  <script src="kanchipuram-areas.js"></script>
 
-  <!-- SCRIPT BLOCK -->
+  <!-- SINGLE UNIFIED SCRIPT BLOCK (ALL SOCKET & DASHBOARD LOGIC) -->
   <script>
+    // Initialize Socket Connection Once
+    const socket = (typeof io !== 'undefined') ? io() : null;
+
     let isOnlineDuty = true;
     let currentPartner = JSON.parse(localStorage.getItem('epc_partner_logged')) || null;
     let activePaymentBookingId = null;
@@ -451,6 +458,7 @@
     let partnerMapInstances = {};
     let selectedReconfirmOrderId = null;
     let currentBaseItemPrice = 0;
+    let currentUcPayOrderId = null;
 
     window.onload = function() {
       populatePartnerRegisterAreasDropdown();
@@ -462,6 +470,33 @@
         loadPartnerJobs();
         startLiveGPSUpdates();
         setInterval(loadPartnerJobs, 2500);
+      }
+
+      // Initialize Socket Events
+      if (socket) {
+        socket.emit('join-district-room', 'kanchipuram');
+        console.log("⚡ Connected & Joined Kanchipuram District Room");
+
+        socket.on('new-booking-alert', (bookingData) => {
+          console.log("📢 Live Booking Received:", bookingData);
+          
+          let epcBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
+          const exists = epcBookings.some(b => String(b.id || b.bookingId) === String(bookingData.id || bookingData.bookingId));
+          if (!exists) {
+            epcBookings.push(bookingData);
+            localStorage.setItem('epc_bookings', JSON.stringify(epcBookings));
+          }
+
+          try {
+            let alertAudio = new Audio('https://actions.google.com/sounds/v1/notifications/beep_short.ogg');
+            alertAudio.play();
+          } catch(e) {}
+
+          alert(`🚨 NEW JOB ALERT!\n\nService: ${bookingData.serviceName}\nAddress: ${bookingData.address}\nAmount: ₹${bookingData.amount}`);
+
+          if (typeof loadPartnerJobs === 'function') loadPartnerJobs();
+          if (typeof loadOngoingJobs === 'function') loadOngoingJobs();
+        });
       }
     };
 
@@ -836,7 +871,6 @@
             </div>
           `;
         } 
-        // PARTNER OTP VERIFY PANNIYAACHU, BUT RECONFIRMATION ANUPPALA
         else if (b.isStarted && !b.partnerReentered) {
           actionWorkflowHtml = `
             <div class="bg-purple-50 border border-purple-200 p-4 rounded-3xl space-y-3 mt-3 shadow-sm">
@@ -853,7 +887,6 @@
             </div>
           `;
         }
-        // RECONFIRMATION SENT & WAITING FOR CUSTOMER
         else if (b.isStarted && b.partnerReentered && !b.customerConfirmed && !b.isTimeOut) {
           actionWorkflowHtml = `
             <div class="bg-slate-50 border border-slate-200 p-4 rounded-3xl space-y-3 mt-3 shadow-sm">
@@ -937,33 +970,6 @@
       }
     }
 
-    function populateSubServicesDropdownForJob(targetJob) {
-      const selectEl = document.getElementById('reconf-subservice-select');
-      if (!selectEl) return;
-      selectEl.innerHTML = '<option value="">-- Keep Current Work --</option>';
-
-      let categoryList = [];
-      if (typeof carpenterCategories !== 'undefined') categoryList.push(...carpenterCategories);
-      if (typeof electricianCategories !== 'undefined') categoryList.push(...electricianCategories);
-
-      let foundSubServices = [];
-      categoryList.forEach(cat => {
-        if (cat.mainServices) {
-          cat.mainServices.forEach(ms => {
-            if (ms.subServices) {
-              ms.subServices.forEach(ss => {
-                foundSubServices.push(ss);
-              });
-            }
-          });
-        }
-      });
-
-      foundSubServices.forEach(ss => {
-        selectEl.innerHTML += `<option value="${ss.name}" data-price="${ss.price}">${ss.name} - ₹${ss.price}</option>`;
-      });
-    }
-
     function verifyPartnerStartOTP(orderId) {
       const otpInput = document.getElementById(`start_otp_${orderId}`);
       if (!otpInput) return;
@@ -976,7 +982,7 @@
           if (b.id === orderId || b.bookingId === orderId) {
             b.isStarted = true;
             b.isOtpVerified = true;
-            b.partnerReentered = false; // Reconfirmation innum anuppala
+            b.partnerReentered = false;
           }
           return b;
         });
@@ -1009,6 +1015,47 @@
       loadOngoingJobs();
     }
 
+    function populateCategoriesDropdown() {
+      const catSelect = document.getElementById('reconf-category-select');
+      if (!catSelect) return;
+
+      catSelect.innerHTML = '<option value="">-- Select Job Category --</option>';
+
+      let allCategories = [];
+      if (typeof carpenterCategories !== 'undefined') allCategories.push(...carpenterCategories);
+      if (typeof electricianCategories !== 'undefined') allCategories.push(...electricianCategories);
+
+      allCategories.forEach(cat => {
+        catSelect.innerHTML += `<option value="${cat.title}">${cat.title}</option>`;
+      });
+    }
+
+    function handleCategoryChangeInModal() {
+      const catSelect = document.getElementById('reconf-category-select');
+      const subSelect = document.getElementById('reconf-subservice-select');
+      const selectedCatTitle = catSelect.value;
+
+      subSelect.innerHTML = '<option value="">-- Select Work / Sub-Service --</option>';
+
+      if (!selectedCatTitle) return;
+
+      let allCategories = [];
+      if (typeof carpenterCategories !== 'undefined') allCategories.push(...carpenterCategories);
+      if (typeof electricianCategories !== 'undefined') allCategories.push(...electricianCategories);
+
+      const foundCat = allCategories.find(c => c.title === selectedCatTitle);
+
+      if (foundCat && foundCat.mainServices) {
+        foundCat.mainServices.forEach(ms => {
+          if (ms.subServices) {
+            ms.subServices.forEach(ss => {
+              subSelect.innerHTML += `<option value="${ss.name}" data-price="${ss.price}">${ss.name} - ₹${ss.price}</option>`;
+            });
+          }
+        });
+      }
+    }
+
     function openChangeEstimateModal(orderId) {
       selectedReconfirmOrderId = orderId;
       let bookings = getSharedBookings();
@@ -1016,11 +1063,16 @@
 
       if (!target) return;
 
-      populateSubServicesDropdownForJob(target);
+      populateCategoriesDropdown();
 
       document.getElementById('reconfirm-modal-title').innerText = "Change / Send Estimate";
-      document.getElementById('reconf-category').value = target.serviceName || "Home Service";
       
+      const catSelect = document.getElementById('reconf-category-select');
+      if (target.serviceName) {
+        catSelect.value = target.serviceName;
+        handleCategoryChangeInModal();
+      }
+
       const subDetails = target.subServiceDetails || "Service repair and installation work";
       document.getElementById('reconf-desc').value = target.reenteredWork || `${target.serviceName || 'Home Service'} - ${subDetails}`;
       
@@ -1032,8 +1084,8 @@
     }
 
     function handleSubServiceChangeInEstimate() {
-      const selectEl = document.getElementById('reconf-subservice-select');
-      const selectedOption = selectEl.options[selectEl.selectedIndex];
+      const subSelect = document.getElementById('reconf-subservice-select');
+      const selectedOption = subSelect.options[subSelect.selectedIndex];
       
       if (selectedOption && selectedOption.value) {
         const newPrice = parseFloat(selectedOption.getAttribute('data-price')) || 149;
@@ -1051,25 +1103,27 @@
     }
 
     function calculateEstimateTotal() {
-  const extraCost = parseFloat(document.getElementById('reconf-extra-cost').value) || 0;
-  const taxesAndFees = 14;
-  const visitationFee = 99;
+      const extraCost = parseFloat(document.getElementById('reconf-extra-cost').value) || 0;
+      const taxes = 17;
+      const visitationFee = 99;
+      const convenienceFee = 9;
 
-  const grandTotal = currentBaseItemPrice + extraCost + taxesAndFees + visitationFee;
+      const grandTotal = currentBaseItemPrice + extraCost + taxes + visitationFee + convenienceFee;
 
-  document.getElementById('reconf-item-total').innerText = `₹${currentBaseItemPrice}`;
-  document.getElementById('reconf-extra-display').innerText = `₹${extraCost}`;
-  document.getElementById('reconf-taxes').innerText = `₹${taxesAndFees}`;
-  document.getElementById('reconf-display-amount').innerText = `₹${grandTotal}`;
-  document.getElementById('reconf-amount').value = grandTotal;
-}
+      document.getElementById('reconf-item-total').innerText = `₹${currentBaseItemPrice}`;
+      document.getElementById('reconf-extra-display').innerText = `₹${extraCost}`;
+      document.getElementById('reconf-taxes').innerText = `₹${taxes}`;
+      document.getElementById('reconf-display-amount').innerText = `₹${grandTotal}`;
+      document.getElementById('reconf-amount').value = grandTotal;
+    }
 
     function submitPartnerReconfirmation() {
-      const category = document.getElementById('reconf-category').value.trim();
+      const catSelect = document.getElementById('reconf-category-select');
+      const category = catSelect.value || "Home Service";
       const desc = document.getElementById('reconf-desc').value.trim();
       const amount = parseFloat(document.getElementById('reconf-amount').value) || 437;
 
-      if (!category || !desc || !amount) {
+      if (!desc || !amount) {
         alert("Please fill in all reconfirmation details.");
         return;
       }
@@ -1244,36 +1298,31 @@
       }
     }
 
-    let currentUcPayOrderId = null;
-
     function openUcEstimateModal(orderId) {
-  currentUcPayOrderId = orderId;
-  let bookings = getSharedBookings();
-  let target = bookings.find(b => (b.id === orderId || b.bookingId === orderId));
+      currentUcPayOrderId = orderId;
+      let bookings = getSharedBookings();
+      let target = bookings.find(b => (b.id === orderId || b.bookingId === orderId));
 
-  if (target) {
-    // Total Grand Amount (eg. ₹242)
-    let grandTotal = target.reenteredAmount || target.amount || 242;
+      if (target) {
+        let grandTotal = target.reenteredAmount || target.amount || 242;
 
-    let visitationFee = 99;
-    let taxesAndFees = 14; // Synced with Job Details screen (₹14)
+        let visitationFee = 99;
+        let taxesAndFees = 14;
 
-    // Base Item Total calculation (₹242 - ₹99 - ₹14 = ₹129)
-    let itemAmt = target.itemBasePrice || (grandTotal - visitationFee - taxesAndFees);
-    if (itemAmt < 0) itemAmt = 129;
+        let itemAmt = target.itemBasePrice || (grandTotal - visitationFee - taxesAndFees);
+        if (itemAmt < 0) itemAmt = 129;
 
-    let jobValue = itemAmt + visitationFee;
+        let jobValue = itemAmt + visitationFee;
 
-    // UI Breakdown values set panrom
-    document.getElementById('uc-est-item-total').innerText = `₹${itemAmt}`;
-    document.getElementById('uc-est-job-value').innerText = `₹${jobValue}`;
-    document.getElementById('uc-est-payment-collect').innerText = `₹${grandTotal}`;
-    document.getElementById('uc-est-work-name').innerText = target.serviceName || 'Chain Latch Repair';
-    document.getElementById('uc-est-work-price').innerText = `₹${itemAmt}`;
+        document.getElementById('uc-est-item-total').innerText = `₹${itemAmt}`;
+        document.getElementById('uc-est-job-value').innerText = `₹${jobValue}`;
+        document.getElementById('uc-est-payment-collect').innerText = `₹${grandTotal}`;
+        document.getElementById('uc-est-work-name').innerText = target.serviceName || 'Chain Latch Repair';
+        document.getElementById('uc-est-work-price').innerText = `₹${itemAmt}`;
 
-    document.getElementById('uc-estimate-modal').classList.remove('hidden');
-  }
-}
+        document.getElementById('uc-estimate-modal').classList.remove('hidden');
+      }
+    }
 
     function closeUcEstimateModal() {
       document.getElementById('uc-estimate-modal').classList.add('hidden');
@@ -1379,202 +1428,6 @@
         alert("Order details not found!");
       }
     }
-
-    // Populate Categories Dropdown
-    function populateCategoriesDropdown() {
-      const catSelect = document.getElementById('reconf-category-select');
-      if (!catSelect) return;
-
-      catSelect.innerHTML = '<option value="">-- Select Job Category --</option>';
-
-      let allCategories = [];
-      if (typeof carpenterCategories !== 'undefined') allCategories.push(...carpenterCategories);
-      if (typeof electricianCategories !== 'undefined') allCategories.push(...electricianCategories);
-
-      allCategories.forEach(cat => {
-        catSelect.innerHTML += `<option value="${cat.title}">${cat.title}</option>`;
-      });
-    }
-
-    // Handle Category Selection & Load Dependent Sub-Services
-    function handleCategoryChangeInModal() {
-      const catSelect = document.getElementById('reconf-category-select');
-      const subSelect = document.getElementById('reconf-subservice-select');
-      const selectedCatTitle = catSelect.value;
-
-      subSelect.innerHTML = '<option value="">-- Select Work / Sub-Service --</option>';
-
-      if (!selectedCatTitle) return;
-
-      let allCategories = [];
-      if (typeof carpenterCategories !== 'undefined') allCategories.push(...carpenterCategories);
-      if (typeof electricianCategories !== 'undefined') allCategories.push(...electricianCategories);
-
-      const foundCat = allCategories.find(c => c.title === selectedCatTitle);
-
-      if (foundCat && foundCat.mainServices) {
-        foundCat.mainServices.forEach(ms => {
-          if (ms.subServices) {
-            ms.subServices.forEach(ss => {
-              subSelect.innerHTML += `<option value="${ss.name}" data-price="${ss.price}">${ss.name} - ₹${ss.price}</option>`;
-            });
-          }
-        });
-      }
-    }
-
-    // Open Modal Function
-    function openChangeEstimateModal(orderId) {
-      selectedReconfirmOrderId = orderId;
-      let bookings = getSharedBookings();
-      let target = bookings.find((b) => b.id === orderId || b.bookingId === orderId);
-
-      if (!target) return;
-
-      populateCategoriesDropdown();
-
-      document.getElementById('reconfirm-modal-title').innerText = "Change / Send Estimate";
-      
-      // Auto-select category if matching
-      const catSelect = document.getElementById('reconf-category-select');
-      if (target.serviceName) {
-        catSelect.value = target.serviceName;
-        handleCategoryChangeInModal();
-      }
-
-      const subDetails = target.subServiceDetails || "Service repair and installation work";
-      document.getElementById('reconf-desc').value = target.reenteredWork || `${target.serviceName || 'Home Service'} - ${subDetails}`;
-      
-      currentBaseItemPrice = target.amount || 149;
-      document.getElementById('reconf-extra-cost').value = 0;
-
-      calculateEstimateTotal();
-      document.getElementById('partner-reconfirm-modal').classList.remove('hidden');
-    }
-
-    // Handle Sub-Service Selection
-    function handleSubServiceChangeInEstimate() {
-      const subSelect = document.getElementById('reconf-subservice-select');
-      const selectedOption = subSelect.options[subSelect.selectedIndex];
-      
-      if (selectedOption && selectedOption.value) {
-        const newPrice = parseFloat(selectedOption.getAttribute('data-price')) || 149;
-        const newName = selectedOption.value;
-
-        currentBaseItemPrice = newPrice;
-        document.getElementById('reconf-desc').value = `Changed Work: ${newName}`;
-      } else {
-        let bookings = getSharedBookings();
-        let target = bookings.find((b) => b.id === selectedReconfirmOrderId || b.bookingId === selectedReconfirmOrderId);
-        currentBaseItemPrice = target ? (target.amount || 149) : 149;
-      }
-
-      calculateEstimateTotal();
-    }
-
-    // Calculate Dynamic Breakdown
-    function calculateEstimateTotal() {
-      const extraCost = parseFloat(document.getElementById('reconf-extra-cost').value) || 0;
-      const taxes = 17;
-      const visitationFee = 99;
-      const convenienceFee = 9;
-
-      const grandTotal = currentBaseItemPrice + extraCost + taxes + visitationFee + convenienceFee;
-
-      document.getElementById('reconf-item-total').innerText = `₹${currentBaseItemPrice}`;
-      document.getElementById('reconf-extra-display').innerText = `₹${extraCost}`;
-      document.getElementById('reconf-taxes').innerText = `₹${taxes}`;
-      document.getElementById('reconf-display-amount').innerText = `₹${grandTotal}`;
-      document.getElementById('reconf-amount').value = grandTotal;
-    }
-
-    // Submit Updated Estimate to Customer
-    function submitPartnerReconfirmation() {
-      const catSelect = document.getElementById('reconf-category-select');
-      const category = catSelect.value || "Home Service";
-      const desc = document.getElementById('reconf-desc').value.trim();
-      const amount = parseFloat(document.getElementById('reconf-amount').value) || 437;
-
-      if (!desc || !amount) {
-        alert("Please fill in all reconfirmation details.");
-        return;
-      }
-
-      let bookings = getSharedBookings();
-      bookings = bookings.map((b) => {
-        if (b.id === selectedReconfirmOrderId || b.bookingId === selectedReconfirmOrderId) {
-          b.isStarted = true;
-          b.partnerReentered = true;
-          b.serviceName = category;
-          b.reenteredWork = `${category}: ${desc}`;
-          b.reenteredAmount = amount;
-          b.customerConfirmed = false;
-          b.isTimeOut = false;
-          b.customerNotLocated = false;
-          b.reconfirmationSentTime = new Date().getTime();
-        }
-        return b;
-      });
-
-      saveSharedBookings(bookings);
-      document.getElementById('partner-reconfirm-modal').classList.add('hidden');
-      
-      alert("✓ Estimate updated & reconfirmation sent to customer successfully!");
-      loadOngoingJobs();
-    }
-  </script>
-  <script src="kanchipuram-areas.js"></script>
-  <script>
-    // Ungaloda maththa functions (loginPartner, loadPartnerJobs, etc.) ingu irukkum...
-
-    // ==========================================
-    // INGE PASTE PANNUNGA MACHI (SOCKET & GPS)
-    // ==========================================
-    const socket = io();
-
-// Partner login aana udane Kanchipuram room-la join aaga
-window.addEventListener('load', () => {
-  // Always join Kanchipuram district room for field partners
-  socket.emit('join-district-room', 'kanchipuram');
-  console.log("Joined Kanchipuram Partner Network");
-});
-
-// Customer enga irundhu job pottalum Kanchipuram partner-kku alert varum
-socket.on('new-booking-alert', (bookingData) => {
-  showLiveToast("🚨 New Job Alert!", `${bookingData.serviceName} at ${bookingData.address}`);
-  
-  // Audio alert play panna (Optional)
-  try {
-    let alertAudio = new Audio('https://actions.google.com/sounds/v1/notifications/beep_short.ogg');
-    alertAudio.play();
-  } catch(e) {}
-
-  // Partner dashboard list-ah refresh panna
-  if (typeof loadPartnerJobs === 'function') {
-    loadPartnerJobs();
-  }
-});
-
-    // Live GPS Tracking & Sync with Customer Location
-    function startLiveGPSUpdates() {
-      if ("geolocation" in navigator) {
-        navigator.geolocation.watchPosition((pos) => {
-          let lat = pos.coords.latitude;
-          let lng = pos.coords.longitude;
-          
-          let bookings = getSharedBookings();
-          bookings = bookings.map(b => {
-            if (b.assignedPartner === currentPartner.name && !b.isCompleted) {
-              b.liveLat = lat;
-              b.liveLng = lng;
-            }
-            return b;
-          });
-          saveSharedBookings(bookings);
-        }, (err) => console.warn(err), { enableHighAccuracy: true });
-      }
-    }
-
   </script>
 </body>
 </html>

@@ -121,26 +121,17 @@ mongoose.connect(process.env.MONGO_URI)
 io.on('connection', (socket) => {
   console.log(`⚡ Client Connected: ${socket.id}`);
 
-  // 1. Partner oru district room-la join aaga (eg: 'kanchipuram')
   socket.on('join-district-room', (district) => {
-    if (district) {
-      const cleanDistrict = district.trim().toLowerCase();
-      socket.join(cleanDistrict);
-      console.log(`📌 Partner joined District Room: ${cleanDistrict}`);
-    }
+    socket.join('kanchipuram'); // Kanchipuram room fixed
+    console.log(`📌 Partner ${socket.id} joined Kanchipuram Room`);
   });
 
-  // 2. Customer enga irundhu job pottalum, Booking Address District-ku alert poga
   socket.on('create-booking', (bookingData) => {
-    let targetDistrict = bookingData.district ? bookingData.district.trim().toLowerCase() : 'kanchipuram'; // Default Target
-    
-    // Address-la 'kanchipuram' irundhaa, 'kanchipuram' room-ku notify pannum
-    if (bookingData.address && bookingData.address.toLowerCase().includes('kanchipuram')) {
-      targetDistrict = 'kanchipuram';
-    }
-
-    console.log(`📢 Broadcasting Job #${bookingData.id || bookingData.bookingId} to district room: ${targetDistrict}`);
-    io.to(targetDistrict).emit('new-booking-alert', bookingData);
+    console.log(`📢 Broadcasting Job #${bookingData.id} to Kanchipuram partners`);
+    // Send to ALL partners connected in kanchipuram room
+    io.to('kanchipuram').emit('new-booking-alert', bookingData);
+    // Fallback broadcast to all connected sockets
+    socket.broadcast.emit('new-booking-alert', bookingData);
   });
 
   socket.on('disconnect', () => {

@@ -831,116 +831,88 @@
       rzp1.open();
     }
 
-    function saveBookingToStorage(serviceName, totalAmount, payMethod) {
-      const bookingId = 'EPC' + Math.floor(100000 + Math.random() * 900000);
-      
-      let finalCalculatedAmount = 0;
+    // index.html - Global Socket Initialization
+const socket = (typeof io !== 'undefined') ? io() : null;
 
-      if (cart && cart.length > 0) {
-        let itemTotal = 0;
-        cart.forEach(c => {
-          itemTotal += (c.item.price * c.quantity);
-        });
-        const visitationFee = 99;
-        const platformFee = 8;
-        const taxes = 6;
-        
-        finalCalculatedAmount = itemTotal + visitationFee + platformFee + taxes;
-      } else {
-        finalCalculatedAmount = totalAmount || 212;
-      }
+function saveBookingToStorage(serviceName, totalAmount, payMethod) {
+  const bookingId = 'EPC' + Math.floor(100000 + Math.random() * 900000);
+  
+  let finalCalculatedAmount = 0;
+  if (cart && cart.length > 0) {
+    let itemTotal = 0;
+    cart.forEach(c => { itemTotal += (c.item.price * c.quantity); });
+    finalCalculatedAmount = itemTotal + 99 + 8 + 6;
+  } else {
+    finalCalculatedAmount = totalAmount || 212;
+  }
 
-      let assignedDesig = 'Electrician'; 
-      const sName = (serviceName || "").toLowerCase();
+  let assignedDesig = 'Electrician'; 
+  const sName = (serviceName || "").toLowerCase();
 
-      if (
-        sName.includes('carpenter') || sName.includes('door') || sName.includes('latch') || 
-        sName.includes('bolt') || sName.includes('cupboard') || sName.includes('shelf') || 
-        sName.includes('hinge') || sName.includes('table') || sName.includes('bed') || 
-        sName.includes('sofa') || sName.includes('wardrobe') || sName.includes('cabinet') || 
-        sName.includes('decor') || sName.includes('mirror') || sName.includes('hook') ||
-        sName.includes('drawer') || sName.includes('channel') || sName.includes('curtain') ||
-        sName.includes('mosquito net') || sName.includes('blinds') || sName.includes('chair') ||
-        sName.includes('assembly') || sName.includes('mandir') || sName.includes('shoe rack') ||
-        sName.includes('utensil') || sName.includes('soap holder') || sName.includes('clothes hanger')
-      ) {
-        assignedDesig = 'Carpenter';
-      } else if (
-        sName.includes('plumber') || sName.includes('faucet') || sName.includes('tap') || 
-        sName.includes('pipe') || sName.includes('basin') || sName.includes('sink')
-      ) {
-        assignedDesig = 'Plumber';
-      } else if (
-        sName.includes('ac') || sName.includes('air conditioner') || sName.includes('cooling')
-      ) {
-        assignedDesig = 'AC Technician';
-      } else if (
-        sName.includes('tubelight') || sName.includes('light') || sName.includes('fan') || 
-        sName.includes('switch') || sName.includes('wire') || sName.includes('electric') || 
-        sName.includes('cctv') || sName.includes('mcb') || sName.includes('fuse') || 
-        sName.includes('inverter') || sName.includes('bell') || sName.includes('installation') ||
-        sName.includes('bulb') || sName.includes('chandelier') || sName.includes('submeter') ||
-        sName.includes('tv') || sName.includes('sound bar') || sName.includes('home theatre')
-      ) {
-        assignedDesig = 'Electrician';
-      }
+  if (
+    sName.includes('carpenter') || sName.includes('door') || sName.includes('latch') || 
+    sName.includes('bolt') || sName.includes('cupboard') || sName.includes('shelf') || 
+    sName.includes('hinge') || sName.includes('table') || sName.includes('bed') || 
+    sName.includes('sofa') || sName.includes('wardrobe') || sName.includes('cabinet') || 
+    sName.includes('decor') || sName.includes('mirror') || sName.includes('hook') ||
+    sName.includes('drawer') || sName.includes('channel') || sName.includes('curtain') ||
+    sName.includes('mosquito net') || sName.includes('blinds') || sName.includes('chair') ||
+    sName.includes('assembly') || sName.includes('mandir') || sName.includes('shoe rack') ||
+    sName.includes('utensil') || sName.includes('soap holder') || sName.includes('clothes hanger')
+  ) {
+    assignedDesig = 'Carpenter';
+  } else if (
+    sName.includes('plumber') || sName.includes('faucet') || sName.includes('tap') || 
+    sName.includes('pipe') || sName.includes('basin') || sName.includes('sink')
+  ) {
+    assignedDesig = 'Plumber';
+  } else if (
+    sName.includes('ac') || sName.includes('air conditioner') || sName.includes('cooling')
+  ) {
+    assignedDesig = 'AC Technician';
+  }
 
-      const dynamicSlot = document.getElementById('checkout-slot-display') ? document.getElementById('checkout-slot-display').innerText : 'Wed, Oct 14 - 10:00 AM';
+  const savedProfile = JSON.parse(localStorage.getItem('epc_customer_profile') || '{}');
+  const dynamicAddress = savedProfile.address || document.getElementById('checkout-address-display')?.innerText || 'Kanchipuram, Tamil Nadu';
+  const customerPhone = savedProfile.mobile || localStorage.getItem('customerPhone') || '6381796419';
+  const customerName = savedProfile.name || 'Customer';
+  const dynamicSlot = document.getElementById('checkout-slot-display') ? document.getElementById('checkout-slot-display').innerText : 'Today, 03:00 PM';
 
-      let parsedDateStr = new Date().toISOString().split('T')[0];
-      try {
-        if (typeof selectedSlotDate !== 'undefined' && selectedSlotDate) {
-          const currentYear = new Date().getFullYear();
-          const cleanDateText = selectedSlotDate.replace(/^Today,?\s*/i, '').trim();
-          const parts = cleanDateText.split(',');
-          let datePart = parts.length > 1 ? parts[1].trim() : cleanDateText;
-          
-          const dateObj = new Date(`${datePart} ${currentYear}`);
-          if (!isNaN(dateObj.getTime())) {
-            const yyyy = dateObj.getFullYear();
-            const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const dd = String(dateObj.getDate()).padStart(2, '0');
-            parsedDateStr = `${yyyy}-${mm}-${dd}`;
-          }
-        }
-      } catch (err) {
-        console.warn("Date parse error:", err);
-      }
+  const bookingData = {
+    id: bookingId,
+    bookingId: bookingId,
+    customerName: customerName,
+    customerPhone: customerPhone,
+    serviceName: serviceName,
+    address: dynamicAddress,
+    pincode: savedProfile.pincode || '631501',
+    lat: savedProfile.lat || 12.8342,
+    lng: savedProfile.lng || 79.7036,
+    slot: dynamicSlot,
+    date: new Date().toISOString().split('T')[0],
+    amount: finalCalculatedAmount,
+    requiredDesignation: assignedDesig,
+    assignedPartner: null,
+    partnerStatus: 'PENDING',
+    district: 'kanchipuram',
+    isCompleted: false
+  };
 
-      const savedProfile = JSON.parse(localStorage.getItem('epc_customer_profile') || '{}');
-      const dynamicAddress = savedProfile.address || document.getElementById('checkout-address-display')?.innerText || 'Kanchipuram, Tamil Nadu';
-      const customerPhone = savedProfile.mobile || localStorage.getItem('customerPhone') || '6381796419';
-      const customerName = savedProfile.name || 'Customer';
+  // 1. LocalStorage Sync
+  const customerBookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
+  customerBookings.push(bookingData);
+  localStorage.setItem('customerBookings', JSON.stringify(customerBookings));
 
-      const bookingData = {
-        id: bookingId,
-        bookingId: bookingId,
-        customerName: customerName,
-        customerPhone: customerPhone,
-        serviceName: serviceName,
-        address: dynamicAddress,
-        pincode: savedProfile.pincode || '631501',
-        lat: savedProfile.lat || 12.8342,
-        lng: savedProfile.lng || 79.7036,
-        slot: dynamicSlot,
-        date: parsedDateStr,
-        amount: finalCalculatedAmount,
-        requiredDesignation: assignedDesig,
-        assignedPartner: null,
-        partnerStatus: 'PENDING',
-        isCompleted: false,
-        isPhotoUploaded: false,
-        isStarted: false
-      };
+  const partnerBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
+  partnerBookings.push(bookingData);
+  localStorage.setItem('epc_bookings', JSON.stringify(partnerBookings));
 
-      const customerBookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
-      customerBookings.push(bookingData);
-      localStorage.setItem('customerBookings', JSON.stringify(customerBookings));
-
-      const partnerBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
-      partnerBookings.push(bookingData);
-      localStorage.setItem('epc_bookings', JSON.stringify(partnerBookings));
-    }
+  // 2. REAL-TIME SOCKET BROADCAST TO ALL PARTNERS
+  if (socket) {
+    socket.emit('create-booking', bookingData);
+    console.log("🚀 Booking broadcasted via Socket to Partners:", bookingData);
+  }
+}
 
     function notifyPartnersNewJob(bookingData) {
   if (typeof socket !== 'undefined') {
