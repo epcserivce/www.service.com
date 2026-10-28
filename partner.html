@@ -449,7 +449,11 @@
   <!-- SINGLE UNIFIED SCRIPT BLOCK (ALL SOCKET & DASHBOARD LOGIC) -->
   <script>
     // Initialize Socket Connection Once
-    const socket = (typeof io !== 'undefined') ? io() : null;
+    const socket = (typeof io !== 'undefined') ? io(window.location.origin, {
+  transports: ['websocket', 'polling'],
+  secure: true,
+  rejectUnauthorized: false
+}) : null;
 
     let isOnlineDuty = true;
     let currentPartner = JSON.parse(localStorage.getItem('epc_partner_logged')) || null;
@@ -568,11 +572,13 @@
       }
 
       try {
-        const res = await fetch('/api/partners/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ mobile: mobile })
-        });
+    const API_BASE = window.location.origin; // Inga define pannikonga
+    
+    const res = await fetch(`${API_BASE}/api/partners/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mobile: mobile })
+    });
         const data = await res.json();
 
         if (data.success && data.partner) {

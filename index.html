@@ -551,7 +551,11 @@
     let loggedInUserPhone = null;
 
     // Global Socket Initialization
-    const socket = (typeof io !== 'undefined') ? io() : null;
+    const socket = (typeof io !== 'undefined') ? io(window.location.origin, {
+  transports: ['websocket', 'polling'],
+  secure: true,
+  rejectUnauthorized: false
+}) : null;
 
     window.onload = function () {
       const isLoggedIn = localStorage.getItem("customerLoggedIn");
