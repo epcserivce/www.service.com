@@ -158,6 +158,54 @@ app.put('/api/bookings/:id', async (req, res) => {
   }
 });
 
+// --- PARTNER SCHEMA & API ENDPOINTS ---
+const partnerSchema = new mongoose.Schema({
+  partnerId: { type: String, required: true, unique: true },
+  name: String,
+  mobile: { type: String, required: true, unique: true },
+  designation: String,
+  currAddress: String,
+  email: String,
+  aadhaar: String,
+  pan: String,
+  isOnline: { type: Boolean, default: true },
+  isVerified: { type: Boolean, default: false }
+});
+
+const Partner = mongoose.model('Partner', partnerSchema);
+
+// 1. Partner Register API
+app.post('/api/partners/register', async (req, res) => {
+  try {
+    const partnerData = req.body;
+    let existing = await Partner.findOne({ mobile: partnerData.mobile });
+    if (existing) {
+      existing = await Partner.findOneAndUpdate({ mobile: partnerData.mobile }, partnerData, { new: true });
+      return res.json({ success: true, partner: existing });
+    }
+    const newPartner = new Partner(partnerData);
+    await newPartner.save();
+    res.json({ success: true, partner: newPartner });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 2. Partner Login / Verify API
+app.post('/api/partners/login', async (req, res) => {
+  try {
+    const { mobile } = req.body;
+    const partner = await Partner.findOne({ mobile: mobile });
+    if (partner) {
+      res.json({ success: true, partner: partner });
+    } else {
+      res.status(404).json({ success: false, message: "Partner not registered!" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // --- DIRECT ROOT PATH FIX ---
 const rootPath = path.join(__dirname, '../');
 app.use(express.static(rootPath));

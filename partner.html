@@ -560,31 +560,39 @@
       loadPartnerJobs();
     }
 
-    function loginPartner() {
-      const mobile = document.getElementById('login-mobile').value.trim();
-      if (mobile.length !== 10) {
-        alert("Please enter a valid 10-digit mobile number.");
-        return;
-      }
+    async function loginPartner() {
+  const mobile = document.getElementById('login-mobile').value.trim();
+  if (mobile.length !== 10) {
+    alert("Please enter a valid 10-digit mobile number.");
+    return;
+  }
 
-      let registeredPartners = JSON.parse(localStorage.getItem('epc_registered_partners') || '[]');
-      let partner = registeredPartners.find(p => p.mobile === mobile || p.phone === mobile);
+  try {
+    // 🌐 Database-la partner irukaangala nu check panrom (Mobile & System sync ku ithu thaan mukkiyam)
+    const res = await fetch('/api/partners/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mobile: mobile })
+    });
+    const data = await res.json();
 
-      if (!partner && mobile === "6381796419") {
-        partner = { partnerId: "PRT-1018", name: "Abdul Rahman", designation: "Electrician", mobile: "6381796419", isOnline: true };
-      }
-
-      if (partner) {
-        localStorage.setItem('epc_partner_logged', JSON.stringify(partner));
-        currentPartner = partner;
-        alert(`✓ Welcome back, ${partner.name}!`);
-        document.getElementById('auth-view').classList.add('hidden');
-        loadPartnerProfileData();
-        loadPartnerJobs();
-      } else {
-        alert("Mobile number not registered! Please register first.");
-      }
+    if (data.success && data.partner) {
+      // Database-la iruntha exact partner object-ah localStorage-la save panrom
+      localStorage.setItem('epc_partner_logged', JSON.stringify(data.partner));
+      currentPartner = data.partner;
+      
+      alert(`✓ Welcome back, ${data.partner.name}! Login & Sync Successful.`);
+      document.getElementById('auth-view').classList.add('hidden');
+      loadPartnerProfileData();
+      loadPartnerJobs();
+    } else {
+      alert("Mobile number not registered in cloud database! Please register first.");
     }
+  } catch (err) {
+    console.error("Login API Error:", err);
+    alert("Connection error. Check your Render server URL or backend connection.");
+  }
+}
 
     function logoutPartner() {
       localStorage.removeItem('epc_partner_logged');
