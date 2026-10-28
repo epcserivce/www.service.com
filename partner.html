@@ -561,45 +561,44 @@
     }
 
     async function loginPartner() {
-  const mobile = document.getElementById('login-mobile').value.trim();
-  if (mobile.length !== 10) {
-    alert("Please enter a valid 10-digit mobile number.");
-    return;
-  }
+      const mobile = document.getElementById('login-mobile').value.trim();
+      if (mobile.length !== 10) {
+        alert("Please enter a valid 10-digit mobile number.");
+        return;
+      }
 
-  try {
-    const res = await fetch('/api/partners/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mobile: mobile })
-    });
-    const data = await res.json();
+      try {
+        const res = await fetch('/api/partners/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mobile: mobile })
+        });
+        const data = await res.json();
 
-    if (data.success && data.partner) {
-      localStorage.setItem('epc_partner_logged', JSON.stringify(data.partner));
-      currentPartner = data.partner;
-      alert(`✓ Welcome back, ${data.partner.name}! Login Successful.`);
-      document.getElementById('auth-view').classList.add('hidden');
-      loadPartnerProfileData();
-      loadPartnerJobs();
-    } else {
-      alert("Mobile number not registered! Please register first.");
+        if (data.success && data.partner) {
+          localStorage.setItem('epc_partner_logged', JSON.stringify(data.partner));
+          currentPartner = data.partner;
+          alert(`✓ Welcome back, ${data.partner.name}! Login Successful.`);
+          document.getElementById('auth-view').classList.add('hidden');
+          loadPartnerProfileData();
+          loadPartnerJobs();
+        } else {
+          alert("Mobile number not registered! Please register first.");
+        }
+      } catch (err) {
+        console.error("Login API Error:", err);
+        if (mobile === "6381796419") {
+          let partner = { partnerId: "PRT-1018", name: "Abdul Rahman", designation: "Electrician", mobile: "6381796419", isOnline: true };
+          localStorage.setItem('epc_partner_logged', JSON.stringify(partner));
+          currentPartner = partner;
+          document.getElementById('auth-view').classList.add('hidden');
+          loadPartnerProfileData();
+          loadPartnerJobs();
+        } else {
+          alert("Connection error. Please check server.");
+        }
+      }
     }
-  } catch (err) {
-    console.error("Login API Error:", err);
-    // Fallback for offline testing
-    if (mobile === "6381796419") {
-      let partner = { partnerId: "PRT-1018", name: "Abdul Rahman", designation: "Electrician", mobile: "6381796419", isOnline: true };
-      localStorage.setItem('epc_partner_logged', JSON.stringify(partner));
-      currentPartner = partner;
-      document.getElementById('auth-view').classList.add('hidden');
-      loadPartnerProfileData();
-      loadPartnerJobs();
-    } else {
-      alert("Connection error. Please check server.");
-    }
-  }
-}
 
     function logoutPartner() {
       localStorage.removeItem('epc_partner_logged');
@@ -650,7 +649,6 @@
       localStorage.setItem('customerBookings', JSON.stringify(bookingsList));
     }
 
-    // Database-il irundhu live bookings fetch panra async function
     async function loadPartnerJobs() {
       const container = document.getElementById('job-subtab-content');
       if (!container || !currentPartner) return;
@@ -997,7 +995,6 @@
         });
         saveSharedBookings(bookings);
 
-        // 🌐 2 Devices (Customer & Partner) sync aaga Backend API-ku PUT request anupprom
         try {
           await fetch(`/api/bookings/${orderId}`, {
             method: 'PUT',
@@ -1447,49 +1444,25 @@
       window.location.href = `job-details-view.html?id=${orderId}`;
     }
 
-    // partner.html-la irukra acceptJobOrder function-ah intha maari update pannunga:
-async function acceptJobOrder(orderId) {
-  if (!currentPartner) {
-    alert("Partner details not loaded. Please re-login!");
-    return;
-  }
+    async function acceptJobOrder(orderId) {
+      if (!currentPartner) {
+        alert("Partner details not loaded. Please re-login!");
+        return;
+      }
 
-  const generatedStartOTP = Math.floor(100000 + Math.random() * 900000);
-  
-  // 1. LocalStorage & Shared Bookings update
-  let bookings = getSharedBookings();
-  bookings = bookings.map(b => {
-    if (String(b.id || b.bookingId) === String(orderId)) {
-      b.assignedPartner = currentPartner.name;
-      b.partnerStatus = 'ACCEPTED';
-      b.startOTP = generatedStartOTP;
-    }
-    return b;
-  });
-  saveSharedBookings(bookings);
+      const generatedStartOTP = Math.floor(100000 + Math.random() * 900000);
+      
+      let bookings = getSharedBookings();
+      bookings = bookings.map(b => {
+        if (String(b.id || b.bookingId) === String(orderId)) {
+          b.assignedPartner = currentPartner.name;
+          b.partnerStatus = 'ACCEPTED';
+          b.startOTP = generatedStartOTP;
+        }
+        return b;
+      });
+      saveSharedBookings(bookings);
 
-  // 2. Render Database API Sync (Crucial for Customer Mobile Sync)
-  try {
-    await fetch(`/api/bookings/${orderId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        assignedPartner: currentPartner.name,
-        partnerStatus: 'ACCEPTED',
-        startOTP: generatedStartOTP
-      })
-    });
-    console.log("Partner assignment synced to MongoDB successfully!");
-  } catch (err) {
-    console.warn("API Sync Error:", err);
-  }
-
-  alert(`🎉 Order #${orderId} successfully accepted!`);
-  loadPartnerJobs();
-  if (typeof loadOngoingJobs === 'function') loadOngoingJobs();
-}
-
-      // 2. Background Sync to Mongo API without breaking UI on endpoint error
       try {
         await fetch(`/api/bookings/${orderId}`, {
           method: 'PUT',
@@ -1500,10 +1473,15 @@ async function acceptJobOrder(orderId) {
             startOTP: generatedStartOTP
           })
         });
+        console.log("Partner assignment synced to MongoDB successfully!");
       } catch (err) {
-        console.warn("Server API sync skipped:", err);
+        console.warn("API Sync Error:", err);
       }
 
+      alert(`🎉 Order #${orderId} successfully accepted!`);
+      loadPartnerJobs();
+      if (typeof loadOngoingJobs === 'function') loadOngoingJobs();
+    }
   </script>
 </body>
 </html>
