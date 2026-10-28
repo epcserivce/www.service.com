@@ -975,18 +975,37 @@
       });
     }
 
-    function uploadArrivalPhoto(orderId, event) {
+    async function uploadArrivalPhoto(orderId, event) {
       const file = event.target.files[0];
       if (file) {
         let bookings = getSharedBookings();
+        let generatedOtp = Math.floor(100000 + Math.random() * 900000);
+        
         bookings = bookings.map((b) => {
           if (b.id === orderId || b.bookingId === orderId) {
             b.isPhotoUploaded = true;
+            b.startOTP = generatedOtp;
           }
           return b;
         });
         saveSharedBookings(bookings);
-        alert("✓ Arrival photo uploaded successfully! Job Start OTP is now unlocked.");
+
+        // 🌐 2 Devices (Customer & Partner) sync aaga Backend API-ku PUT request anupprom
+        try {
+          await fetch(`/api/bookings/${orderId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              isPhotoUploaded: true, 
+              startOTP: generatedOtp 
+            })
+          });
+          console.log("Photo upload & OTP synced to MongoDB successfully!");
+        } catch (err) {
+          console.warn("API Sync Error:", err);
+        }
+
+        alert("✓ Arrival photo uploaded successfully! Job Start OTP is now unlocked for customer.");
         loadOngoingJobs();
       }
     }
