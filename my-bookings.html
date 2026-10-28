@@ -289,19 +289,35 @@
       return R * c;
     }
 
-    function loadCustomerBookings() {
+    async function loadCustomerBookings() {
       const container = document.getElementById('bookings-list');
-      let custBookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
-      let epcBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
+      if (!container) return;
 
-      let allMap = {};
-      [...epcBookings, ...custBookings].forEach(b => {
-        if (b && (b.id || b.bookingId)) {
-          let bId = b.id || b.bookingId;
-          allMap[bId] = Object.assign({}, allMap[bId] || {}, b);
+      let bookings = [];
+      
+      // 🌐 1. First Render Backend MongoDB Database irunthu live bookings fetch panrom
+      try {
+        const response = await fetch('/api/bookings');
+        if (response.ok) {
+          bookings = await response.json();
         }
-      });
-      let bookings = Object.values(allMap);
+      } catch (err) {
+        console.warn("API Fetch Fallback to LocalStorage:", err);
+      }
+
+      // 2. LocalStorage fallback if server is empty or offline
+      if (!bookings || bookings.length === 0) {
+        let custBookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
+        let epcBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
+        let allMap = {};
+        [...epcBookings, ...custBookings].forEach(b => {
+          if (b && (b.id || b.bookingId)) {
+            let bId = b.id || b.bookingId;
+            allMap[bId] = Object.assign({}, allMap[bId] || {}, b);
+          }
+        });
+        bookings = Object.values(allMap);
+      }
 
       let filteredBookings = bookings.filter(b => {
         const isCancelled = b.status === 'CANCELLED';
@@ -332,11 +348,6 @@
         const isCancelled = booking.status === 'CANCELLED';
         const isCompleted = booking.status === 'COMPLETED' || booking.isCompleted;
         const bId = booking.id || booking.bookingId;
-
-        if (booking.isPhotoUploaded && !booking.startOTP) {
-          booking.startOTP = Math.floor(100000 + Math.random() * 900000);
-          updateBookingStorage(bId, { startOTP: booking.startOTP });
-        }
 
         let statusBadge = '<span class="bg-purple-100 text-ucPurple text-[10px] font-black px-2.5 py-1 rounded-md uppercase">CONFIRMED</span>';
         if (booking.isStarted && !isCompleted) statusBadge = '<span class="bg-blue-100 text-blue-700 text-[10px] font-black px-2.5 py-1 rounded-md uppercase">IN PROGRESS</span>';
