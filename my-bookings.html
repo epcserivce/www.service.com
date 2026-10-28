@@ -400,10 +400,7 @@
         cleanAddress = 'Kanchipuram, Tamil Nadu';
       }
       document.getElementById('modal-service-address').innerText = cleanAddress;
-      
-      // Partner name display check
-      const partnerName = booking.assignedPartner && booking.assignedPartner !== "null" ? booking.assignedPartner : 'Assigned Partner';
-      document.getElementById('modal-partner-name').innerText = partnerName;
+      document.getElementById('modal-partner-name').innerText = booking.assignedPartner || 'Not Assigned Yet';
 
       const isCancelled = booking.status === 'CANCELLED';
       const isCompleted = booking.status === 'COMPLETED' || booking.isCompleted;
@@ -415,9 +412,8 @@
         cancelActionBox.classList.add('hidden');
       }
 
-      // 📍 MAP CONTAINER FIX: Assigned partner illanalum or booking confirmed aairuntha map show panrom
       const mapContainer = document.getElementById('modal-map-container');
-      if (!isCompleted && !isCancelled) {
+      if (booking.assignedPartner && !booking.isPhotoUploaded && !isCompleted && !isCancelled) {
         mapContainer.classList.remove('hidden');
         setTimeout(() => {
           let cLat = booking.lat || 12.8342, cLng = booking.lng || 79.7036;
@@ -438,15 +434,10 @@
         mapContainer.classList.add('hidden');
       }
 
-      // 🔑 JOB START OTP SECTION FIX: Always show OTP so customer can view & share with partner easily
       const startOtpSec = document.getElementById('modal-start-otp-section');
-      if (!isCompleted && !isCancelled) {
+      if (booking.isPhotoUploaded && !booking.isStarted && !isCompleted && !isCancelled) {
         startOtpSec.classList.remove('hidden');
-        // If startOTP is missing, generate a dummy 6-digit test code instantly
-        if (!booking.startOTP) {
-          booking.startOTP = "123456";
-        }
-        document.getElementById('modal-start-otp-display').innerText = booking.startOTP;
+        document.getElementById('modal-start-otp-display').innerText = booking.startOTP || '123456';
       } else {
         startOtpSec.classList.add('hidden');
       }
@@ -458,6 +449,7 @@
         let workText = booking.reenteredWork || 'Repair work done';
         document.getElementById('modal-reconf-desc').innerText = workText;
 
+        // Exactly Synced Amount Breakdown (Taxes & Fees = 14, Visitation = 99)
         const totalAmt = booking.reenteredAmount || 242;
         const visitationFee = 99;
         const taxesAndFees = 14;
