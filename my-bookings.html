@@ -91,15 +91,15 @@
         <span id="modal-status-badge" class="bg-purple-100 text-ucPurple text-[10px] font-black px-3 py-1 rounded-full uppercase">CONFIRMED</span>
       </div>
 
-      <!-- 📍 LIVE ROUTE TRACKING MAP INSIDE MODAL -->
+      <!-- 📍 1st STEP: LIVE ROUTE MAP (Shown when partner assigned & photo NOT uploaded yet) -->
       <div id="modal-map-container" class="hidden space-y-2 bg-slate-50 p-4 rounded-3xl border border-slate-100 shadow-sm">
         <div class="flex justify-between items-center">
           <div>
-            <h4 id="modal-map-status-title" class="text-xs font-black text-slate-900 flex items-center gap-1.5">
+            <h4 class="text-xs font-black text-slate-900 flex items-center gap-1.5">
               <span class="blink-dot"></span>
-              <span>Partner Arriving to Location</span>
+              <span>Partner Assigned & Arriving</span>
             </h4>
-            <p id="modal-map-status-sub" class="text-[10px] text-slate-500 font-medium">Live route tracking active...</p>
+            <p class="text-[10px] text-slate-500 font-medium">Live route tracking active...</p>
           </div>
           <a id="modal-partner-call-btn" href="tel:6381796419" class="w-8 h-8 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center text-xs shadow-sm">
             <i class="fa-solid fa-phone"></i>
@@ -108,21 +108,14 @@
         <div id="modal-live-map" class="w-full h-44 rounded-2xl bg-slate-200 shadow-inner"></div>
       </div>
 
-      <!-- 1. PARTNER ARRIVAL & 30-50M PHOTO OPTION -->
-      <div id="modal-arrival-section" class="hidden bg-blue-50 border border-blue-200 p-4 rounded-3xl space-y-2">
-         <p class="text-xs font-bold text-blue-900"><i class="fa-solid fa-camera mr-1"></i> Partner Arrival & Photo Upload (Within 1km):</p>
-         <div id="modal-arrival-status-msg" class="text-xs text-slate-700">Checking partner distance...</div>
-         <input type="file" id="modal-arrival-file" accept="image/*" capture="camera" onchange="customerUploadArrivalPhoto(event)" class="text-xs text-slate-600 w-full hidden" />
-      </div>
-
-      <!-- 2. JOB START OTP INPUT / DISPLAY -->
+      <!-- 🔑 2nd STEP: JOB START OTP DISPLAY (Shown ONLY after partner uploads arrival photo, before reconfirmation) -->
       <div id="modal-start-otp-section" class="hidden bg-purple-50 border border-purple-200 p-5 rounded-3xl space-y-2 text-center shadow-sm">
-        <p class="text-xs font-black text-purple-800 uppercase tracking-wide">🔑 Job Start Verification OTP</p>
+        <p class="text-xs font-black text-purple-800 uppercase tracking-wide"><i class="fa-solid fa-key mr-1"></i> Job Start Verification OTP</p>
         <p id="modal-start-otp-display" class="text-3xl font-black text-ucPurple tracking-widest">------</p>
-        <p class="text-[11px] text-slate-500 font-medium">Share this OTP with partner to start work.</p>
+        <p class="text-[11px] text-slate-500 font-medium">Partner uploaded arrival photo! Share this OTP with partner to start work.</p>
       </div>
 
-      <!-- 3. RECONFIRMATION & 5 MINS TIMER -->
+      <!-- 🛡️ 3rd STEP: RECONFIRMATION & ESTIMATE ACCEPTANCE BOX (Shown ONLY after partner reenters/starts work) -->
       <div id="modal-reconfirmation-box" class="hidden bg-amber-50 border border-amber-200 p-5 rounded-3xl space-y-3 shadow-sm">
         <div class="flex items-center justify-between text-amber-900 font-black text-xs">
           <span><i class="fa-solid fa-triangle-exclamation mr-1"></i> Partner Estimate & Reconfirmation</span>
@@ -133,7 +126,6 @@
           <p class="font-bold text-slate-800">Job Details:</p>
           <p id="modal-reconf-desc" class="text-slate-600 font-medium">-</p>
           
-          <!-- CLEAN BILL BREAKDOWN SUMMARY BOX (Synced with Partner & Job Details: Taxes & Fee = ₹14, Visitation = ₹99) -->
           <div class="bg-slate-900 text-white p-4 rounded-2xl space-y-2 text-xs mt-3 shadow-inner">
             <div class="flex justify-between text-slate-300">
               <span>Item Subtotal</span>
@@ -164,19 +156,6 @@
         </div>
       </div>
 
-      <!-- 4. CUSTOMER NOT LOCATION / ONLINE & COD PAYMENT / QR -->
-      <div id="modal-payment-workflow-box" class="hidden bg-emerald-50 border border-emerald-200 p-4 rounded-2xl space-y-3 text-center">
-        <p class="text-xs font-bold text-emerald-800">💳 Payment & Job Completion Workflow:</p>
-        <div id="modal-payment-mode-display" class="text-xs font-bold text-slate-700">Mode: Online / COD</div>
-        <div id="modal-qr-container" class="hidden p-2 bg-white rounded-xl border inline-block">
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=upi://pay?pa=epcservices@upi&pn=EPC%20Services" class="w-32 h-32 mx-auto rounded" alt="QR">
-          <p class="text-[10px] text-slate-500 mt-1">Scan & Pay Cash in Hand / UPI</p>
-        </div>
-        <button onclick="customerConfirmEndJob()" class="w-full bg-ucPurple text-white py-2.5 rounded-xl text-xs font-black shadow cursor-pointer">
-          Confirm & End Job Close
-        </button>
-      </div>
-
       <div class="bg-slate-50 p-4 rounded-3xl border border-slate-100 space-y-2 text-xs text-slate-700">
         <div class="flex justify-between font-medium">
           <span class="text-slate-400">Service Name:</span>
@@ -196,7 +175,7 @@
         </div>
       </div>
 
-      <!-- CANCEL BOOKING BUTTON INSIDE MODAL (For Active Jobs) -->
+      <!-- CANCEL BOOKING BUTTON INSIDE MODAL -->
       <div id="modal-cancel-action-box" class="hidden">
         <button onclick="cancelBookingDirectly()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 py-3 rounded-2xl font-black text-xs transition cursor-pointer flex items-center justify-center gap-2">
           <i class="fa-solid fa-circle-xmark"></i>
@@ -204,7 +183,7 @@
         </button>
       </div>
 
-      <!-- Rating & Comment Section -->
+      <!-- ⭐ 4. RATING & COMMENT SECTION (Shown in Completed Tab after partner payment confirmation) -->
       <div id="modal-rating-box" class="hidden bg-amber-50/60 border border-amber-200 p-4 rounded-3xl space-y-3 shadow-sm">
         <p class="text-xs font-black text-amber-900">⭐ Rate Your Service Experience:</p>
         <div class="flex gap-1.5 text-xl text-amber-400 cursor-pointer justify-center bg-white p-3 rounded-2xl border border-amber-100 shadow-sm" id="star-rating-container">
@@ -251,23 +230,26 @@
       loadCustomerBookings();
     }
 
-    function updateBookingStorage(bookingId, updatedData) {
+    async function updateBookingStorage(bookingId, updatedData) {
       let custBookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
       let epcBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
 
       let hasChanged = false;
+      
       custBookings = custBookings.map(b => {
-        if (b.id === bookingId || b.bookingId === bookingId) {
+        if (String(b.id || b.bookingId) === String(bookingId)) {
           let merged = Object.assign({}, b, updatedData);
-          if (JSON.stringify(b) !== JSON.stringify(merged)) hasChanged = true;
+          hasChanged = true;
           return merged;
         }
         return b;
       });
 
       epcBookings = epcBookings.map(b => {
-        if (b.id === bookingId || b.bookingId === bookingId) {
-          return Object.assign({}, b, updatedData);
+        if (String(b.id || b.bookingId) === String(bookingId)) {
+          let merged = Object.assign({}, b, updatedData);
+          hasChanged = true;
+          return merged;
         }
         return b;
       });
@@ -276,17 +258,17 @@
         localStorage.setItem('customerBookings', JSON.stringify(custBookings));
         localStorage.setItem('epc_bookings', JSON.stringify(epcBookings));
       }
-    }
 
-    function calculateDistanceInMeters(lat1, lon1, lat2, lon2) {
-      const R = 6371e3;
-      const φ1 = (lat1 * Math.PI) / 180;
-      const φ2 = (lat2 * Math.PI) / 180;
-      const Δφ = ((lat2 - lat1) * Math.PI) / 180;
-      const Δλ = ((lon2 - lon1) * Math.PI) / 180;
-      const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      return R * c;
+      try {
+        const API_BASE = window.location.origin;
+        await fetch(`${API_BASE}/api/bookings/${bookingId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedData)
+        });
+      } catch (err) {
+        console.warn("Backend Sync Warning:", err);
+      }
     }
 
     async function loadCustomerBookings() {
@@ -294,34 +276,42 @@
       if (!container) return;
 
       let bookings = [];
+      const API_BASE = window.location.origin;
       
-      // 🌐 1. First Render Backend MongoDB Database irunthu live bookings fetch panrom
+      let custBookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
+      let epcBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
+      let localMap = {};
+      [...epcBookings, ...custBookings].forEach(b => {
+        if (b && (b.id || b.bookingId)) {
+          let bId = b.id || b.bookingId;
+          localMap[bId] = b;
+        }
+      });
+
       try {
-        const response = await fetch('/api/bookings');
+        const response = await fetch(`${API_BASE}/api/bookings`);
         if (response.ok) {
-          bookings = await response.json();
+          let apiBookings = await response.json();
+          bookings = apiBookings.map(ab => {
+            let bId = ab.id || ab.bookingId;
+            if (localMap[bId] && (localMap[bId].isCompleted || localMap[bId].status === 'COMPLETED')) {
+              return Object.assign({}, ab, localMap[bId]);
+            }
+            return ab;
+          });
+          apiBookings.forEach(ab => { delete localMap[ab.id || ab.bookingId]; });
+          bookings.push(...Object.values(localMap));
+        } else {
+          bookings = Object.values(localMap);
         }
       } catch (err) {
         console.warn("API Fetch Fallback to LocalStorage:", err);
-      }
-
-      // 2. LocalStorage fallback if server is empty or offline
-      if (!bookings || bookings.length === 0) {
-        let custBookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
-        let epcBookings = JSON.parse(localStorage.getItem('epc_bookings')) || [];
-        let allMap = {};
-        [...epcBookings, ...custBookings].forEach(b => {
-          if (b && (b.id || b.bookingId)) {
-            let bId = b.id || b.bookingId;
-            allMap[bId] = Object.assign({}, allMap[bId] || {}, b);
-          }
-        });
-        bookings = Object.values(allMap);
+        bookings = Object.values(localMap);
       }
 
       let filteredBookings = bookings.filter(b => {
-        const isCancelled = b.status === 'CANCELLED';
-        const isCompleted = b.status === 'COMPLETED' || b.isCompleted;
+        const isCancelled = (b.status === 'CANCELLED');
+        const isCompleted = (b.status === 'COMPLETED' || b.isCompleted === true);
 
         if (activeBookingTab === 'progress') {
           return !isCancelled && !isCompleted;
@@ -345,8 +335,8 @@
 
       container.innerHTML = '';
       filteredBookings.reverse().forEach((booking) => {
-        const isCancelled = booking.status === 'CANCELLED';
-        const isCompleted = booking.status === 'COMPLETED' || booking.isCompleted;
+        const isCancelled = (booking.status === 'CANCELLED');
+        const isCompleted = (booking.status === 'COMPLETED' || booking.isCompleted === true);
         const bId = booking.id || booking.bookingId;
 
         let statusBadge = '<span class="bg-purple-100 text-ucPurple text-[10px] font-black px-2.5 py-1 rounded-md uppercase">CONFIRMED</span>';
@@ -390,7 +380,7 @@
       });
 
       if (currentActiveBooking) {
-        let fresh = bookings.find(b => (b.id || b.bookingId) === (currentActiveBooking.id || currentActiveBooking.bookingId));
+        let fresh = bookings.find(b => String(b.id || b.bookingId) === String(currentActiveBooking.id || currentActiveBooking.bookingId));
         if (fresh) updateModalUI(fresh);
       }
     }
@@ -413,8 +403,8 @@
       document.getElementById('modal-service-address').innerText = cleanAddress;
       document.getElementById('modal-partner-name').innerText = booking.assignedPartner || 'Not Assigned Yet';
 
-      const isCancelled = booking.status === 'CANCELLED';
-      const isCompleted = booking.status === 'COMPLETED' || booking.isCompleted;
+      const isCancelled = (booking.status === 'CANCELLED');
+      const isCompleted = (booking.status === 'COMPLETED' || booking.isCompleted === true);
 
       const cancelActionBox = document.getElementById('modal-cancel-action-box');
       if (!isCancelled && !isCompleted) {
@@ -423,72 +413,87 @@
         cancelActionBox.classList.add('hidden');
       }
 
+      // 🎯 SEQUENTIAL WORKFLOW UI LOGIC:
       const mapContainer = document.getElementById('modal-map-container');
-      if (booking.assignedPartner && !booking.isPhotoUploaded && !isCompleted && !isCancelled) {
-        mapContainer.classList.remove('hidden');
-        setTimeout(() => {
-          let cLat = booking.lat || 12.8342, cLng = booking.lng || 79.7036;
-          let pLat = booking.liveLat || (cLat - 0.005), pLng = booking.liveLng || (cLng - 0.005);
-          if (!modalMapInstance) {
-            modalMapInstance = L.map('modal-live-map', { zoomControl: false, attributionControl: false }).setView([pLat, pLng], 14);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(modalMapInstance);
-            modalRoutingControl = L.Routing.control({
-              waypoints: [L.latLng(pLat, pLng), L.latLng(cLat, cLng)],
-              createMarker: () => null, show: false
-            }).addTo(modalMapInstance);
-          } else {
-            modalMapInstance.invalidateSize();
-            modalRoutingControl.setWaypoints([L.latLng(pLat, pLng), L.latLng(cLat, cLng)]);
-          }
-        }, 200);
+      const startOtpSec = document.getElementById('modal-start-otp-section');
+      const reconfBox = document.getElementById('modal-reconfirmation-box');
+
+      if (booking.assignedPartner && !isCompleted && !isCancelled) {
+        if (!booking.isPhotoUploaded) {
+          // STEP 1: Show Live Route Map ONLY when partner is assigned and photo NOT uploaded yet
+          mapContainer.classList.remove('hidden');
+          startOtpSec.classList.add('hidden');
+          
+          setTimeout(() => {
+            let cLat = booking.lat || 12.8342, cLng = booking.lng || 79.7036;
+            let pLat = booking.liveLat || (cLat - 0.005), pLng = booking.liveLng || (cLng - 0.005);
+            if (!modalMapInstance) {
+              modalMapInstance = L.map('modal-live-map', { zoomControl: false, attributionControl: false }).setView([pLat, pLng], 14);
+              L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(modalMapInstance);
+              modalRoutingControl = L.Routing.control({
+                waypoints: [L.latLng(pLat, pLng), L.latLng(cLat, cLng)],
+                createMarker: () => null, show: false
+              }).addTo(modalMapInstance);
+            } else {
+              modalMapInstance.invalidateSize();
+              modalRoutingControl.setWaypoints([L.latLng(pLat, pLng), L.latLng(cLat, cLng)]);
+            }
+          }, 200);
+        } else if (booking.isPhotoUploaded && !booking.partnerReentered) {
+          // STEP 2: Hide Map & Show Job Start OTP ONLY when photo uploaded and partner hasn't reentered yet
+          mapContainer.classList.add('hidden');
+          startOtpSec.classList.remove('hidden');
+          document.getElementById('modal-start-otp-display').innerText = booking.startOTP || '654321';
+        } else {
+          // Hide both map & OTP if moving forward
+          mapContainer.classList.add('hidden');
+          startOtpSec.classList.add('hidden');
+        }
       } else {
         mapContainer.classList.add('hidden');
-      }
-
-      const startOtpSec = document.getElementById('modal-start-otp-section');
-      if (booking.isPhotoUploaded && !booking.isStarted && !isCompleted && !isCancelled) {
-        startOtpSec.classList.remove('hidden');
-        document.getElementById('modal-start-otp-display').innerText = booking.startOTP || '123456';
-      } else {
         startOtpSec.classList.add('hidden');
       }
 
-      const reconfBox = document.getElementById('modal-reconfirmation-box');
+      // STEP 3: Reconfirmation / Estimate Acceptance Box
       if (booking.partnerReentered && !booking.customerConfirmed && !isCompleted && !isCancelled) {
         reconfBox.classList.remove('hidden');
-        
-        let workText = booking.reenteredWork || 'Repair work done';
-        document.getElementById('modal-reconf-desc').innerText = workText;
-
-        // Exactly Synced Amount Breakdown (Taxes & Fees = 14, Visitation = 99)
+        document.getElementById('modal-reconf-desc').innerText = booking.reenteredWork || 'Repair work done';
         const totalAmt = booking.reenteredAmount || 242;
         const visitationFee = 99;
         const taxesAndFees = 14;
         const itemSubtotal = totalAmt - visitationFee - taxesAndFees;
-
-        const itemTotalEl = document.getElementById('customer-bill-item-total');
-        if (itemTotalEl) itemTotalEl.innerText = `₹${itemSubtotal > 0 ? itemSubtotal : 129}`;
-
-        const grandAmtEl = document.getElementById('modal-reconf-amount');
-        if (grandAmtEl) grandAmtEl.innerText = `₹${totalAmt}`;
-
-        startCustomerModalTimer(booking.id || booking.bookingId);
+        document.getElementById('customer-bill-item-total').innerText = `₹${itemSubtotal > 0 ? itemSubtotal : 129}`;
+        document.getElementById('modal-reconf-amount').innerText = `₹${totalAmt}`;
+        
+        // 🎯 Call live timer countdown here!
+        startCustomerModalTimer(booking);
       } else {
         reconfBox.classList.add('hidden');
+        if (customerModalTimerInterval) clearInterval(customerModalTimerInterval);
       }
 
+      // 4. Rating Section in Completed tab
       const ratingBox = document.getElementById('modal-rating-box');
-      if (isCompleted && !booking.isRated) {
+      if (isCompleted) {
         ratingBox.classList.remove('hidden');
+        if (booking.isRated) {
+          ratingBox.innerHTML = `
+            <p class="text-xs font-black text-emerald-800">✓ You rated this partner: ${'⭐'.repeat(booking.userRating || 5)}</p>
+            <p class="text-xs text-slate-600 italic">"${booking.userComment || 'Great service!'}"</p>
+          `;
+        }
       } else {
         ratingBox.classList.add('hidden');
       }
     }
 
-    function cancelBookingById(bookingId) {
+    async function cancelBookingById(bookingId) {
       let reason = prompt("Dhayavu seidhu order cancel panradhukaana reason-ah enter pannunga:", "Mind changed / Plans changed");
       if (reason !== null) {
-        updateBookingStorage(bookingId, { status: 'CANCELLED', cancelReason: reason || 'Cancelled by customer' });
+        await updateBookingStorage(bookingId, { 
+          status: 'CANCELLED', 
+          cancelReason: reason || 'Cancelled by customer' 
+        });
         alert("✓ Your booking has been cancelled successfully.");
         loadCustomerBookings();
       }
@@ -499,47 +504,6 @@
       let bId = currentActiveBooking.id || currentActiveBooking.bookingId;
       cancelBookingById(bId);
       closeBookingDetailsModal();
-    }
-
-    function customerUploadArrivalPhoto(event) {
-      if (!currentActiveBooking) return;
-      let bId = currentActiveBooking.id || currentActiveBooking.bookingId;
-      updateBookingStorage(bId, { isPhotoUploaded: true });
-      alert("✓ Arrival photo uploaded successfully!");
-      loadCustomerBookings();
-    }
-
-    function startCustomerModalTimer(bookingId) {
-      if (customerModalTimerInterval) clearInterval(customerModalTimerInterval);
-
-      let custBookings = JSON.parse(localStorage.getItem('customerBookings')) || [];
-      let currentJob = custBookings.find(b => (b.id === bookingId || b.bookingId === bookingId));
-
-      let sentTime = currentJob?.reconfirmationSentTime || Date.now();
-      let totalAllowedSeconds = 300; 
-      let secondsElapsed = Math.floor((Date.now() - sentTime) / 1000);
-      let duration = totalAllowedSeconds - secondsElapsed;
-
-      if (duration <= 0) {
-        if (!currentJob?.isTimeOut) {
-          updateBookingStorage(bookingId, { isTimeOut: true, customerNotLocated: true });
-          loadCustomerBookings();
-        }
-        return;
-      }
-
-      customerModalTimerInterval = setInterval(() => {
-        let m = Math.floor(duration / 60);
-        let s = duration % 60;
-        let display = document.getElementById('modal-timer-countdown');
-        if (display) display.innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
-
-        if (--duration < 0) {
-          clearInterval(customerModalTimerInterval);
-          updateBookingStorage(bookingId, { isTimeOut: true, customerNotLocated: true });
-          loadCustomerBookings();
-        }
-      }, 1000);
     }
 
     function confirmCustomerReentry() {
@@ -556,14 +520,6 @@
       updateBookingStorage(bId, { status: 'CANCELLED', cancelReason: 'Rejected partner reconfirmation' });
       alert("Job cancelled successfully.");
       closeBookingDetailsModal();
-      loadCustomerBookings();
-    }
-
-    function customerConfirmEndJob() {
-      if (!currentActiveBooking) return;
-      let bId = currentActiveBooking.id || currentActiveBooking.bookingId;
-      updateBookingStorage(bId, { isCompleted: true, status: 'COMPLETED' });
-      alert("🎉 Job closed successfully!");
       loadCustomerBookings();
     }
 
@@ -585,6 +541,34 @@
       currentActiveBooking = null;
       if (customerModalTimerInterval) clearInterval(customerModalTimerInterval);
       document.getElementById('booking-modal').classList.add('hidden');
+    }
+
+    function startCustomerModalTimer(booking) {
+      if (customerModalTimerInterval) clearInterval(customerModalTimerInterval);
+      
+      const timerDisplay = document.getElementById('modal-timer-countdown');
+      if (!timerDisplay) return;
+
+      const sentTime = booking.reconfirmationSentTime || Date.now();
+      const durationSecs = 300; // 5 minutes
+
+      customerModalTimerInterval = setInterval(() => {
+        let elapsedSecs = Math.floor((Date.now() - sentTime) / 1000);
+        let remainingSecs = durationSecs - elapsedSecs;
+
+        if (remainingSecs <= 0) {
+          clearInterval(customerModalTimerInterval);
+          timerDisplay.innerText = "00:00";
+          return;
+        }
+
+        let mins = Math.floor(remainingSecs / 60);
+        let secs = remainingSecs % 60;
+        let mStr = mins < 10 ? "0" + mins : mins;
+        let sStr = secs < 10 ? "0" + secs : secs;
+
+        timerDisplay.innerText = `${mStr}:${sStr}`;
+      }, 1000);
     }
   </script>
 </body>

@@ -889,7 +889,7 @@
         lat: savedProfile.lat || 12.8342,
         lng: savedProfile.lng || 79.7036,
         slot: dynamicSlot,
-        date: new Date().toISOString().split('T')[0],
+        date: dynamicSlot, // 🎯 Fixed: Pass dynamicSlot/selectedSlotDate so future date is correctly saved!
         amount: finalCalculatedAmount,
         requiredDesignation: assignedDesig,
         assignedPartner: null,

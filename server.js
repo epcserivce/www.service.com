@@ -26,7 +26,6 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -103,8 +102,18 @@ const bookingSchema = new mongoose.Schema({
   requiredDesignation: String,
   assignedPartner: String,
   partnerStatus: { type: String, default: 'PENDING' },
+  status: { type: String, default: 'CONFIRMED' },
+  cancelReason: String,
   district: { type: String, default: 'kanchipuram' },
   isCompleted: { type: Boolean, default: false },
+  // Workflow fields added for robust MongoDB sync
+  startOTP: { type: String, default: '654321' },
+  isPhotoUploaded: { type: Boolean, default: false },
+  isStarted: { type: Boolean, default: false },
+  partnerReentered: { type: Boolean, default: false },
+  reenteredAmount: Number,
+  reenteredWork: String,
+  customerConfirmed: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now }
 });
 
@@ -114,7 +123,10 @@ const Booking = mongoose.model('Booking', bookingSchema);
 app.post('/api/bookings', async (req, res) => {
   try {
     const bookingData = req.body;
-    // Check if booking already exists by bookingId
+    if (!bookingData.startOTP) {
+      bookingData.startOTP = '654321';
+    }
+
     let existing = await Booking.findOne({ bookingId: bookingData.bookingId || bookingData.id });
     if (existing) {
       existing = await Booking.findOneAndUpdate(
@@ -129,7 +141,6 @@ app.post('/api/bookings', async (req, res) => {
     const newBooking = new Booking(bookingData);
     await newBooking.save();
 
-    // Broadcast Realtime Socket Alert to Kanchipuram Room & Universal Fallback
     io.to('kanchipuram').emit('new-booking-alert', newBooking);
     io.emit('new-booking-alert', newBooking);
 
@@ -149,19 +160,39 @@ app.get('/api/bookings', async (req, res) => {
   }
 });
 
-// 3. PUT: Update Booking Status (Accept Order / Complete)
+// 3. PUT: Update Booking Status (Cancel / Accept / Complete / OTP Verify)
 app.put('/api/bookings/:id', async (req, res) => {
   try {
-    const updated = await Booking.findOneAndUpdate(
-      { $or: [{ bookingId: req.params.id }, { _id: req.params.id }, { id: req.params.id }] },
-      req.body,
+    let queryId = req.params.id;
+    if (queryId.startsWith('#')) {
+      queryId = queryId.substring(1);
+    }
+
+    let updated = await Booking.findOneAndUpdate(
+      { $or: [{ bookingId: queryId }, { id: queryId }, { bookingId: '#' + queryId }] },
+      { $set: req.body },
       { new: true }
     );
-    if (updated) {
-      io.to('kanchipuram').emit('new-booking-alert', updated);
+
+    if (!updated && queryId.match(/^[0-9a-fA-F]{24}$/)) {
+      updated = await Booking.findByIdAndUpdate(
+        queryId,
+        { $set: req.body },
+        { new: true }
+      );
     }
-    res.json({ success: true, booking: updated });
+
+    if (updated) {
+      console.log(`✓ Booking ${queryId} updated successfully to status:`, req.body.status || 'Updated');
+      io.to('kanchipuram').emit('new-booking-alert', updated);
+      io.emit('new-booking-alert', updated);
+      return res.json({ success: true, booking: updated });
+    } else {
+      console.warn(`⚠️ Booking not found for update ID: ${queryId}`);
+      return res.status(404).json({ success: false, message: "Booking not found for update" });
+    }
   } catch (error) {
+    console.error("Booking Update Error:", error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
