@@ -91,22 +91,23 @@
         <span id="modal-status-badge" class="bg-purple-100 text-ucPurple text-[10px] font-black px-3 py-1 rounded-full uppercase">CONFIRMED</span>
       </div>
 
-      <!-- 📍 1st STEP: LIVE ROUTE MAP (Shown when partner assigned & photo NOT uploaded yet) -->
-      <div id="modal-map-container" class="hidden space-y-2 bg-slate-50 p-4 rounded-3xl border border-slate-100 shadow-sm">
-        <div class="flex justify-between items-center">
-          <div>
-            <h4 class="text-xs font-black text-slate-900 flex items-center gap-1.5">
-              <span class="blink-dot"></span>
-              <span>Partner Assigned & Arriving</span>
-            </h4>
-            <p class="text-[10px] text-slate-500 font-medium">Live route tracking active...</p>
-          </div>
-          <a id="modal-partner-call-btn" href="tel:6381796419" class="w-8 h-8 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center text-xs shadow-sm">
-            <i class="fa-solid fa-phone"></i>
-          </a>
-        </div>
-        <div id="modal-live-map" class="w-full h-44 rounded-2xl bg-slate-200 shadow-inner"></div>
-      </div>
+      <!-- 📍 1st STEP: LIVE ROUTE MAP -->
+<div id="modal-map-container" class="hidden space-y-2 bg-slate-50 p-4 rounded-3xl border border-slate-100 shadow-sm">
+  <div class="flex justify-between items-center">
+    <div>
+      <h4 class="text-xs font-black text-slate-900 flex items-center gap-1.5">
+        <span class="blink-dt"></span>
+        <span>Partner Assigned & Arriving</span>
+      </h4>
+      <!-- 🎯 Inga thaan ETA text display varum machi! -->
+      <p id="partner-eta-text" class="text-[10px] text-ucPurple font-black mt-0.5">Calculating distance & ETA...</p>
+    </div>
+    <a id="modal-partner-call-btn" href="tel:6381796419" class="w-8 h-8 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center text-xs shadow-sm">
+      <i class="fa-solid fa-phone"></i>
+    </a>
+  </div>
+  <div id="modal-live-map" class="w-full h-44 rounded-2xl bg-slate-200 shadow-inner"></div>
+</div>
 
       <!-- 🔑 2nd STEP: JOB START OTP DISPLAY (Shown ONLY after partner uploads arrival photo, before reconfirmation) -->
       <div id="modal-start-otp-section" class="hidden bg-purple-50 border border-purple-200 p-5 rounded-3xl space-y-2 text-center shadow-sm">
@@ -427,13 +428,31 @@
           setTimeout(() => {
             let cLat = booking.lat || 12.8342, cLng = booking.lng || 79.7036;
             let pLat = booking.liveLat || (cLat - 0.005), pLng = booking.liveLng || (cLng - 0.005);
+            
             if (!modalMapInstance) {
               modalMapInstance = L.map('modal-live-map', { zoomControl: false, attributionControl: false }).setView([pLat, pLng], 14);
               L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(modalMapInstance);
+              
               modalRoutingControl = L.Routing.control({
                 waypoints: [L.latLng(pLat, pLng), L.latLng(cLat, cLng)],
-                createMarker: () => null, show: false
+                createMarker: () => null, 
+                show: false
               }).addTo(modalMapInstance);
+
+              // 🎯 ETA and Distance calculation callback here machi!
+              modalRoutingControl.on('routesfound', function(e) {
+                const routes = e.routes;
+                if (routes && routes.length > 0) {
+                  const summary = routes[0].summary;
+                  const distanceKm = (summary.totalDistance / 1000).toFixed(1);
+                  const etaMins = Math.round(summary.totalTime / 60);
+                  
+                  const etaDisplay = document.getElementById('partner-eta-text');
+                  if (etaDisplay) {
+                    etaDisplay.innerText = `🚗 Partner arriving in ~${etaMins} mins (${distanceKm} km away)`;
+                  }
+                }
+              });
             } else {
               modalMapInstance.invalidateSize();
               modalRoutingControl.setWaypoints([L.latLng(pLat, pLng), L.latLng(cLat, cLng)]);

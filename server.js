@@ -208,7 +208,8 @@ const partnerSchema = new mongoose.Schema({
   aadhaar: String,
   pan: String,
   isOnline: { type: Boolean, default: true },
-  isVerified: { type: Boolean, default: false }
+  isVerified: { type: Boolean, default: false },
+  unavailableDates: { type: [String], default: [] } // 🎯 Added for Leave Sync
 });
 
 const Partner = mongoose.model('Partner', partnerSchema);
@@ -239,6 +240,28 @@ app.post('/api/partners/login', async (req, res) => {
       res.json({ success: true, partner: partner });
     } else {
       res.status(404).json({ success: false, message: "Partner not registered!" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 3. PUT: Update Partner Availability / Leave Dates API
+app.put('/api/partners/:id/availability', async (req, res) => {
+  try {
+    const partnerId = req.params.id;
+    const { unavailableDates } = req.body;
+
+    let updatedPartner = await Partner.findOneAndUpdate(
+      { $or: [{ partnerId: partnerId }, { _id: partnerId }] },
+      { $set: { unavailableDates: unavailableDates } },
+      { new: true }
+    );
+
+    if (updatedPartner) {
+      res.json({ success: true, partner: updatedPartner });
+    } else {
+      res.status(404).json({ success: false, message: "Partner not found" });
     }
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -296,6 +319,67 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log(`❌ Client Disconnected: ${socket.id}`);
   });
+});
+
+// GET: Retrieve Partner Profile & Unavailable Dates by ID
+app.get('/api/partners/:id', async (req, res) => {
+  try {
+    let queryId = req.params.id;
+    let partner = await Partner.findOne({ $or: [{ partnerId: queryId }, { _id: queryId }] });
+    if (partner) {
+      res.json(partner);
+    } else {
+      res.status(404).json({ success: false, message: "Partner not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// --- ACCOUNT DELETE API ENDPOINTS ---
+
+// 1. Customer Self Account Delete API
+app.delete('/api/customers/:phone', async (req, res) => {
+  try {
+    const phoneNum = req.params.phone;
+    // Oru vela customer collection irundha inga delete panrom, 
+    // illana bookings mattum anonymize/delete panna option kudukalam.
+    // Inga unga system-ku etha maari Booking records-ah clean up panrom.
+    await Booking.deleteMany({ customerPhone: phoneNum });
+    res.json({ success: true, message: "Customer account and associated bookings deleted successfully!" });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// --- PARTNER SELF ACCOUNT DELETE API (MongoDB Sync) ---
+app.delete('/api/partners/:id', async (req, res) => {
+  try {
+    const queryId = req.params.id;
+    
+    // MongoDB-la Partner-ah search panni delete panrom (partnerId, mobile, or _id moolama)
+    let deletedPartner = await Partner.findOneAndDelete({ 
+      $or: [
+        { partnerId: queryId }, 
+        { mobile: queryId },
+        { _id: queryId.match(/^[0-9a-fA-F]{24}$/) ? queryId : null }
+      ] 
+    });
+    
+    if (deletedPartner) {
+      // Assigned bookings-la partner name-ah unassign panrom
+      await Booking.updateMany(
+        { assignedPartner: deletedPartner.name }, 
+        { $set: { assignedPartner: null, partnerStatus: 'PENDING' } }
+      );
+      
+      res.json({ success: true, message: "Partner account deleted and synced with MongoDB successfully!" });
+    } else {
+      res.status(404).json({ success: false, message: "Partner not found in database" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
 });
 
 const PORT = process.env.PORT || 5000;

@@ -526,6 +526,13 @@
           </div>
         </div>
 
+        <div class="pt-4 border-t border-slate-100 dark:border-slate-800 mt-4">
+          <button onclick="deleteCustomerSelfAccount()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 py-3 rounded-2xl font-black text-xs transition cursor-pointer flex items-center justify-center gap-2">
+        <i class="fa-solid fa-user-slash"></i>
+          <span>Delete My Customer Account</span>
+          </button>
+          </div>
+
         <button onclick="saveCustomerProfile()" class="w-full bg-ucPurple text-white py-3.5 rounded-2xl font-black text-xs hover:bg-purple-700 transition shadow-md">
           Save Profile Details
         </button>
@@ -698,24 +705,36 @@
       if (!datesContainer) return;
       datesContainer.innerHTML = '';
 
-      const days = ['Today', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-      for (let i = 0; i < 5; i++) {
-        const d = new Date();
-        d.setDate(d.getDate() + i);
-        const dayName = i === 0 ? 'Today' : days[d.getDay()];
-        const dateNum = d.getDate();
+      const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const monthsNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      
+      let today = new Date();
+
+      for (let i = 0; i < 7; i++) {
+        let targetDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
+        
+        let dayName = (i === 0) ? 'Today' : daysOfWeek[targetDate.getDay()];
+        let dateNum = targetDate.getDate();
+        let monthName = monthsNames[targetDate.getMonth()]; // Dynamic month (Oct / Nov correctly)
 
         const card = document.createElement('div');
-        card.className = `min-w-[64px] py-2 px-3 border rounded-2xl text-center cursor-pointer transition ${i === 1 ? 'border-ucPurple bg-purple-50 dark:bg-purple-950 text-ucPurple dark:text-purple-300 font-bold' : 'border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'}`;
+        card.className = `min-w-[64px] py-2 px-3 border rounded-2xl text-center cursor-pointer transition ${i === 0 ? 'border-ucPurple bg-purple-50 dark:bg-purple-950 text-ucPurple dark:text-purple-300 font-bold' : 'border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'}`;
+        
         card.onclick = (e) => {
           document.querySelectorAll('#dates-row > div').forEach(el => el.className = 'min-w-[64px] py-2 px-3 border border-slate-200 dark:border-slate-700 rounded-2xl text-center cursor-pointer transition text-slate-700 dark:text-slate-300');
           card.className = 'min-w-[64px] py-2 px-3 border-2 border-ucPurple bg-purple-50 dark:bg-purple-950 text-ucPurple dark:text-purple-300 font-bold rounded-2xl text-center cursor-pointer transition';
-          selectedSlotDate = `${dayName}, Oct ${dateNum}`;
+          
+          // Save slot date dynamically with correct month
+          selectedSlotDate = `${dayName}, ${monthName} ${dateNum}`;
           checkSlotValidity();
         };
-        card.innerHTML = `<p class="text-[9px] text-slate-400 font-semibold">${dayName}</p><p class="text-xs font-black">${dateNum}</p>`;
+
+        card.innerHTML = `<p class="text-[9px] text-slate-400 font-semibold uppercase">${dayName}</p><p class="text-xs font-black">${dateNum}</p><p class="text-[8px] text-slate-400 font-bold">${monthName}</p>`;
         datesContainer.appendChild(card);
-        if (i === 1) selectedSlotDate = `${dayName}, Oct ${dateNum}`;
+        
+        if (i === 0) {
+          selectedSlotDate = `${dayName}, ${monthName} ${dateNum}`;
+        }
       }
 
       const timeGrid = document.getElementById('time-slots-grid');
@@ -1448,5 +1467,29 @@
       }
     });
   </script>
+  <script>
+  async function deleteCustomerSelfAccount() {
+    if (confirm("⚠️ Neenga ungaloda account-ah complete-ah delete panna poringala? Intha action-ah reverse panna mudiyaadhu!")) {
+      const phone = localStorage.getItem('customerPhone') || '';
+      
+      try {
+        if (phone) {
+          await fetch(`/api/customers/${phone}`, { method: 'DELETE' });
+        }
+      } catch (err) {
+        console.warn("Server delete warning:", err);
+      }
+
+      // LocalStorage clean up
+      localStorage.removeItem("customerLoggedIn");
+      localStorage.removeItem("customerPhone");
+      localStorage.removeItem("epc_customer_profile");
+      localStorage.removeItem("epc_customer_cart");
+      
+      alert("✓ Your customer account has been deleted successfully.");
+      window.location.href = "login.html";
+    }
+  }
+</script>
 </body>
 </html>
