@@ -197,41 +197,123 @@ app.put('/api/bookings/:id', async (req, res) => {
   }
 });
 
-// --- PARTNER SCHEMA & API ENDPOINTS ---
+// --- UPDATED PARTNER SCHEMA WITH METRICS & SLOTS ---
 const partnerSchema = new mongoose.Schema({
-  partnerId: { type: String, required: true, unique: true },
+  partnerId: { type: String, unique: true },
+  employeeId: { type: String, unique: true },
   name: String,
-  mobile: { type: String, required: true, unique: true },
+  mobile: String,
   designation: String,
   currAddress: String,
+  pincode: String,
   email: String,
-  aadhaar: String,
-  pan: String,
   isOnline: { type: Boolean, default: true },
-  isVerified: { type: Boolean, default: false },
-  unavailableDates: { type: [String], default: [] } // 🎯 Added for Leave Sync
+  slotAvailability: { type: Object, default: {} }, // Partner toggled slots (e.g. {"2026-11-01_1": true})
+  unavailableDates: { type: Array, default: [] },
+  
+  // 🌟 Performance & Metrics Fields
+  rating: { type: Number, default: 4.8 },
+  totalJobsAccepted: { type: Number, default: 0 },
+  totalJobsCompleted: { type: Number, default: 0 },
+  totalJobsAssigned: { type: Number, default: 0 },
+  cancellations: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now }
 });
 
 const Partner = mongoose.model('Partner', partnerSchema);
 
-// 1. Partner Register API
+// --- PARTNER REGISTRATION WITH EXACT UTC/LOCAL TIMESTAMP ---
 app.post('/api/partners/register', async (req, res) => {
   try {
-    const partnerData = req.body;
-    let existing = await Partner.findOne({ mobile: partnerData.mobile });
-    if (existing) {
-      existing = await Partner.findOneAndUpdate({ mobile: partnerData.mobile }, partnerData, { new: true });
-      return res.json({ success: true, partner: existing });
-    }
-    const newPartner = new Partner(partnerData);
+    const data = req.body;
+    const generatedEmpId = 'EPC-EMP-' + Math.floor(1000 + Math.random() * 9000);
+    
+    const newPartner = new Partner({
+      partnerId: data.partnerId || ('PRT-' + Math.floor(1000 + Math.random() * 9000)),
+      employeeId: generatedEmpId,
+      name: data.name,
+      mobile: data.mobile,
+      designation: data.designation,
+      currAddress: data.currAddress,
+      pincode: data.pincode,
+      email: data.email,
+      isOnline: true,
+      isVerified: false,
+      createdAt: new Date() // Exact fresh registration timestamp
+    });
+
     await newPartner.save();
-    res.json({ success: true, partner: newPartner });
+    res.json({ success: true, partner: newPartner, message: "Partner registered successfully!" });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
-// 2. Partner Login / Verify API
+// --- 2. FETCH PARTNER METRICS, PERFORMANCE & EARNINGS BY EMPLOYEE ID ---
+app.get('/api/partners/metrics/:empId', async (req, res) => {
+  try {
+    const empId = req.params.empId;
+    const partner = await Partner.findOne({ $or: [{ employeeId: empId }, { partnerId: empId }, { mobile: empId }] });
+    
+    if (!partner) {
+      return res.status(404).json({ success: false, message: "Partner not found" });
+    }
+
+    // Fetch assigned bookings for this partner
+    const bookings = await Booking.find({ assignedPartner: partner.name });
+    
+    let totalEarnings = bookings
+      .filter(b => b.isCompleted || b.status === 'COMPLETED')
+      .reduce((sum, b) => sum + (b.reenteredAmount || b.amount || 212), 0);
+
+    let completedCount = bookings.filter(b => b.isCompleted || b.status === 'COMPLETED').length;
+    let cancelledCount = bookings.filter(b => b.status === 'CANCELLED').length;
+
+    res.json({
+      success: true,
+      partner: partner,
+      metrics: {
+        totalEarnings: totalEarnings,
+        completedJobs: completedCount,
+        cancellations: cancelledCount,
+        rating: 4.85
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// --- 3. MONGODB SYNC PARTNER SELF-DELETION USING EMPLOYEE ID ---
+app.delete('/api/partners/delete/:empId', async (req, res) => {
+  try {
+    const empId = req.params.empId;
+    
+    let deletedPartner = await Partner.findOneAndDelete({ 
+      $or: [
+        { employeeId: empId }, 
+        { partnerId: empId }, 
+        { mobile: empId }
+      ] 
+    });
+
+    if (deletedPartner) {
+      // Unassign bookings associated with this partner
+      await Booking.updateMany(
+        { assignedPartner: deletedPartner.name },
+        { $set: { assignedPartner: null, partnerStatus: 'PENDING' } }
+      );
+
+      res.json({ success: true, message: "Partner account and performance records deleted from MongoDB successfully!" });
+    } else {
+      res.status(404).json({ success: false, message: "Partner not found in database" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// --- 2. PARTNER LOGIN WITH FRESH SYNC ---
 app.post('/api/partners/login', async (req, res) => {
   try {
     const { mobile } = req.body;
@@ -246,22 +328,27 @@ app.post('/api/partners/login', async (req, res) => {
   }
 });
 
-// 3. PUT: Update Partner Availability / Leave Dates API
+// PUT: Update Partner Availability & Slot Preferences in MongoDB
 app.put('/api/partners/:id/availability', async (req, res) => {
   try {
-    const partnerId = req.params.id;
-    const { unavailableDates } = req.body;
+    let queryId = req.params.id;
+    const { unavailableDates, slotAvailability } = req.body;
 
     let updatedPartner = await Partner.findOneAndUpdate(
-      { $or: [{ partnerId: partnerId }, { _id: partnerId }] },
-      { $set: { unavailableDates: unavailableDates } },
+      { $or: [{ partnerId: queryId }, { _id: queryId.match(/^[0-9a-fA-F]{24}$/) ? queryId : null }, { mobile: queryId }] },
+      { 
+        $set: { 
+          unavailableDates: unavailableDates || [],
+          slotAvailability: slotAvailability || {}
+        } 
+      },
       { new: true }
     );
 
     if (updatedPartner) {
       res.json({ success: true, partner: updatedPartner });
     } else {
-      res.status(404).json({ success: false, message: "Partner not found" });
+      res.status(404).json({ success: false, message: "Partner not found for availability update" });
     }
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -377,6 +464,120 @@ app.delete('/api/partners/:id', async (req, res) => {
     } else {
       res.status(404).json({ success: false, message: "Partner not found in database" });
     }
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// --- PARTNER METRICS SYNC ROUTE ---
+app.post('/api/partners/metrics/sync', async (req, res) => {
+  try {
+    const { partnerId, acceptanceRate, completionRate } = req.body;
+    
+    let updated = await Partner.findOneAndUpdate(
+      { $or: [{ partnerId: partnerId }, { _id: partnerId.match(/^[0-9a-fA-F]{24}$/) ? partnerId : null }] },
+      { 
+        $set: { 
+          weekendUnavailableHours: acceptanceRate, // Reusing field for Acceptance % sync storage
+          peakUnavailableHours: completionRate     // Reusing field for Completion % sync storage
+        } 
+      },
+      { new: true }
+    );
+
+    if (updated) {
+      res.json({ success: true, partner: updated });
+    } else {
+      res.status(404).json({ success: false, message: "Partner not found for metrics sync" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// --- SMART JOB MATCHING & NOTIFICATION API ---
+app.post('/api/bookings', async (req, res) => {
+  try {
+    const bookingData = req.body;
+    
+    // 1. Find eligible partners matching the designation & pincode/district
+    let eligiblePartners = await Partner.find({
+      designation: bookingData.requiredDesignation,
+      isOnline: true
+    });
+
+    // 2. Filter partners based on Slot Availability (Slot ON irukanum)
+    let slotKey = bookingData.slotKey; // e.g., "2026-11-01_1"
+    let availablePartners = eligiblePartners.filter(partner => {
+      if (partner.slotAvailability && partner.slotAvailability[slotKey] === false) {
+        return false; // Partner turned off this slot!
+      }
+      return true;
+    });
+
+    // 3. Score partners based on Performance (Rating, Accept %, Complete %)
+    if (availablePartners.length > 0) {
+      availablePartners.sort((a, b) => {
+        let scoreA = (a.rating * 10) + 
+                     ((a.totalJobsCompleted / Math.max(1, a.totalJobsAssigned)) * 20) - 
+                     (a.cancellations * 5);
+                     
+        let scoreB = (b.rating * 10) + 
+                     ((b.totalJobsCompleted / Math.max(1, b.totalJobsAssigned)) * 20) - 
+                     (b.cancellations * 5);
+                     
+        return scoreB - scoreA; // Highest score partner gets priority!
+      });
+
+      // Assign top-ranked best partner
+      bookingData.assignedPartner = availablePartners[0].name;
+      bookingData.partnerStatus = 'NOTIFIED';
+    } else {
+      bookingData.assignedPartner = null;
+      bookingData.partnerStatus = 'PENDING_SLOT_MATCH';
+    }
+
+    const newBooking = new Booking(bookingData);
+    await newBooking.save();
+
+    // Real-time Socket Broadcast to matched partner
+    io.to('kanchipuram').emit('new-booking-alert', newBooking);
+    
+    res.json({ success: true, booking: newBooking, assigned: bookingData.assignedPartner });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// --- MONGODB BOOKING UPDATE & RECONFIRMATION SYNC ---
+app.put('/api/bookings/:id', async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+    const updateData = req.body;
+
+    let updatedBooking = await Booking.findOneAndUpdate(
+      { $or: [{ id: bookingId }, { bookingId: bookingId }, { _id: bookingId.match(/^[0-9a-fA-F]{24}$/) ? bookingId : null }] },
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!updatedBooking) {
+      // Fallback create or upsert if not found
+      updatedBooking = new Booking(Object.assign({ id: bookingId }, updateData));
+      await updatedBooking.save();
+    }
+
+    res.json({ success: true, booking: updatedBooking });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// --- FETCH MONGODB BOOKINGS FOR REAL-TIME SYNC ---
+app.get('/api/bookings', async (req, res) => {
+  try {
+    let bookings = await Booking.find({});
+    res.json(bookings);
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

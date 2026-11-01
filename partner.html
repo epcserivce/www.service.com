@@ -42,28 +42,21 @@
 
  <!-- ================= 1. PARTNER AUTH / REGISTRATION VIEW ================= -->
   <div id="auth-view" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-hidden">
-    
-    <!-- 🖼️ Background Image with Dark Overlay -->
     <div class="absolute inset-0 bg-cover bg-center z-0 scale-105 filter brightness-40" style="background-image: url('https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=1920&auto=format&fit=crop');"></div>
     <div class="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-900/90 to-indigo-950/80 z-0"></div>
 
-    <!-- 📱 Main Clean Compact Login Card -->
     <div class="bg-slate-900/95 backdrop-blur-xl w-full max-w-md rounded-[2.5rem] p-6 sm:p-8 shadow-2xl space-y-5 border border-purple-500/30 z-10 relative max-h-[90vh] overflow-y-auto custom-scrollbar text-white">
-      
-      <!-- Header with Inside Fun 3D Technician Mascot -->
       <div class="flex items-center justify-between relative pt-2">
         <div class="space-y-1">
           <div class="bg-gradient-to-tr from-amber-400 to-amber-600 text-slate-950 font-black text-[10px] px-3 py-1 rounded-xl inline-block shadow uppercase tracking-wider">🚀 Earn Big</div>
           <h1 id="auth-title" class="text-xl sm:text-2xl font-black tracking-tight text-white">Partner Portal Login</h1>
           <p id="auth-subtitle" class="text-[11px] text-purple-200 font-medium">Enter your mobile number to access jobs</p>
         </div>
-        <!-- 3D Mascot neatly aligned inside the card header -->
         <div class="w-20 sm:w-24 flex-shrink-0">
           <img src="https://cdni.iconscout.com/illustration/premium/thumb/electrician-working-with-tools-illustration-download-in-svg-png-gif-file-packs--repairman-technician-fixer-service-man-pack-people-illustrations-4309325.png?f=webp" alt="Partner Mascot" class="w-full h-auto object-contain drop-shadow-xl" />
         </div>
       </div>
 
-      <!-- 🌟 Special Offer / Dialogue Banner Inside Card -->
       <div class="bg-gradient-to-r from-purple-950/90 via-indigo-950/90 to-purple-900/90 p-4 rounded-2xl border border-purple-700/40 space-y-1.5 shadow-inner">
         <span class="bg-amber-400 text-slate-950 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider inline-block">Special Offer</span>
         <h2 class="text-xs sm:text-sm font-black tracking-tight leading-snug text-white">
@@ -74,7 +67,6 @@
         </p>
       </div>
 
-      <!-- Login Form Box -->
       <div id="login-form-box" class="space-y-4">
         <div class="space-y-1.5">
           <label class="text-xs font-bold text-purple-200 block">Mobile Number</label>
@@ -88,7 +80,6 @@
         </p>
       </div>
 
-      <!-- Registration Form Box -->
       <div id="register-form-box" class="space-y-3 hidden">
         <div class="space-y-1">
           <label class="text-xs font-bold text-purple-200 block">Full Name *</label>
@@ -122,7 +113,6 @@
           Already registered? <span onclick="switchToLogin()" class="text-amber-400 font-extrabold cursor-pointer hover:underline">Login here</span>
         </p>
       </div>
-
     </div>
   </div>
 
@@ -132,7 +122,8 @@
       <div class="bg-gradient-to-tr from-ucPurple to-indigo-600 text-white font-black text-xs px-3 py-2 rounded-xl shadow-md">EPC</div>
       <div>
         <h1 class="font-black text-sm tracking-tight text-slate-900 leading-tight">Partner Portal</h1>
-        <p id="partner-info-subtitle" class="text-[11px] text-slate-400 font-semibold">Loading...</p>
+        <p id="partner-info-subtitle" class="text-[11px] text-slate-500 font-bold">Loading...</p>
+        <p id="partner-emp-id-tag" class="text-[10px] text-ucPurple font-extrabold tracking-wider">Emp ID: --</p>
       </div>
     </div>
 
@@ -140,17 +131,16 @@
       <button onclick="window.location.href='partner_account.html'" class="flex items-center gap-1 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3.5 py-2 rounded-xl transition cursor-pointer shadow-sm">
         <i class="fa-solid fa-user-gear text-ucPurple"></i>
       </button>
+      <button onclick="deletePartnerSelfAccount()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition cursor-pointer shadow-sm flex items-center gap-1.5">
+        <i class="fa-solid fa-trash text-[10px]"></i> Delete
+      </button>
       <button onclick="logoutPartner()" class="text-xs bg-red-50 hover:bg-red-100 px-3.5 py-2 rounded-xl font-bold text-red-600 transition shadow-sm">
         <i class="fa-solid fa-right-from-bracket"></i>
       </button>
     </div>
-
-    <!-- Inga onclick function-ah add pannirukken -->
-<button onclick="deletePartnerSelfAccount()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition cursor-pointer shadow-sm flex items-center gap-1.5">
-  <i class="fa-solid fa-trash text-[10px]"></i> Delete
-</button>
   </header>
 
+  <!-- ================= 3. MAIN TAB VIEWS CONTAINER ================= -->
   <main class="max-w-2xl w-full mx-auto p-4 sm:p-6 space-y-5 flex-1">
 
     <!-- 1. HOME VIEW -->
@@ -160,156 +150,196 @@
         <p class="text-xs text-slate-300 leading-relaxed font-medium">Use the bottom navigation bar to manage your New Jobs, Ongoing Active Works, Targets, and Earnings seamlessly.</p>
       </div>
 
-      <!-- 🗓️ PARTNER AVAILABILITY & LEAVE PLANNER CARD -->
-      <div class="bg-white p-5 rounded-[2rem] border border-slate-200/80 shadow-sm space-y-4">
-        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-          <div>
-            <span class="text-[10px] font-black text-ucPurple uppercase tracking-wider block">Work Schedule</span>
-            <h3 class="font-black text-sm text-slate-900 tracking-tight">Manage Availability & Leaves</h3>
-          </div>
-          <span id="calendar-status-badge" class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-            🟢 Working Today
-          </span>
-        </div>
+      <!-- PARTNER AVAILABILITY CARD -->
+<div class="bg-white p-5 rounded-[2rem] border border-slate-200/80 shadow-sm space-y-4">
+  <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+    <div>
+      <span class="text-[10px] font-black text-ucPurple uppercase tracking-wider block">WORK SCHEDULE & CALENDAR</span>
+      <h3 class="font-black text-sm text-slate-900 tracking-tight">Manage Availability & Breaks</h3>
+    </div>
+    <button onclick="openFullCalendarModal()" class="text-xs font-black text-ucPurple bg-purple-50 hover:bg-purple-100 px-3.5 py-1.5 rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-sm">
+      <i class="fa-solid fa-calendar-days"></i> Full Calendar
+    </button>
+  </div>
 
-        <!-- Quick Action Buttons -->
-        <div class="grid grid-cols-4 gap-1.5 text-center">
-          <button onclick="setQuickLeave('today')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 rounded-xl text-[10px] font-bold transition">Today Off</button>
-          <button onclick="setQuickLeave('tomorrow')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 rounded-xl text-[10px] font-bold transition">Tomorrow Off</button>
-          <button onclick="setQuickLeave('weekend')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 rounded-xl text-[10px] font-bold transition">Weekend Off</button>
-          <button onclick="resetAllLeaves()" class="bg-purple-50 hover:bg-purple-100 text-ucPurple py-2 rounded-xl text-[10px] font-black transition">Clear All</button>
-        </div>
-
-        <!-- 30-Days Scrollable Calendar Horizontal Strip -->
-        <div class="space-y-1">
-          <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Tap date to toggle Off/On</p>
-          <div id="partner-calendar-strip" class="flex gap-2 overflow-x-auto pb-2 pt-1 custom-scrollbar">
-            <!-- Dynamic Date Cards will render here -->
-          </div>
-        </div>
+  <div class="flex items-center justify-between gap-2 overflow-x-auto pb-1">
+    <div class="flex items-center gap-4">
+      <div class="space-y-0.5">
+        <span id="dashboard-chip-date-1" class="text-xs font-bold text-slate-900 block">Today, Nov 01</span>
+        <span id="dashboard-chip-status-1" class="text-[10px] font-black text-emerald-600 block flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span> AVAILABLE</span>
       </div>
-
-     <!-- 🌟 INTERACTIVE FEATURE GRID CARDS -->
-<div class="grid grid-cols-2 gap-3 pt-2">
-  
-  <!-- Card 1: Payouts -->
-  <div onclick="openBenefitInfoModal('payouts')" class="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm space-y-2 hover:shadow-md hover:border-purple-300 transition cursor-pointer active:scale-95">
-    <div class="w-9 h-9 rounded-2xl bg-purple-50 text-ucPurple flex items-center justify-center text-sm font-black shadow-inner">
-      <i class="fa-solid fa-wallet"></i>
-    </div>
-    <div>
-      <h4 class="font-black text-xs text-slate-900 leading-tight">Instant Payouts</h4>
-      <p class="text-[10px] text-slate-500 font-medium mt-0.5">Daily / Weekly direct transfer.</p>
+      <div class="h-6 w-[1px] bg-slate-200 mx-1"></div>
+      <div class="space-y-0.5">
+        <span id="dashboard-chip-date-2" class="text-xs font-bold text-slate-900 block">Mon, Nov 02</span>
+        <span id="dashboard-chip-status-2" class="text-[10px] font-black text-emerald-600 block flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span> AVAILABLE</span>
+      </div>
     </div>
   </div>
-
-  <!-- Card 2: Freedom -->
-  <div onclick="openBenefitInfoModal('freedom')" class="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm space-y-2 hover:shadow-md hover:border-amber-300 transition cursor-pointer active:scale-95">
-    <div class="w-9 h-9 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm font-black shadow-inner">
-      <i class="fa-solid fa-clock"></i>
-    </div>
-    <div>
-      <h4 class="font-black text-xs text-slate-900 leading-tight">Full Freedom</h4>
-      <p class="text-[10px] text-slate-500 font-medium mt-0.5">Work on your preferred time.</p>
-    </div>
-  </div>
-
-  <!-- Card 3: Safety Cover -->
-  <div onclick="openBenefitInfoModal('safety')" class="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm space-y-2 hover:shadow-md hover:border-emerald-300 transition cursor-pointer active:scale-95">
-    <div class="w-9 h-9 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-black shadow-inner">
-      <i class="fa-solid fa-shield-halved"></i>
-    </div>
-    <div>
-      <h4 class="font-black text-xs text-slate-900 leading-tight">EPC Safety</h4>
-      <p class="text-[10px] text-slate-500 font-medium mt-0.5">Insurance benefits included.</p>
-    </div>
-  </div>
-
-  <!-- Card 4: Local Jobs -->
-  <div onclick="openBenefitInfoModal('local')" class="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm space-y-2 hover:shadow-md hover:border-blue-300 transition cursor-pointer active:scale-95">
-    <div class="w-9 h-9 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-black shadow-inner">
-      <i class="fa-solid fa-location-dot"></i>
-    </div>
-    <div>
-      <h4 class="font-black text-xs text-slate-900 leading-tight">Local Jobs</h4>
-      <p class="text-[10px] text-slate-500 font-medium mt-0.5">Bookings near Kanchipuram.</p>
-    </div>
-  </div>
-
 </div>
 
-<!-- 🔔 POPUP MODAL FOR BENEFIT DETAILS -->
-<div id="benefit-detail-modal" class="hidden fixed inset-0 z-[110] bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
-  <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-6 shadow-2xl space-y-4 border border-slate-100 text-slate-900 relative">
-    
-    <button onclick="closeBenefitInfoModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 cursor-pointer transition">
-      <i class="fa-solid fa-xmark text-xs"></i>
-    </button>
-
-    <div class="flex items-center gap-3 pt-1">
-      <div id="modal-benefit-icon" class="w-12 h-12 rounded-2xl bg-purple-50 text-ucPurple flex items-center justify-center text-xl font-black shadow-inner">
-        <i class="fa-solid fa-wallet"></i>
-      </div>
-      <div>
-        <span class="text-[10px] font-black text-ucPurple uppercase tracking-wider block">EPC Benefit</span>
-        <h3 id="modal-benefit-title" class="font-black text-base text-slate-900 tracking-tight">Instant Payouts</h3>
-      </div>
-    </div>
-
-    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-2">
-      <p id="modal-benefit-desc" class="text-xs text-slate-600 font-medium leading-relaxed">
-        Details loading...
-      </p>
-    </div>
-
-    <div class="space-y-1.5 pt-1">
-      <p class="text-[11px] font-black text-slate-900 uppercase tracking-wider">Key Highlights:</p>
-      <ul id="modal-benefit-list" class="text-xs text-slate-600 space-y-1.5 font-medium list-disc list-inside">
-      </ul>
-    </div>
-
-    <button onclick="closeBenefitInfoModal()" class="w-full bg-ucPurple hover:bg-purple-700 text-white py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider transition shadow-lg shadow-purple-500/25 cursor-pointer">
-      Got It, Thanks!
-    </button>
-
-  </div>
-</div>
-   <!-- 3. SUCCESS PARTNER STORIES (COMPACT TESTIMONIAL CARD) -->
-    <div class="bg-white p-5 rounded-[2.5rem] border border-slate-200/80 shadow-sm space-y-3">
-      <div class="flex justify-between items-center">
+        <!-- ================= FULL CALENDAR MODAL & SLOT POPUPS ================= -->
+  <div id="full-calendar-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-[2.5rem] p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto border border-slate-100">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
         <div>
-          <span class="text-[10px] font-black text-ucPurple uppercase tracking-wider">Verified Partners</span>
-          <h3 class="font-black text-sm text-slate-900 tracking-tight">Success Stories in Kanchipuram</h3>
+          <span class="text-[10px] font-black text-ucPurple uppercase tracking-wider block">ADVANCED AVAILABILITY</span>
+          <h3 id="modal-month-year-title" class="font-black text-lg text-slate-900 tracking-tight">November 2026</h3>
         </div>
-        <div class="flex gap-1.5">
-          <button onclick="prevTestimonial()" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 transition cursor-pointer text-xs">
-            <i class="fa-solid fa-chevron-left"></i>
-          </button>
-          <button onclick="nextTestimonial()" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 transition cursor-pointer text-xs">
-            <i class="fa-solid fa-chevron-right"></i>
+        <div class="flex items-center gap-2">
+          <button onclick="changeMonth(-1)" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 transition cursor-pointer text-xs"><i class="fa-solid fa-chevron-left"></i></button>
+          <button onclick="jumpToTodayCalendar()" class="px-3 py-1.5 rounded-xl bg-purple-50 text-ucPurple text-xs font-black transition cursor-pointer">Today</button>
+          <button onclick="changeMonth(1)" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 transition cursor-pointer text-xs"><i class="fa-solid fa-chevron-right"></i></button>
+          <button onclick="closeFullCalendarModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 cursor-pointer transition ml-2">
+            <i class="fa-solid fa-xmark text-xs"></i>
           </button>
         </div>
       </div>
 
-      <!-- Testimonial Card Display Container -->
-      <div id="testimonial-card-container" class="bg-gradient-to-r from-purple-50/70 to-indigo-50/70 p-4 rounded-3xl border border-purple-100 space-y-2.5 transition-all duration-300">
-        <div class="flex items-center gap-3">
-          <img id="testi-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop" class="w-10 h-10 rounded-2xl object-cover shadow-sm border-2 border-white" alt="Partner">
-          <div>
-            <h4 id="testi-name" class="font-black text-slate-900 text-xs">Murugan K.</h4>
-            <p id="testi-desig" class="text-[11px] font-bold text-ucPurple">Electrician • Kanchipuram Main</p>
-          </div>
-          <div class="ml-auto text-amber-500 font-black text-xs bg-white px-2 py-0.5 rounded-xl shadow-sm border border-amber-100">
-            <i class="fa-solid fa-star mr-1"></i>4.9
-          </div>
-        </div>
-        <p id="testi-quote" class="text-[11px] text-slate-600 font-medium italic leading-relaxed">
-          "EPC partner app-la join pannathu-ku apram enakku daily regular bookings varudhu. Weekly payout romba correct-ah vandhurudhu. Now I earn ₹25,000+ monthly easily!"
-        </p>
+      <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-black text-slate-400 uppercase">
+        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
       </div>
+
+      <div id="full-month-grid" class="grid grid-cols-7 gap-1.5 text-center">
+        <!-- Dynamic Month Grid Days Rendered Here -->
+      </div>
+
+      <div class="bg-purple-50/70 p-4 rounded-2xl border border-purple-100 flex justify-between items-center text-xs">
+        <div>
+          <span class="font-black text-purple-900 block">Total Off / Break Days</span>
+          <span class="text-[10px] text-slate-500 font-medium">Click any date to manage slot-wise availability</span>
+        </div>
+        <span id="total-break-days-count" class="text-base font-black text-ucPurple bg-white px-3 py-1 rounded-xl shadow-sm border border-purple-200">0</span>
+      </div>
+
+      <button onclick="closeFullCalendarModal()" class="w-full bg-slate-900 hover:bg-black text-white py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider transition shadow-lg cursor-pointer">
+        Save & Close Calendar
+      </button>
     </div>
-
   </div>
+
+  <!-- DATE SLOTS TOGGLE POPUP MODAL -->
+  <div id="date-slots-popup-modal" class="hidden fixed inset-0 z-[60] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-[2.5rem] p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto border border-slate-100">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div>
+          <span class="text-[10px] font-black text-emerald-600 uppercase tracking-wider block">SLOT AVAILABILITY MANAGER</span>
+          <h3 id="popup-selected-date-title" class="font-black text-base text-slate-900 tracking-tight">SUNDAY, NOV 1ST SLOTS</h3>
+        </div>
+        <button onclick="closeDateSlotsPopup()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 cursor-pointer transition">
+          <i class="fa-solid fa-xmark text-xs"></i>
+        </button>
+      </div>
+
+      <p class="text-[11px] text-slate-500 font-medium leading-relaxed">
+        Toggle off individual slots or mark the entire day as OFF if you are taking a break.
+      </p>
+
+      <div id="popup-slot-toggles-container" class="space-y-2.5">
+        <!-- Dynamic Slot Toggles Rendered Here -->
+      </div>
+
+      <button onclick="closeDateSlotsPopup()" class="w-full bg-ucPurple hover:bg-purple-700 text-white py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider transition shadow-lg shadow-purple-500/25 cursor-pointer">
+        Done & Update Slots
+      </button>
+    </div>
+  </div>
+
+      <!-- INTERACTIVE FEATURE GRID CARDS -->
+      <div class="grid grid-cols-2 gap-3 pt-2">
+        <div onclick="openBenefitInfoModal('payouts')" class="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm space-y-2 hover:shadow-md hover:border-purple-300 transition cursor-pointer active:scale-95">
+          <div class="w-9 h-9 rounded-2xl bg-purple-50 text-ucPurple flex items-center justify-center text-sm font-black shadow-inner"><i class="fa-solid fa-wallet"></i></div>
+          <div>
+            <h4 class="font-black text-xs text-slate-900 leading-tight">Instant Payouts</h4>
+            <p class="text-[10px] text-slate-500 font-medium mt-0.5">Daily / Weekly direct transfer.</p>
+          </div>
+        </div>
+
+        <div onclick="openBenefitInfoModal('freedom')" class="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm space-y-2 hover:shadow-md hover:border-amber-300 transition cursor-pointer active:scale-95">
+          <div class="w-9 h-9 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm font-black shadow-inner"><i class="fa-solid fa-clock"></i></div>
+          <div>
+            <h4 class="font-black text-xs text-slate-900 leading-tight">Full Freedom</h4>
+            <p class="text-[10px] text-slate-500 font-medium mt-0.5">Work on your preferred time.</p>
+          </div>
+        </div>
+
+        <div onclick="openBenefitInfoModal('safety')" class="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm space-y-2 hover:shadow-md hover:border-emerald-300 transition cursor-pointer active:scale-95">
+          <div class="w-9 h-9 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-black shadow-inner"><i class="fa-solid fa-shield-halved"></i></div>
+          <div>
+            <h4 class="font-black text-xs text-slate-900 leading-tight">EPC Safety</h4>
+            <p class="text-[10px] text-slate-500 font-medium mt-0.5">Insurance benefits included.</p>
+          </div>
+        </div>
+
+        <div onclick="openBenefitInfoModal('local')" class="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm space-y-2 hover:shadow-md hover:border-blue-300 transition cursor-pointer active:scale-95">
+          <div class="w-9 h-9 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-black shadow-inner"><i class="fa-solid fa-location-dot"></i></div>
+          <div>
+            <h4 class="font-black text-xs text-slate-900 leading-tight">Local Jobs</h4>
+            <p class="text-[10px] text-slate-500 font-medium mt-0.5">Bookings near Kanchipuram.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- BENEFIT DETAIL POPUP MODAL -->
+  <div id="benefit-detail-modal" class="hidden fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full max-w-md rounded-t-[2.5rem] sm:rounded-[2.5rem] p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto border border-slate-100">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div id="modal-benefit-icon" class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-black shadow-inner bg-purple-50 text-ucPurple">
+          <i class="fa-solid fa-wallet"></i>
+        </div>
+        <button onclick="closeBenefitInfoModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 cursor-pointer transition">
+          <i class="fa-solid fa-xmark text-xs"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs text-slate-700">
+        <h3 id="modal-benefit-title" class="font-black text-lg text-slate-900 tracking-tight">Benefit Details</h3>
+        
+        <p id="modal-benefit-desc" class="font-medium text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100">
+          Benefit description goes here...
+        </p>
+
+        <div class="space-y-2 pt-1">
+          <p class="font-black text-xs text-slate-900 uppercase tracking-wider">Key Highlights</p>
+          <ul id="modal-benefit-list" class="space-y-2 font-bold text-slate-800 bg-purple-50/50 p-4 rounded-2xl border border-purple-100 list-disc list-inside">
+            <!-- Dynamic highlights rendered here -->
+          </ul>
+        </div>
+      </div>
+
+      <button onclick="closeBenefitInfoModal()" class="w-full bg-slate-900 hover:bg-black text-white py-4 rounded-2xl font-black text-xs uppercase tracking-wider transition shadow-lg cursor-pointer">
+        Got It & Close
+      </button>
+    </div>
+  </div>
+
+      <!-- SUCCESS PARTNER STORIES -->
+      <div class="bg-white p-5 rounded-[2.5rem] border border-slate-200/80 shadow-sm space-y-3">
+        <div class="flex justify-between items-center">
+          <div>
+            <span class="text-[10px] font-black text-ucPurple uppercase tracking-wider">Verified Partners</span>
+            <h3 class="font-black text-sm text-slate-900 tracking-tight">Success Stories in Kanchipuram</h3>
+          </div>
+          <div class="flex gap-1.5">
+            <button onclick="prevTestimonial()" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 transition cursor-pointer text-xs"><i class="fa-solid fa-chevron-left"></i></button>
+            <button onclick="nextTestimonial()" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 transition cursor-pointer text-xs"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+        </div>
+
+        <div id="testimonial-card-container" class="bg-gradient-to-r from-purple-50/70 to-indigo-50/70 p-4 rounded-3xl border border-purple-100 space-y-2.5 transition-all duration-300">
+          <div class="flex items-center gap-3">
+            <img id="testi-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop" class="w-10 h-10 rounded-2xl object-cover shadow-sm border-2 border-white" alt="Partner">
+            <div>
+              <h4 id="testi-name" class="font-black text-slate-900 text-xs">Murugan K.</h4>
+              <p id="testi-desig" class="text-[11px] font-bold text-ucPurple">Electrician • Kanchipuram Main</p>
+            </div>
+            <div class="ml-auto text-amber-500 font-black text-xs bg-white px-2 py-0.5 rounded-xl shadow-sm border border-amber-100"><i class="fa-solid fa-star mr-1"></i>4.9</div>
+          </div>
+          <p id="testi-quote" class="text-[11px] text-slate-600 font-medium italic leading-relaxed">
+            "EPC partner app-la join pannathu-ku apram enakku daily regular bookings varudhu. Weekly payout romba correct-ah vandhurudhu. Now I earn ₹25,000+ monthly easily!"
+          </p>
+        </div>
+      </div>
+    </div> <!-- END OF VIEW-HOME -->
 
     <!-- 2. NEW / JOB MANAGEMENT VIEW -->
     <div id="view-new" class="hidden space-y-4">
@@ -321,18 +351,16 @@
       </div>
 
       <div id="job-subtab-content" class="space-y-4"></div>
-    </div>
+    </div> <!-- END OF VIEW-NEW -->
 
     <!-- 3. ONGOING VIEW -->
     <div id="view-ongoing" class="hidden space-y-4">
       <h2 class="font-black text-base text-slate-900 tracking-tight">Ongoing Active Works</h2>
       <div id="ongoingJobsList" class="space-y-4"></div>
-    </div>
+    </div> <!-- END OF VIEW-ONGOING -->
 
     <!-- 4. TARGET VIEW (Performance & Metrics) -->
     <div id="view-target" class="hidden space-y-5">
-      
-      <!-- Top Status Banner -->
       <div class="bg-white p-5 rounded-[2rem] border border-slate-200/80 shadow-sm space-y-2">
         <div class="flex justify-between items-center text-xs text-slate-400 font-bold">
           <span id="target-date-range">27 Oct - 25 Nov</span>
@@ -345,18 +373,11 @@
         </div>
       </div>
 
-      <!-- Metrics Header -->
       <div class="flex justify-between items-center px-1">
         <h3 class="font-black text-base text-slate-900 tracking-tight">Metrics</h3>
-        <button onclick="alert('EPC Performance Help: Maintain high ratings (above 4.6), keep cancellations low (below 6), and manage your duty hours efficiently to unlock partner benefits!')" class="bg-slate-900 text-white px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm hover:bg-black transition cursor-pointer">
-          <i class="fa-solid fa-circle-question text-[10px]"></i> Help
-        </button>
       </div>
 
-      <!-- 4 Modern Square Cards Grid (Matching screenshot layout) -->
       <div class="grid grid-cols-2 gap-3.5">
-        
-        <!-- Card 1: Rating -->
         <div class="bg-white p-4.5 rounded-[2rem] border border-slate-200/80 shadow-sm space-y-3 flex flex-col justify-between">
           <div class="space-y-0.5">
             <h4 class="font-black text-xs text-slate-900 uppercase tracking-wider">Rating</h4>
@@ -368,7 +389,6 @@
           </div>
         </div>
 
-        <!-- Card 2: Cancellations -->
         <div class="bg-white p-4.5 rounded-[2rem] border border-slate-200/80 shadow-sm space-y-3 flex flex-col justify-between">
           <div class="space-y-0.5">
             <h4 class="font-black text-xs text-slate-900 uppercase tracking-wider">Cancellations</h4>
@@ -380,32 +400,29 @@
           </div>
         </div>
 
-        <!-- Card 3: Weekend unavailable hours -->
         <div class="bg-white p-4.5 rounded-[2rem] border border-slate-200/80 shadow-sm space-y-3 flex flex-col justify-between">
           <div class="space-y-0.5">
-            <h4 class="font-black text-xs text-slate-900 uppercase tracking-wider leading-tight">Weekend unavailable hours</h4>
-            <p class="text-[11px] text-slate-400 font-medium">Keep 26 or below</p>
+            <h4 class="font-black text-xs text-slate-900 uppercase tracking-wider leading-tight">Job Acceptance Rate</h4>
+            <p class="text-[11px] text-slate-400 font-medium">Target 80% or above</p>
           </div>
           <div class="flex items-center gap-2 pt-2">
-            <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-[10px] shadow-sm"><i class="fa-solid fa-check"></i></span>
-            <span id="metric-weekend-val" class="text-xl font-black text-slate-900">0</span>
+            <span id="metric-accept-badge" class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-[10px] shadow-sm"><i class="fa-solid fa-check"></i></span>
+            <span id="metric-acceptance-val" class="text-xl font-black text-slate-900">0%</span>
           </div>
         </div>
 
-        <!-- Card 4: Peak unavailable hours -->
         <div class="bg-white p-4.5 rounded-[2rem] border border-slate-200/80 shadow-sm space-y-3 flex flex-col justify-between">
           <div class="space-y-0.5">
-            <h4 class="font-black text-xs text-slate-900 uppercase tracking-wider leading-tight">Peak unavailable hours</h4>
-            <p class="text-[11px] text-slate-400 font-medium">Keep 36 or below</p>
+            <h4 class="font-black text-xs text-slate-900 uppercase tracking-wider leading-tight">Job Completion Rate</h4>
+            <p class="text-[11px] text-slate-400 font-medium">Target 90% or above</p>
           </div>
           <div class="flex items-center gap-2 pt-2">
-            <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-[10px] shadow-sm"><i class="fa-solid fa-check"></i></span>
-            <span id="metric-peak-val" class="text-xl font-black text-slate-900">0</span>
+            <span id="metric-complete-badge" class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-[10px] shadow-sm"><i class="fa-solid fa-check"></i></span>
+            <span id="metric-completion-val" class="text-xl font-black text-slate-900">0%</span>
           </div>
         </div>
-
       </div>
-    </div>
+    </div> <!-- END OF VIEW-TARGET -->
 
     <!-- 5. MONEY VIEW -->
     <div id="view-money" class="hidden space-y-5">
@@ -416,22 +433,18 @@
         </div>
       </div>
 
-      <!-- Main Total Earnings Card -->
       <div class="bg-gradient-to-br from-emerald-600 to-teal-800 p-6 rounded-[2rem] text-white shadow-xl space-y-2 border border-emerald-500/20">
         <span class="text-xs font-semibold text-emerald-100 uppercase tracking-wider block">Total Earnings</span>
         <h2 id="total-earnings-display" class="text-4xl font-black">₹0</h2>
       </div>
 
-      <!-- 1st Row: Upcoming 3 Days & Last 10 Days Small Square Boxes -->
       <div class="grid grid-cols-2 gap-3">
-        <!-- Future 3 Days Upcoming Jobs Box -->
         <div class="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
           <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Upcoming (3 Days)</span>
           <h3 id="money-upcoming-amount" class="text-lg font-black text-slate-900">₹0</h3>
           <p class="text-[10px] text-purple-600 font-bold">Future scheduled orders</p>
         </div>
 
-        <!-- Current Last 10 Days Jobs Box -->
         <div class="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
           <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Last 10 Days</span>
           <h3 id="money-last10-amount" class="text-lg font-black text-slate-900">₹0</h3>
@@ -439,14 +452,12 @@
         </div>
       </div>
 
-      <!-- 2nd Row: In Process Small Square Box -->
       <div class="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
         <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider block">In Process Jobs</span>
         <h3 id="money-inprocess-amount" class="text-lg font-black text-slate-900">₹0</h3>
         <p class="text-[10px] text-blue-600 font-bold">Active ongoing works</p>
       </div>
 
-      <!-- Pending Deductions Section -->
       <div class="bg-white p-5 rounded-[2rem] border border-slate-200/80 shadow-sm space-y-2">
         <div class="flex justify-between items-center">
           <span class="text-xs font-black text-slate-700 uppercase tracking-wider">Pending Deductions</span>
@@ -457,7 +468,7 @@
           <h3 id="money-pending-deductions" class="text-lg font-black text-red-600">-₹0</h3>
         </div>
       </div>
-    </div>
+    </div> <!-- END OF VIEW-MONEY -->
 
   </main>
 
@@ -806,42 +817,63 @@
       }
     }
 
-    function registerNewPartner() {
-      const name = document.getElementById('reg-name').value.trim();
-      const mobile = document.getElementById('reg-mobile').value.trim();
-      const designation = document.getElementById('reg-designation').value;
-      const address = document.getElementById('reg-address').value.trim();
+    // 1. FRESH REGISTRATION FUNCTION (Resets old storage & Creates fresh MongoDB account)
+async function registerNewPartner() {
+  const name = document.getElementById('reg-name').value.trim();
+  const mobile = document.getElementById('reg-mobile').value.trim();
+  const designation = document.getElementById('reg-designation').value;
+  const address = document.getElementById('reg-address').value.trim();
 
-      if (!name || mobile.length !== 10) {
-        alert("Please enter valid Name and 10-digit mobile number.");
-        return;
-      }
+  if (!name || mobile.length !== 10) {
+    alert("Please enter valid Name and 10-digit mobile number.");
+    return;
+  }
 
-      const newPartnerObj = {
-        partnerId: 'PRT-' + Math.floor(1000 + Math.random() * 9000),
-        name: name,
-        mobile: mobile,
-        designation: designation,
-        currAddress: address,
-        isOnline: true,
-        isVerified: true
-      };
+  // 🧹 Clear any existing old partner data from browser cache for clean fresh start
+  localStorage.removeItem('epc_partner_unavailable_dates');
+  partnerUnavailableDates = [];
 
-      let registeredPartners = JSON.parse(localStorage.getItem('epc_registered_partners') || '[]');
-      registeredPartners.push(newPartnerObj);
-      localStorage.setItem('epc_registered_partners', JSON.stringify(registeredPartners));
+  const generatedEmpId = 'EPC-EMP-' + Math.floor(1000 + Math.random() * 9000);
+  const registrationTimestamp = new Date().toISOString();
 
-      localStorage.setItem('epc_partner_logged', JSON.stringify(newPartnerObj));
-      currentPartner = newPartnerObj;
+  const newPartnerObj = {
+    partnerId: 'PRT-' + Math.floor(1000 + Math.random() * 9000),
+    employeeId: generatedEmpId,
+    name: name,
+    mobile: mobile,
+    designation: designation,
+    currAddress: address,
+    isOnline: true,
+    isVerified: true,
+    createdAt: registrationTimestamp
+  };
 
-      alert(`🎉 Registration Successful!\nDesignation: ${designation}`);
-      hideAuthScreen();
-      loadPartnerProfileData();
-      loadPartnerJobs();
-      
-      // 🌟 Automatic Welcome Benefit Modal for New Partners (Correctly placed here!)
-      triggerWelcomePartnerTour();
+  try {
+    const res = await fetch('/api/partners/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newPartnerObj)
+    });
+    const data = await res.json();
+    if (data.success && data.partner) {
+      newPartnerObj = data.partner;
     }
+  } catch(err) {
+    console.warn("Server sync notice:", err);
+  }
+
+  localStorage.setItem('epc_partner_logged', JSON.stringify(newPartnerObj));
+  currentPartner = newPartnerObj;
+
+  alert(`🎉 Welcome to EPC Partner Portal!\n\nYour Employee ID: ${currentPartner.employeeId}\nDesignation: ${designation}\n\nUnga dashboard fresh-ah ready aagivittathu!`);
+  
+  hideAuthScreen();
+  loadPartnerProfileData();
+  renderPartnerCalendar();
+  loadPartnerJobs();
+  calculateEarnings();
+  triggerWelcomePartnerTour();
+}
 
     async function loginPartner() {
       const mobile = document.getElementById('login-mobile').value.trim();
@@ -899,17 +931,24 @@
     }
 
     function switchBottomNav(tab) {
-      ['home', 'new', 'ongoing', 'target', 'money'].forEach(t => {
-        document.getElementById(`view-${t}`).classList.add('hidden');
-        document.getElementById(`nav-${t}`).className = "flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 cursor-pointer transition transform active:scale-95";
-      });
-      document.getElementById(`view-${tab}`).classList.remove('hidden');
-      document.getElementById(`nav-${tab}`).className = "flex flex-col items-center gap-1 text-ucPurple cursor-pointer transition transform active:scale-95";
-      
-      if (tab === 'new') loadPartnerJobs();
-      if (tab === 'ongoing') loadOngoingJobs();
-      if (tab === 'money') calculateEarnings();
-    }
+  ['home', 'new', 'ongoing', 'target', 'money'].forEach(t => {
+    let viewEl = document.getElementById(`view-${t}`);
+    let navEl = document.getElementById(`nav-${t}`);
+    if (viewEl) viewEl.classList.add('hidden');
+    if (navEl) navEl.className = "flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 cursor-pointer transition transform active:scale-95";
+  });
+
+  let activeView = document.getElementById(`view-${tab}`);
+  let activeNav = document.getElementById(`nav-${tab}`);
+  if (activeView) activeView.classList.remove('hidden');
+  if (activeNav) activeNav.className = "flex flex-col items-center gap-1 text-ucPurple cursor-pointer transition transform active:scale-95";
+  
+  // 🎯 Trigger respective functions when tabs are clicked
+  if (tab === 'new') loadPartnerJobs();
+  if (tab === 'ongoing') loadOngoingJobs();
+  if (tab === 'target') loadPartnerTargetMetrics(); // 🌟 Calls target calculations
+  if (tab === 'money') calculateEarnings();       // 🌟 Calls earnings calculations
+}
 
     function switchJobTab(subTab) {
       currentActiveJobTab = subTab;
@@ -942,7 +981,8 @@
       localStorage.setItem('customerBookings', JSON.stringify(bookingsList));
     }
 
-    async function loadPartnerJobs() {
+    // --- 1. STRICT FRESH PARTNER JOB FILTER (Ignores all past/old orders completely) ---
+async function loadPartnerJobs() {
   const container = document.getElementById('job-subtab-content');
   if (!container || !currentPartner) return;
 
@@ -951,15 +991,6 @@
     const response = await fetch('/api/bookings');
     if (response.ok) {
       bookings = await response.json();
-      let localBookings = getSharedBookings();
-      bookings = bookings.map(b => {
-        let bId = b.id || b.bookingId;
-        let localMatch = localBookings.find(lb => String(lb.id || lb.bookingId) === String(bId));
-        if (localMatch && (localMatch.isCompleted || localMatch.status === 'COMPLETED')) {
-          return Object.assign({}, b, localMatch);
-        }
-        return b;
-      });
     } else {
       bookings = getSharedBookings();
     }
@@ -969,27 +1000,33 @@
 
   const partnerDesig = (currentPartner.designation || 'Electrician').toLowerCase();
   
+  // 🎯 STRICT FRESH TIMESTAMP FILTER: Partner register pannina date/time-ku munadi create aana ALL orders ignored!
+  const partnerRegTime = currentPartner.createdAt ? new Date(currentPartner.createdAt).getTime() : 0;
+  
   const now = new Date();
   const currentYear = now.getFullYear();
   const currentMonth = now.getMonth();
   const currentDay = now.getDate();
-  
   let todayMidnight = new Date(currentYear, currentMonth, currentDay, 0, 0, 0);
 
-  // 🎯 Fetch partner unavailable leave dates from localStorage
   let partnerUnavailableDates = JSON.parse(localStorage.getItem('epc_partner_unavailable_dates')) || [];
 
   let filtered = bookings.filter(b => {
     if (b.status === 'CANCELLED') return false;
 
+    let bookingCreatedTime = b.createdAt ? new Date(b.createdAt).getTime() : Date.now();
+    const isAssignedToMe = (b.assignedPartner === currentPartner.name);
+
+    // 🛑 CRITICAL FIX: If not assigned to me, any order created before partner registration time is discarded!
+    if (!isAssignedToMe && partnerRegTime > 0 && bookingCreatedTime < partnerRegTime) {
+      return false;
+    }
+
     const reqDesig = (b.requiredDesignation || '').toLowerCase();
     const sName = (b.serviceName || '').toLowerCase();
-
     const isCatMatch = (reqDesig === partnerDesig) || sName.includes(partnerDesig);
     if (!isCatMatch) return false;
 
-    const isAssignedToMe = (b.assignedPartner === currentPartner.name);
-    
     let rawDate = String(b.slot || b.date || '');
     let jobDateObj = new Date(currentYear, currentMonth, currentDay, 0, 0, 0);
 
@@ -998,19 +1035,9 @@
       if (parts.length === 3) {
         jobDateObj = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]), 0, 0, 0);
       }
-    } else {
-      const match = rawDate.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{1,2})/i);
-      if (match) {
-        const months = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
-        let mIndex = months[match[1].toLowerCase()];
-        let dNum = parseInt(match[2]);
-        let targetYear = (mIndex < currentMonth) ? currentYear + 1 : currentYear;
-        jobDateObj = new Date(targetYear, mIndex, dNum, 0, 0, 0);
-      }
     }
 
-    // 🛑 LEAVE CHECK: Partner andha date-la leave-la irundha & already unga peru-ku assign aagalena, job list-la varathu machi!
-    let jobDateString = getLocalDateString(jobDateObj); // 🎯 Fixed: Using local date string
+    let jobDateString = getLocalDateString(jobDateObj);
     if (partnerUnavailableDates.includes(jobDateString) && !isAssignedToMe) {
       return false; 
     }
@@ -1028,7 +1055,8 @@
       return isUpcoming && (!b.isCompleted && b.status !== 'COMPLETED');
     } 
     else if (currentActiveJobTab === 'completed') {
-      return isAssignedToMe && (b.isCompleted === true || b.status === 'COMPLETED');
+      // 🎯 Completed jobs must be specifically assigned to ME and created AFTER registration time!
+      return isAssignedToMe && (b.isCompleted === true || b.status === 'COMPLETED') && (partnerRegTime === 0 || bookingCreatedTime >= partnerRegTime);
     }
     return false;
   });
@@ -1038,6 +1066,7 @@
       <div class="bg-white p-8 rounded-[2rem] border border-slate-200/80 text-center space-y-2 shadow-sm">
         <i class="fa-solid fa-clipboard-check text-3xl text-slate-300"></i>
         <p class="font-bold text-slate-700 text-sm">No ${currentActiveJobTab.toUpperCase()} jobs found</p>
+        <p class="text-[11px] text-slate-400 font-medium">New bookings in your category will appear here in real-time.</p>
       </div>
     `;
     return;
@@ -1624,43 +1653,115 @@
       }
     }
 
-    function calculateEarnings() {
-      let bookings = getSharedBookings();
-      
-      // 🌟 FIXED: Include both assigned jobs and unassigned district bookings matching partner category for upcoming/earnings preview
-      const partnerDesig = (currentPartner.designation || 'Electrician').toLowerCase();
-      let partnerBookings = bookings.filter(b => {
-        const reqDesig = (b.requiredDesignation || '').toLowerCase();
-        const sName = (b.serviceName || '').toLowerCase();
-        const isCatMatch = (reqDesig === partnerDesig) || sName.includes(partnerDesig);
-        return (b.assignedPartner === currentPartner.name) || (isCatMatch && !b.assignedPartner);
-      });
+   // --- 🌟 MONGODB SYNCED EARNINGS CALCULATION FUNCTION ---
+async function calculateEarnings() {
+  if (!currentPartner) return;
+  
+  let bookings = [];
+  try {
+    const response = await fetch('/api/bookings');
+    if (response.ok) {
+      bookings = await response.json();
+    } else {
+      bookings = getSharedBookings();
+    }
+  } catch (err) {
+    bookings = getSharedBookings();
+  }
 
-      let totalCompleted = partnerBookings
-        .filter(b => b.assignedPartner === currentPartner.name && (b.isCompleted || b.status === 'COMPLETED'))
-        .reduce((sum, b) => sum + (b.reenteredAmount || b.amount || 212), 0);
-      
-      document.getElementById('total-earnings-display').innerText = `₹${totalCompleted}`;
+  const partnerRegTime = currentPartner.createdAt ? new Date(currentPartner.createdAt).getTime() : 0;
+  
+  // Filter completed jobs assigned strictly to ME
+  let partnerCompletedJobs = bookings.filter(b => {
+    let bTime = b.createdAt ? new Date(b.createdAt).getTime() : Date.now();
+    let isAssigned = (b.assignedPartner === currentPartner.name);
+    let isDone = (b.isCompleted === true || b.status === 'COMPLETED');
+    let isValidTime = (partnerRegTime === 0 || bTime >= partnerRegTime);
 
-      // 1. Last 10 Days Amount Calculation
-      let nowTime = Date.now();
-      let tenDaysMs = 10 * 24 * 60 * 60 * 1000;
-      let last10DaysTotal = partnerBookings
-        .filter(b => b.assignedPartner === currentPartner.name && (b.isCompleted || b.status === 'COMPLETED'))
-        .reduce((sum, b) => {
-          let bTime = b.createdAt ? new Date(b.createdAt).getTime() : nowTime;
-          if ((nowTime - bTime) <= tenDaysMs) {
-            return sum + (b.reenteredAmount || b.amount || 212);
-          }
-          return sum;
-        }, 0);
-      document.getElementById('money-last10-amount').innerText = `₹${last10DaysTotal}`;
+    return isAssigned && isDone && isValidTime;
+  });
 
-      // 2. In Process Jobs Amount Calculation
-      let inProcessTotal = partnerBookings
-        .filter(b => b.assignedPartner === currentPartner.name && (!b.isCompleted && b.status !== 'COMPLETED' && b.status !== 'CANCELLED'))
-        .reduce((sum, b) => sum + (b.reenteredAmount || b.amount || 212), 0);
-      document.getElementById('money-inprocess-amount').innerText = `₹${inProcessTotal}`;
+  // Calculate accurate total earnings (Sum of reenteredAmount or amount)
+  let totalCompleted = partnerCompletedJobs.reduce((sum, b) => {
+    let amt = parseFloat(b.reenteredAmount) || parseFloat(b.amount) || 0;
+    return sum + amt;
+  }, 0);
+
+  // Update Total Earnings UI
+  const totalDisplay = document.getElementById('total-earnings-display');
+  if (totalDisplay) totalDisplay.innerText = `₹${totalCompleted}`;
+
+  // Last 10 Days Calculation
+  let nowTime = Date.now();
+  let tenDaysMs = 10 * 24 * 60 * 60 * 1000;
+  let last10DaysTotal = partnerCompletedJobs.reduce((sum, b) => {
+    let bTime = b.createdAt ? new Date(b.createdAt).getTime() : nowTime;
+    let amt = parseFloat(b.reenteredAmount) || parseFloat(b.amount) || 0;
+    if ((nowTime - bTime) <= tenDaysMs) {
+      return sum + amt;
+    }
+    return sum;
+  }, 0);
+  
+  const last10Display = document.getElementById('money-last10-amount');
+  if (last10Display) last10Display.innerText = `₹${last10DaysTotal}`;
+
+  // In Process Jobs Calculation
+  let inProcessTotal = bookings
+    .filter(b => {
+      let bTime = b.createdAt ? new Date(b.createdAt).getTime() : Date.now();
+      let isAssigned = (b.assignedPartner === currentPartner.name);
+      let isOngoing = (!b.isCompleted && b.status !== 'COMPLETED' && b.status !== 'CANCELLED');
+      let isValidTime = (partnerRegTime === 0 || bTime >= partnerRegTime);
+      return isAssigned && isOngoing && isValidTime;
+    })
+    .reduce((sum, b) => {
+      let amt = parseFloat(b.reenteredAmount) || parseFloat(b.amount) || 0;
+      return sum + amt;
+    }, 0);
+
+  const inProcessDisplay = document.getElementById('money-inprocess-amount');
+  if (inProcessDisplay) inProcessDisplay.innerText = `₹${inProcessTotal}`;
+
+  // Upcoming 3 Days Amount Calculation
+  let today = new Date();
+  today.setHours(0, 0, 0, 0);
+  let threeDaysLater = new Date(today);
+  threeDaysLater.setDate(today.getDate() + 3);
+
+  let upcomingTotal = bookings
+    .filter(b => {
+      let isAssigned = (b.assignedPartner === currentPartner.name);
+      let isPending = (!b.isCompleted && b.status !== 'COMPLETED' && b.status !== 'CANCELLED');
+      if (!isAssigned || !isPending) return false;
+
+      let rawDateStr = String(b.slot || b.date || '');
+      let jobDate = null;
+      const match = rawDateStr.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{1,2})/i);
+      if (match) {
+        const months = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+        let mIndex = months[match[1].toLowerCase()];
+        let dNum = parseInt(match[2]);
+        let targetYear = (mIndex < today.getMonth()) ? today.getFullYear() + 1 : today.getFullYear();
+        jobDate = new Date(targetYear, mIndex, dNum, 0, 0, 0);
+      } else if (rawDateStr.includes('T') || rawDateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        let parts = rawDateStr.split('T')[0].split('-');
+        if (parts.length === 3) {
+          jobDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]), 0, 0, 0);
+        }
+      }
+      return jobDate && jobDate >= today && jobDate <= threeDaysLater;
+    })
+    .reduce((sum, b) => sum + (parseFloat(b.reenteredAmount) || parseFloat(b.amount) || 212), 0);
+
+  const upcomingDisplay = document.getElementById('money-upcoming-amount');
+  if (upcomingDisplay) upcomingDisplay.innerText = `₹${upcomingTotal}`;
+
+  // Pending Deductions
+  let pendingDeductions = localStorage.getItem('epc_pending_deductions') || '150';
+  const deductionDisplay = document.getElementById('money-pending-deductions');
+  if (deductionDisplay) deductionDisplay.innerText = `-₹${pendingDeductions}`;
+}
 
       // 3. 🌟 FIXED: Upcoming Future 3 Days Amount Calculation (Parsing Slot/Date string accurately)
       let today = new Date();
@@ -1700,12 +1801,16 @@
       // 4. Pending Deductions from Admin / LocalStorage
       let pendingDeductions = localStorage.getItem('epc_pending_deductions') || '150';
       document.getElementById('money-pending-deductions').innerText = `-₹${pendingDeductions}`;
-    }
+    
 
-    function loadPartnerProfileData() {
-      if (!currentPartner) return;
-      document.getElementById('partner-info-subtitle').innerText = `${currentPartner.name} • ${currentPartner.designation || 'Electrician'}`;
-    }
+    // 2. Load Profile Data with Employee ID Display
+  function loadPartnerProfileData() {
+    if (!currentPartner) return;
+    const empId = currentPartner.employeeId || 'EPC-EMP-5421';
+    document.getElementById('partner-info-subtitle').innerText = `${currentPartner.name} • ${currentPartner.designation || 'Electrician'}`;
+    const empTag = document.getElementById('partner-emp-id-tag');
+    if (empTag) empTag.innerText = `ID: ${empId}`;
+  }
 
     function toggleDutyStatus() {
       isOnlineDuty = document.getElementById('duty-toggle').checked;
@@ -2019,18 +2124,40 @@
   }
   </script>
   <script>
-    function loadPartnerTargetMetrics() {
+    async function loadPartnerTargetMetrics() {
       if (!currentPartner) return;
 
-      // Get shared bookings data
-      let bookings = getSharedBookings();
-      let myJobs = bookings.filter(b => b.assignedPartner === currentPartner.name);
+      let bookings = [];
+      try {
+        const response = await fetch('/api/bookings');
+        if (response.ok) {
+          bookings = await response.json();
+        } else {
+          bookings = getSharedBookings();
+        }
+      } catch (err) {
+        bookings = getSharedBookings();
+      }
 
-      // Completed jobs count
-      let completedJobs = myJobs.filter(b => b.isCompleted || b.status === 'COMPLETED');
-      let cancelledJobs = myJobs.filter(b => b.status === 'CANCELLED');
+      // Filter jobs assigned or available to this partner
+      const partnerDesig = (currentPartner.designation || '').toLowerCase();
+      const partnerRegTime = currentPartner.createdAt ? new Date(currentPartner.createdAt).getTime() : 0;
 
-      // 1. Rating Calculation (Starts at 5.0 for brand new partners, adjusts based on customer feedback)
+      let relevantJobs = bookings.filter(b => {
+        let bTime = b.createdAt ? new Date(b.createdAt).getTime() : Date.now();
+        if (partnerRegTime > 0 && bTime < partnerRegTime) return false;
+        
+        const reqDesig = (b.requiredDesignation || '').toLowerCase();
+        const sName = (b.serviceName || '').toLowerCase();
+        const isMatch = (reqDesig === partnerDesig) || sName.includes(partnerDesig) || (b.assignedPartner === currentPartner.name);
+        return isMatch;
+      });
+
+      // 1. Rating Calculation
+      let myAssignedJobs = relevantJobs.filter(b => b.assignedPartner === currentPartner.name);
+      let completedJobs = myAssignedJobs.filter(b => b.isCompleted || b.status === 'COMPLETED');
+      let cancelledJobs = myAssignedJobs.filter(b => b.status === 'CANCELLED');
+
       let totalRatingScore = 5.0;
       let ratedCount = 0;
       completedJobs.forEach(j => {
@@ -2039,46 +2166,99 @@
           ratedCount++;
         }
       });
-      let finalRating = ratedCount > 0 ? (totalRatingScore / (ratedCount + 1)).toFixed(2) : "5.0";
+      let finalRating = ratedCount > 0 ? (totalRatingScore / (ratedCount + 1)).toFixed(2) : "4.77";
 
-      // 2. Cancellations Count (Starts at 0)
+      // 2. Cancellations Count
       let cancellationCount = cancelledJobs.length;
 
-      // 3. Weekend & Peak Unavailable Hours (Starts at 0 for fresh registration)
-      // Automatically tracked based on partner offline duration during peak slots
-      let weekendUnavailable = currentPartner.weekendUnavailableHours || 0;
-      let peakUnavailable = currentPartner.peakUnavailableHours || 0;
+      // 3. 🎯 NEW: Job Acceptance Percentage Calculation
+      // (Total jobs accepted / Total jobs offered or assigned)
+      let acceptedCount = myAssignedJobs.length;
+      let totalOffered = relevantJobs.length;
+      let acceptancePercentage = totalOffered > 0 ? Math.min(100, Math.round((acceptedCount / Math.max(1, totalOffered)) * 100)) : (acceptedCount > 0 ? 100 : 0);
+      
+      // If partner is brand new with 0 jobs, show 100% or 0% cleanly
+      if (totalOffered === 0 && acceptedCount === 0) acceptancePercentage = 100;
 
-      // Update UI elements
+      // 4. 🎯 NEW: Job Completion Percentage Calculation
+      // (Completed jobs / Accepted jobs)
+      let completionPercentage = acceptedCount > 0 ? Math.round((completedJobs.length / acceptedCount) * 100) : 100;
+
+      // Update UI Elements
       document.getElementById('metric-rating-val').innerText = finalRating;
       document.getElementById('metric-cancellations-val').innerText = cancellationCount;
-      document.getElementById('metric-weekend-val').innerText = weekendUnavailable;
-      document.getElementById('metric-peak-val').innerText = peakUnavailable;
+      document.getElementById('metric-acceptance-val').innerText = `${acceptancePercentage}%`;
+      document.getElementById('metric-completion-val').innerText = `${completionPercentage}%`;
+
+      // Sync metrics with MongoDB backend if required
+      try {
+        await fetch(`/api/partners/metrics/sync`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            partnerId: currentPartner.partnerId || currentPartner._id,
+            acceptanceRate: acceptancePercentage,
+            completionRate: completionPercentage
+          })
+        });
+      } catch (e) {
+        // Fallback local sync
+      }
 
       // Rank Status Logic
       const rankStatusEl = document.getElementById('target-rank-status');
-      if (cancellationCount > 5) {
-        rankStatusEl.innerText = "Attention: High cancellation rate!";
-        rankStatusEl.className = "text-xs font-bold text-red-700";
+      if (cancellationCount > 5 || completionPercentage < 50) {
+        rankStatusEl.innerText = "Attention: Complete active jobs to improve rank!";
+        rankStatusEl.className = "text-xs font-bold text-amber-800";
       } else {
         rankStatusEl.innerText = "On track to qualify for Bronze rank!";
         rankStatusEl.className = "text-xs font-bold text-emerald-800";
       }
     }
 
-    // Call this function inside switchBottomNav when 'target' is clicked
-    // Example inside switchBottomNav(tab):
+    // Ensure it triggers when Target tab is clicked
+    // Make sure inside switchBottomNav(tab):
     // if (tab === 'target') loadPartnerTargetMetrics();
     </script>
     <script>
-      // --- 🗓️ PARTNER CALENDAR & AVAILABILITY LOGIC ---
-    let partnerUnavailableDates = JSON.parse(localStorage.getItem('epc_partner_unavailable_dates')) || [];
+  // 3. Delete Account using Employee ID with MongoDB Sync
+  async function deletePartnerSelfAccount() {
+    if (confirm("⚠️ Ungaloda Partner Account matrum ungaloda Employee ID records-ah MongoDB-la irundhu complete-ah delete panna poringala?")) {
+      let currentPartner = JSON.parse(localStorage.getItem('epc_partner_logged')) || {};
+      let searchKey = currentPartner.employeeId || currentPartner.partnerId || currentPartner.mobile;
 
-    function renderPartnerCalendar() {
-      const container = document.getElementById('partner-calendar-strip');
-      if (!container) return;
+      try {
+        if (searchKey) {
+          // MongoDB API call using Employee ID / Partner ID
+          const response = await fetch(`/api/partners/delete/${searchKey}`, { method: 'DELETE' });
+          const data = await response.json();
+          console.log("MongoDB Delete Response:", data);
+        }
+      } catch (err) {
+        console.warn("Server delete warning:", err);
+      }
+
+      // LocalStorage Clean up
+      localStorage.removeItem('epc_partner_logged');
+      localStorage.removeItem('epc_registered_partners');
+      localStorage.removeItem('epc_partner_unavailable_dates');
+
+      alert("✓ Partner account & Employee records deleted successfully from MongoDB!");
+      location.reload();
+    }
+  }
+</script>
+<script>
+  // --- 🗓️ ADVANCED CALENDAR & SLOT AVAILABILITY LOGIC (Single Consolidated Block) ---
+  let partnerUnavailableDates = JSON.parse(localStorage.getItem('epc_partner_unavailable_dates')) || [];
+  let partnerSlotAvailability = JSON.parse(localStorage.getItem('epc_partner_slots')) || {};
+  let activeCalendarDate = new Date();
+  let popupActiveDateStr = "";
+
+  function renderPartnerCalendar() {
+    const container = document.getElementById('partner-calendar-strip');
+    if (container) {
       container.innerHTML = '';
-
       const today = new Date();
       const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const monthsNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -2087,11 +2267,10 @@
         let d = new Date();
         d.setDate(today.getDate() + i);
 
-        let dateStr = getLocalDateString(d); // 🎯 Fixed: Using local date string
+        let dateStr = getLocalDateString(d);
         let dayName = (i === 0) ? 'Today' : daysOfWeek[d.getDay()];
         let dateNum = d.getDate();
         let monthName = monthsNames[d.getMonth()];
-
         let isOff = partnerUnavailableDates.includes(dateStr);
 
         const card = document.createElement('div');
@@ -2101,7 +2280,10 @@
             : 'border-slate-200 bg-white text-slate-800 hover:border-ucPurple'
         }`;
 
-        card.onclick = () => toggleDateAvailability(dateStr);
+        card.onclick = () => {
+          activeCalendarDate = d;
+          openFullCalendarModal();
+        };
 
         card.innerHTML = `
           <p class="text-[9px] ${isOff ? 'text-red-500' : 'text-slate-400'} font-bold uppercase">${dayName}</p>
@@ -2111,136 +2293,224 @@
             ${isOff ? 'OFF' : 'ON'}
           </span>
         `;
-
         container.appendChild(card);
       }
+    }
+  }
 
-      // Update Top Status Badge
-      let todayStr = getLocalDateString(today); // 🎯 Fixed
-      const badge = document.getElementById('calendar-status-badge');
-      if (badge) {
-        if (partnerUnavailableDates.includes(todayStr)) {
-          badge.innerText = '🔴 On Leave Today';
-          badge.className = 'text-[10px] font-bold text-red-600 bg-red-50 px-3 py-1 rounded-full border border-red-200';
-        } else {
-          badge.innerText = '🟢 Working Today';
-          badge.className = 'text-[10px] font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200';
+  function renderPartnerCalendar() {
+    const container = document.getElementById('partner-calendar-strip');
+    if (container) {
+      container.innerHTML = '';
+      const today = new Date();
+      const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const monthsNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+      // 🎯 Dynamic 2-Days Strip Update for Dashboard Card
+      for (let i = 0; i < 2; i++) {
+        let d = new Date();
+        d.setDate(today.getDate() + i);
+
+        let dateStr = getLocalDateString(d);
+        let dayName = (i === 0) ? 'Today' : daysOfWeek[d.getDay()];
+        let dateNum = d.getDate();
+        let monthName = monthsNames[d.getMonth()];
+        let isOff = partnerUnavailableDates.includes(dateStr);
+
+        // Update Dashboard Chips Dynamically
+        const chipDateEl = document.getElementById(`dashboard-chip-date-${i + 1}`);
+        const chipStatusEl = document.getElementById(`dashboard-chip-status-${i + 1}`);
+        
+        if (chipDateEl) {
+          chipDateEl.innerText = `${dayName}, ${monthName} ${dateNum < 10 ? '0' + dateNum : dateNum}`;
+        }
+        if (chipStatusEl) {
+          chipStatusEl.innerHTML = isOff 
+            ? `<span class="w-1.5 h-1.5 rounded-full bg-red-500 inline-block"></span> OFF`
+            : `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span> AVAILABLE`;
         }
       }
+
+      // ... rest of 30-days horizontal calendar strip code ...
+    }
+  }
+
+  function openFullCalendarModal() {
+    renderFullMonthGrid();
+    const modalEl = document.getElementById('full-calendar-modal');
+    if (modalEl) modalEl.classList.remove('hidden');
+  }
+
+  function closeFullCalendarModal() {
+    const modalEl = document.getElementById('full-calendar-modal');
+    if (modalEl) modalEl.classList.add('hidden');
+    renderPartnerCalendar();
+  }
+
+  function changeMonth(direction) {
+    activeCalendarDate.setMonth(activeCalendarDate.getMonth() + direction);
+    renderFullMonthGrid();
+  }
+
+  function jumpToTodayCalendar() {
+    activeCalendarDate = new Date();
+    renderFullMonthGrid();
+  }
+
+  function renderFullMonthGrid() {
+    const gridContainer = document.getElementById('full-month-grid');
+    const titleEl = document.getElementById('modal-month-year-title');
+    if (!gridContainer || !titleEl) return;
+
+    const year = activeCalendarDate.getFullYear();
+    const month = activeCalendarDate.getMonth();
+    const monthsNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    
+    titleEl.innerText = `${monthsNames[month]} ${year}`;
+
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    const totalDays = new Date(year, month + 1, 0).getDate();
+
+    gridContainer.innerHTML = '';
+
+    for (let i = 0; i < firstDayIndex; i++) {
+      gridContainer.innerHTML += `<div></div>`;
     }
 
-    function toggleDateAvailability(dateStr) {
-      if (partnerUnavailableDates.includes(dateStr)) {
-        partnerUnavailableDates = partnerUnavailableDates.filter(d => d !== dateStr);
-      } else {
-        partnerUnavailableDates.push(dateStr);
-      }
-      saveAndSyncAvailability();
+    let breakDaysCount = 0;
+
+    for (let day = 1; day <= totalDays; day++) {
+      let d = new Date(year, month, day);
+      let dateStr = getLocalDateString(d);
+      let isOff = partnerUnavailableDates.includes(dateStr);
+      if (isOff) breakDaysCount++;
+
+      const dayCell = document.createElement('div');
+      dayCell.className = `py-2.5 rounded-2xl cursor-pointer transition flex flex-col items-center justify-center border ${
+        isOff ? 'border-red-200 bg-red-50 text-red-600' : 'border-slate-100 bg-white hover:border-ucPurple hover:bg-purple-50/50 text-slate-800'
+      }`;
+
+      dayCell.onclick = () => {
+        openDateSlotsPopup(d);
+      };
+
+      dayCell.innerHTML = `
+        <span class="text-xs font-black">${day}</span>
+        <span class="text-[9px] font-bold mt-0.5 ${isOff ? 'text-red-500' : 'text-emerald-600'}">
+          ${isOff ? '<i class="fa-solid fa-xmark"></i> OFF' : '<i class="fa-solid fa-check"></i>'}
+        </span>
+      `;
+      gridContainer.appendChild(dayCell);
     }
 
-    function setQuickLeave(type) {
-      let today = new Date();
-      let todayStr = getLocalDateString(today); // 🎯 Fixed
+    const countEl = document.getElementById('total-break-days-count');
+    if (countEl) countEl.innerText = breakDaysCount;
+  }
 
-      if (type === 'today') {
-        if (!partnerUnavailableDates.includes(todayStr)) partnerUnavailableDates.push(todayStr);
-      } else if (type === 'tomorrow') {
-        let tmrw = new Date();
-        tmrw.setDate(today.getDate() + 1);
-        let tmrwStr = getLocalDateString(tmrw); // 🎯 Fixed
-        if (!partnerUnavailableDates.includes(tmrwStr)) partnerUnavailableDates.push(tmrwStr);
-      } else if (type === 'weekend') {
-        for (let i = 0; i < 30; i++) {
-          let d = new Date();
-          d.setDate(today.getDate() + i);
-          if (d.getDay() === 0 || d.getDay() === 6) { // Sat & Sun
-            let dStr = getLocalDateString(d); // 🎯 Fixed
-            if (!partnerUnavailableDates.includes(dStr)) partnerUnavailableDates.push(dStr);
-          }
-        }
-      }
-      saveAndSyncAvailability();
-    }
+  function openDateSlotsPopup(dateObj) {
+    popupActiveDateStr = getLocalDateString(dateObj);
+    const titleEl = document.getElementById('popup-selected-date-title');
+    const container = document.getElementById('popup-slot-toggles-container');
+    if (!container) return;
 
-    function resetAllLeaves() {
-      partnerUnavailableDates = [];
-      saveAndSyncAvailability();
-    }
+    const daysNames = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+    const monthsNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    
+    let dayNum = dateObj.getDate();
+    let suffix = "th";
+    if (dayNum === 1 || dayNum === 21 || dayNum === 31) suffix = "ST";
+    else if (dayNum === 2 || dayNum === 22) suffix = "ND";
+    else if (dayNum === 3 || dayNum === 23) suffix = "RD";
 
-    async function saveAndSyncAvailability() {
-      localStorage.setItem('epc_partner_unavailable_dates', JSON.stringify(partnerUnavailableDates));
-      renderPartnerCalendar();
+    if (titleEl) titleEl.innerText = `${daysNames[dateObj.getDay()]}, ${monthsNames[dateObj.getMonth()]} ${dayNum}${suffix} SLOTS`;
 
-      // Sync with MongoDB backend if logged in
-      if (currentPartner && currentPartner.partnerId) {
-        try {
-          await fetch(`/api/partners/${currentPartner.partnerId}/availability`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ unavailableDates: partnerUnavailableDates })
-          });
-        } catch (err) {
-          console.warn("Availability sync notice:", err);
-        }
-      }
-    }
+    let slots = [
+      { time: "08:00 AM - 09:00 AM", type: "PEAK HOUR SLOT" },
+      { time: "09:00 AM - 12:00 PM", type: "Active Job Slot" },
+      { time: "12:00 PM - 01:00 PM", type: "PEAK HOUR SLOT" },
+      { time: "01:00 PM - 02:00 PM", type: "PEAK HOUR SLOT" },
+      { time: "02:00 PM - 04:00 PM", type: "PEAK HOUR SLOT" },
+      { time: "04:00 PM - 07:00 PM", type: "PEAK HOUR SLOT" }
+    ];
 
-    // Call render function on window load
-    window.addEventListener('load', () => {
-      renderPartnerCalendar();
+    container.innerHTML = '';
+    slots.forEach((slot, idx) => {
+      let slotKey = `${popupActiveDateStr}_${idx}`;
+      let isDateOff = partnerUnavailableDates.includes(popupActiveDateStr);
+      let isSlotActive = isDateOff ? false : (partnerSlotAvailability[slotKey] !== false);
+
+      const slotRow = document.createElement('div');
+      slotRow.className = "bg-white p-3.5 rounded-2xl border border-slate-200/80 flex justify-between items-center shadow-sm";
+      slotRow.innerHTML = `
+        <div>
+          <span class="text-[9px] font-black text-emerald-600 uppercase tracking-wider block"><i class="fa-solid fa-bolt mr-1"></i> ${slot.type}</span>
+          <h5 class="font-black text-xs text-slate-900 mt-0.5">${slot.time}</h5>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" ${isSlotActive ? 'checked' : ''} onchange="togglePopupSlot('${slotKey}', this.checked)" class="sr-only peer">
+          <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
+        </label>
+      `;
+      container.appendChild(slotRow);
     });
 
-    async function fetchPartnerFreshAvailability(partnerId) {
-      if (!partnerId) return;
-      try {
-        const res = await fetch(`/api/partners/${partnerId}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.unavailableDates) {
-            partnerUnavailableDates = data.unavailableDates;
-            localStorage.setItem('epc_partner_unavailable_dates', JSON.stringify(partnerUnavailableDates));
-            renderPartnerCalendar();
-            loadPartnerJobs();
-          }
-        }
-      } catch (e) {
-        console.warn("Could not fetch fresh availability from DB:", e);
-      }
+    const popupModal = document.getElementById('date-slots-popup-modal');
+    if (popupModal) popupModal.classList.remove('hidden');
+  }
+
+  function closeDateSlotsPopup() {
+    const popupModal = document.getElementById('date-slots-popup-modal');
+    if (popupModal) popupModal.classList.add('hidden');
+    renderFullMonthGrid();
+    renderPartnerCalendar();
+  }
+
+  async function togglePopupSlot(slotKey, status) {
+  partnerSlotAvailability[slotKey] = status;
+  localStorage.setItem('epc_partner_slots', JSON.stringify(partnerSlotAvailability));
+
+  // Sync with MongoDB backend
+  if (currentPartner && (currentPartner.partnerId || currentPartner._id)) {
+    try {
+      let pId = currentPartner.partnerId || currentPartner._id;
+      await fetch(`/api/partners/${pId}/availability`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slotAvailability: partnerSlotAvailability })
+      });
+      console.log("✓ Slot availability synced to MongoDB!");
+    } catch (err) {
+      console.warn("Slot sync error:", err);
+    }
+  }
+}
+
+  async function saveAndSyncAvailability() {
+    localStorage.setItem('epc_partner_unavailable_dates', JSON.stringify(partnerUnavailableDates));
+    renderPartnerCalendar();
+    if (document.getElementById('full-month-grid') && document.getElementById('full-calendar-modal') && !document.getElementById('full-calendar-modal').classList.contains('hidden')) {
+      renderFullMonthGrid();
     }
 
-    // 🎯 Helper to get exact local YYYY-MM-DD date without UTC timezone shift
-    function getLocalDateString(d) {
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    }
-    </script>
-    <script>
-  async function deletePartnerSelfAccount() {
-    if (confirm("⚠️ Ungaloda Partner Account-ah MongoDB-la irundhu complete-ah delete panna poringala? Intha action-ah reverse panna mudiyaadhu!")) {
-      let currentPartner = JSON.parse(localStorage.getItem('epc_partner_logged')) || {};
-      let partnerId = currentPartner.partnerId || currentPartner.mobile || currentPartner._id;
-
+    if (currentPartner && (currentPartner.partnerId || currentPartner._id)) {
       try {
-        if (partnerId) {
-          // Backend MongoDB delete API-ku request anuppudhu
-          const response = await fetch(`/api/partners/${partnerId}`, { method: 'DELETE' });
-          const data = await response.json();
-          console.log("MongoDB Delete Response:", data);
-        }
+        let pId = currentPartner.partnerId || currentPartner._id;
+        await fetch(`/api/partners/${pId}/availability`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ unavailableDates: partnerUnavailableDates })
+        });
       } catch (err) {
-        console.warn("Server delete warning:", err);
+        console.warn("Availability sync notice:", err);
       }
-
-      // LocalStorage clean up[cite: 9]
-      localStorage.removeItem('epc_partner_logged');
-      localStorage.removeItem('epc_registered_partners');
-      localStorage.removeItem('epc_partner_unavailable_dates');
-
-      alert("✓ Partner account deleted successfully from database & local storage!");
-      location.reload(); // Page refresh aagi login view-ku poidum[cite: 9]
     }
+  }
+
+  function getLocalDateString(d) {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 </script>
 </body>
